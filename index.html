@@ -656,12 +656,7 @@
     height: 56px;
     border-radius: 50%;
     flex-shrink: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 20px;
-    font-weight: 700;
-    color: #fff;
+    object-fit: cover;
   }
   .instructor-info { flex: 1; min-width: 0; }
   .instructor-info .name {
@@ -714,19 +709,6 @@
     color: #1a1a2e;
     margin-bottom: 12px;
   }
-  .guarantee-banner {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    background: #f9fafb;
-    border: 1px solid #e5e7eb;
-    border-radius: 8px;
-    padding: 14px 20px;
-    margin-bottom: 24px;
-    font-size: 14px;
-    color: #374151;
-  }
-  .guarantee-banner svg { flex-shrink: 0; color: #6b7280; }
 </style>
 </head>
 <body>
@@ -794,11 +776,6 @@
   <hr class="section-divider">
 
   <h2 class="all-courses-heading">All Web Development courses</h2>
-  <div class="guarantee-banner">
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
-    Not sure? All courses have a 30-day money-back guarantee
-  </div>
-
   <!-- Sort Bar -->
   <div class="sort-bar">
     <span class="label">Sort by</span>
@@ -2313,8 +2290,26 @@ document.getElementById("searchInput").addEventListener("input", () => {
 
 // Popular Instructors — build from course data
 (function buildInstructorsSection() {
+  // Photo URLs for instructors (randomuser.me portraits)
+  const instructorPhotos = {
+    "Colt Steele": "https://randomuser.me/api/portraits/men/32.jpg",
+    "Jonas Schmedtmann": "https://randomuser.me/api/portraits/men/46.jpg",
+    "Maximilian Schwarzmuller": "https://randomuser.me/api/portraits/men/22.jpg",
+    "Dr. Angela Yu": "https://randomuser.me/api/portraits/women/44.jpg",
+    "Juan Pablo De la torre": "https://randomuser.me/api/portraits/men/67.jpg",
+    "Brad Traversy": "https://randomuser.me/api/portraits/men/75.jpg",
+    "Andrew Mead": "https://randomuser.me/api/portraits/men/51.jpg",
+    "Dmytro Danylov": "https://randomuser.me/api/portraits/men/18.jpg",
+    "James Park": "https://randomuser.me/api/portraits/men/85.jpg",
+    "Addy Osmani": "https://randomuser.me/api/portraits/men/36.jpg",
+    "Sarah Chen": "https://randomuser.me/api/portraits/women/65.jpg",
+    "Marie Dupont": "https://randomuser.me/api/portraits/women/28.jpg",
+    "Pierre Martin": "https://randomuser.me/api/portraits/men/41.jpg",
+    "Kevin Powell": "https://randomuser.me/api/portraits/men/55.jpg",
+    "Mark Erikson": "https://randomuser.me/api/portraits/men/62.jpg"
+  };
+
   const instructorMap = {};
-  const avatarColors = ["#6366f1", "#0ea5e9", "#8b5cf6", "#ec4899", "#f59e0b", "#10b981", "#ef4444", "#14b8a6"];
   courses.forEach(c => {
     if (!instructorMap[c.instructor]) {
       instructorMap[c.instructor] = {
@@ -2323,7 +2318,8 @@ document.getElementById("searchInput").addEventListener("input", () => {
         rating: c.instructorAvgRating,
         totalReviews: c.instructorTotalReviews,
         courseCount: c.instructorCourseCount,
-        students: c.totalEnrollments
+        students: c.totalEnrollments,
+        photo: instructorPhotos[c.instructor] || ""
       };
     }
     const inst = instructorMap[c.instructor];
@@ -2336,9 +2332,7 @@ document.getElementById("searchInput").addEventListener("input", () => {
     .slice(0, 8);
 
   const row = document.getElementById("instructorsRow");
-  row.innerHTML = instructors.map((inst, i) => {
-    const initials = inst.name.split(" ").map(w => w[0]).join("").slice(0, 2);
-    const color = avatarColors[i % avatarColors.length];
+  row.innerHTML = instructors.map((inst) => {
     const specs = [...inst.specialties].slice(0, 3).join(", ");
     const studentsStr = inst.students >= 1000000
       ? (inst.students / 1000000).toFixed(1).replace(/\.0$/, '') + "M"
@@ -2347,7 +2341,7 @@ document.getElementById("searchInput").addEventListener("input", () => {
         : inst.students.toLocaleString();
     return `
       <div class="instructor-card">
-        <div class="instructor-avatar" style="background:${color}">${initials}</div>
+        <img class="instructor-avatar" src="${inst.photo}" alt="${inst.name}">
         <div class="instructor-info">
           <div class="name">${inst.name}</div>
           <div class="specialties">${specs}</div>
