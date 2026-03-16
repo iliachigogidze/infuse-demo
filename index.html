@@ -1,0 +1,2031 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>INFUSE Learn – Web Development Courses</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    background: #f7f8fa;
+    color: #1a1a2e;
+    font-size: 14px;
+    line-height: 1.5;
+  }
+
+  /* ── Navbar ── */
+  .navbar {
+    background: #fff;
+    border-bottom: 1px solid #e5e7eb;
+    padding: 0 32px;
+    height: 64px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  .navbar-left { display: flex; align-items: center; gap: 32px; }
+  .logo {
+    font-size: 22px;
+    font-weight: 700;
+    color: #1a1a2e;
+    text-decoration: none;
+    letter-spacing: -0.5px;
+  }
+  .logo span { color: #6366f1; }
+  .nav-links { display: flex; gap: 24px; }
+  .nav-links a {
+    color: #6b7280;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 500;
+    transition: color 0.15s;
+  }
+  .nav-links a:hover { color: #1a1a2e; }
+  .search-bar {
+    display: flex;
+    align-items: center;
+    background: #f3f4f6;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    padding: 0 12px;
+    width: 400px;
+    transition: border-color 0.15s;
+  }
+  .search-bar:focus-within { border-color: #6366f1; }
+  .search-bar svg { color: #9ca3af; flex-shrink: 0; }
+  .search-bar input {
+    flex: 1;
+    border: none;
+    outline: none;
+    background: transparent;
+    padding: 10px 8px;
+    font-size: 14px;
+    color: #1a1a2e;
+  }
+  .navbar-right { display: flex; align-items: center; gap: 16px; }
+  .avatar {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: #6366f1;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    font-size: 14px;
+  }
+
+  /* ── Breadcrumb ── */
+  .breadcrumb {
+    padding: 12px 32px;
+    font-size: 13px;
+    color: #9ca3af;
+    background: #fff;
+    border-bottom: 1px solid #f3f4f6;
+  }
+  .breadcrumb a { color: #6b7280; text-decoration: none; }
+  .breadcrumb a:hover { color: #6366f1; text-decoration: underline; }
+  .breadcrumb .sep { margin: 0 8px; color: #d1d5db; }
+
+  /* ── Page Layout ── */
+  .page { max-width: 1280px; margin: 0 auto; padding: 24px 32px; }
+
+  /* ── Header ── */
+  .page-header { margin-bottom: 24px; }
+  .page-header h1 { font-size: 24px; font-weight: 700; color: #1a1a2e; }
+  .page-header p { font-size: 14px; color: #6b7280; margin-top: 4px; }
+
+  /* ── Sort Bar ── */
+  .sort-bar {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+  }
+  .sort-bar .label {
+    font-size: 13px;
+    font-weight: 600;
+    color: #6b7280;
+    margin-right: 4px;
+  }
+  .sort-btn {
+    padding: 7px 16px;
+    border-radius: 20px;
+    border: 1px solid #e5e7eb;
+    background: #fff;
+    color: #4b5563;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .sort-btn:hover { border-color: #6366f1; color: #6366f1; }
+  .sort-btn.active {
+    background: #6366f1;
+    border-color: #6366f1;
+    color: #fff;
+  }
+
+  /* ── Content Layout ── */
+  .content { display: flex; gap: 24px; align-items: flex-start; }
+
+  /* ── Sidebar ── */
+  .sidebar {
+    width: 260px;
+    flex-shrink: 0;
+    background: #fff;
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    padding: 20px;
+    position: sticky;
+    top: 88px;
+  }
+  .sidebar-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 20px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid #f3f4f6;
+  }
+  .sidebar-header h3 { font-size: 15px; font-weight: 700; color: #1a1a2e; }
+  .clear-btn {
+    font-size: 13px;
+    color: #6366f1;
+    cursor: pointer;
+    border: none;
+    background: none;
+    font-weight: 500;
+  }
+  .clear-btn:hover { text-decoration: underline; }
+  .filter-section { margin-bottom: 20px; }
+  .filter-section:last-child { margin-bottom: 0; }
+  .filter-title {
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: #6b7280;
+    margin-bottom: 10px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .filter-title svg { transition: transform 0.2s; }
+  .filter-title.collapsed svg { transform: rotate(-90deg); }
+  .filter-options { }
+  .filter-options.hidden { display: none; }
+  .filter-opt {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 5px 0;
+    cursor: pointer;
+  }
+  .filter-opt input {
+    accent-color: #6366f1;
+    width: 16px;
+    height: 16px;
+    cursor: pointer;
+  }
+  .filter-opt label {
+    font-size: 13px;
+    color: #374151;
+    cursor: pointer;
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .filter-opt .count { font-size: 12px; color: #9ca3af; }
+  .filter-sep { border: none; border-top: 1px solid #f3f4f6; margin: 16px 0; }
+  .stars-sm { color: #f59e0b; font-size: 12px; }
+
+  /* ── Active Filters ── */
+  .active-filters { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 16px; }
+  .chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: #eef2ff;
+    color: #6366f1;
+    border-radius: 16px;
+    padding: 4px 12px;
+    font-size: 12px;
+    font-weight: 500;
+  }
+  .chip button {
+    background: none;
+    border: none;
+    color: #6366f1;
+    cursor: pointer;
+    font-size: 14px;
+    line-height: 1;
+    padding: 0;
+  }
+
+  /* ── Course Grid ── */
+  .course-grid {
+    flex: 1;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 20px;
+  }
+
+  /* ── Course Card ── */
+  .course-card {
+    background: #fff;
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    overflow: hidden;
+    transition: box-shadow 0.2s, transform 0.2s;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+  }
+  .course-card:hover {
+    box-shadow: 0 8px 30px rgba(0,0,0,0.08);
+    transform: translateY(-2px);
+  }
+  .card-thumb {
+    width: 100%;
+    aspect-ratio: 16/9;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .thumb-placeholder {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    font-weight: 600;
+    color: #6b7280;
+    letter-spacing: -0.2px;
+  }
+  .thumb-placeholder.blue { background: linear-gradient(135deg, #dbeafe, #ede9fe); }
+  .thumb-placeholder.purple { background: linear-gradient(135deg, #ede9fe, #fce7f3); }
+  .thumb-placeholder.green { background: linear-gradient(135deg, #d1fae5, #dbeafe); }
+  .thumb-placeholder.orange { background: linear-gradient(135deg, #fed7aa, #fef3c7); }
+  .thumb-placeholder.teal { background: linear-gradient(135deg, #ccfbf1, #d1fae5); }
+  .thumb-placeholder.pink { background: linear-gradient(135deg, #fce7f3, #ede9fe); }
+  .thumb-placeholder.slate { background: linear-gradient(135deg, #e2e8f0, #f1f5f9); }
+  .thumb-placeholder.amber { background: linear-gradient(135deg, #fef3c7, #fed7aa); }
+
+  .card-badge {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    padding: 3px 10px;
+    border-radius: 4px;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+  }
+  .card-badge.bestseller { background: #fef3c7; color: #92400e; }
+  .card-badge.trending { background: #fee2e2; color: #991b1b; }
+  .card-badge.new { background: #d1fae5; color: #065f46; }
+  .card-badge.hot { background: #fef3c7; color: #b45309; }
+
+  .card-body { padding: 16px; flex: 1; display: flex; flex-direction: column; }
+  .card-title {
+    font-size: 15px;
+    font-weight: 600;
+    color: #1a1a2e;
+    line-height: 1.4;
+    margin-bottom: 4px;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  .card-instructor {
+    font-size: 12px;
+    color: #9ca3af;
+    margin-bottom: 10px;
+  }
+  .card-rating {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 8px;
+  }
+  .rating-num { font-size: 14px; font-weight: 700; color: #b45309; }
+  .rating-stars { color: #f59e0b; font-size: 13px; letter-spacing: -1px; }
+  .rating-count { font-size: 12px; color: #9ca3af; }
+  .card-meta {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 10px;
+    flex-wrap: wrap;
+  }
+  .meta-tag {
+    font-size: 11px;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-weight: 500;
+  }
+  .meta-tag.level { background: #fef3c7; color: #92400e; }
+  .meta-tag.duration { background: #f0fdf4; color: #166534; }
+  .meta-tag.topic { background: #f3f4f6; color: #4b5563; }
+  .card-features {
+    font-size: 11px;
+    color: #9ca3af;
+    margin-bottom: 8px;
+  }
+  .card-footer {
+    margin-top: auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-top: 12px;
+    border-top: 1px solid #f3f4f6;
+  }
+  .price { font-size: 17px; font-weight: 700; color: #1a1a2e; }
+  .price .original {
+    font-size: 13px;
+    color: #9ca3af;
+    text-decoration: line-through;
+    font-weight: 400;
+    margin-left: 6px;
+  }
+  .price.free { color: #059669; }
+  .enroll-btn {
+    background: #6366f1;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    padding: 8px 20px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.15s;
+  }
+  .enroll-btn:hover { background: #4f46e5; }
+
+  /* ── Result Info ── */
+  .result-info {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 16px;
+  }
+  .result-info span { font-size: 13px; color: #6b7280; }
+
+  /* ── Pagination ── */
+  .pagination {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    margin-top: 32px;
+    padding-bottom: 32px;
+  }
+  .pg-btn {
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+    border: 1px solid #e5e7eb;
+    background: #fff;
+    color: #4b5563;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .pg-btn:hover { border-color: #6366f1; color: #6366f1; }
+  .pg-btn.active { background: #6366f1; border-color: #6366f1; color: #fff; }
+
+  /* ── Empty State ── */
+  .empty-state {
+    text-align: center;
+    padding: 60px 20px;
+    color: #9ca3af;
+    grid-column: 1 / -1;
+  }
+  .empty-state h3 { font-size: 18px; color: #6b7280; margin-bottom: 8px; }
+
+  /* ── Responsive ── */
+  @media (max-width: 900px) {
+    .sidebar { display: none; }
+    .page { padding: 16px; }
+    .navbar { padding: 0 16px; }
+    .search-bar { width: 240px; }
+    .breadcrumb { padding: 12px 16px; }
+  }
+
+  /* ── Toggle Switch ── */
+  .toggle-wrap {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-left: auto;
+  }
+  .toggle-label {
+    font-size: 13px;
+    font-weight: 500;
+    color: #6b7280;
+  }
+  .toggle-label.active-label { color: #6366f1; }
+  .toggle {
+    position: relative;
+    width: 40px;
+    height: 22px;
+    flex-shrink: 0;
+  }
+  .toggle input { opacity: 0; width: 0; height: 0; }
+  .toggle-slider {
+    position: absolute;
+    inset: 0;
+    background: #d1d5db;
+    border-radius: 11px;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  .toggle-slider::before {
+    content: "";
+    position: absolute;
+    width: 16px;
+    height: 16px;
+    left: 3px;
+    top: 3px;
+    background: #fff;
+    border-radius: 50%;
+    transition: transform 0.2s;
+  }
+  .toggle input:checked + .toggle-slider {
+    background: #6366f1;
+  }
+  .toggle input:checked + .toggle-slider::before {
+    transform: translateX(18px);
+  }
+
+  /* ── Algorithm Details Panel ── */
+  .algo-details {
+    margin-top: 10px;
+    padding-top: 10px;
+    border-top: 1px solid #f3f4f6;
+  }
+  .algo-section-title {
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: #9ca3af;
+    margin-bottom: 6px;
+    margin-top: 10px;
+  }
+  .algo-section-title:first-child { margin-top: 0; }
+  .algo-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 2px 0;
+  }
+  .algo-row .algo-key {
+    font-size: 11px;
+    color: #6b7280;
+  }
+  .algo-row .algo-val {
+    font-size: 11px;
+    font-weight: 600;
+    color: #1a1a2e;
+    font-variant-numeric: tabular-nums;
+  }
+  .algo-bar-wrap {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 2px 0;
+  }
+  .algo-bar-wrap .algo-key {
+    font-size: 11px;
+    color: #6b7280;
+    width: 100px;
+    flex-shrink: 0;
+  }
+  .algo-bar-track {
+    flex: 1;
+    height: 4px;
+    background: #f3f4f6;
+    border-radius: 2px;
+    overflow: hidden;
+  }
+  .algo-bar-fill {
+    height: 100%;
+    border-radius: 2px;
+    transition: width 0.3s ease;
+  }
+  .algo-bar-fill.green { background: #22c55e; }
+  .algo-bar-fill.blue { background: #6366f1; }
+  .algo-bar-fill.amber { background: #f59e0b; }
+  .algo-bar-fill.red { background: #ef4444; }
+  .algo-bar-wrap .algo-pct {
+    font-size: 10px;
+    font-weight: 600;
+    color: #6b7280;
+    width: 34px;
+    text-align: right;
+    flex-shrink: 0;
+  }
+  .composite-score {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: #f8fafc;
+    border: 1px solid #e5e7eb;
+    border-radius: 6px;
+    padding: 6px 10px;
+    margin-top: 8px;
+  }
+  .composite-score .cs-label {
+    font-size: 11px;
+    font-weight: 600;
+    color: #6b7280;
+  }
+  .composite-score .cs-value {
+    font-size: 14px;
+    font-weight: 700;
+    color: #6366f1;
+  }
+
+  ::-webkit-scrollbar { width: 6px; height: 6px; }
+  ::-webkit-scrollbar-thumb { background: #d1d5db; border-radius: 3px; }
+</style>
+</head>
+<body>
+
+<!-- Navbar -->
+<nav class="navbar">
+  <div class="navbar-left">
+    <a href="#" class="logo">Inf<span>use</span></a>
+    <div class="nav-links">
+      <a href="#">Explore</a>
+      <a href="#">My Learning</a>
+      <a href="#">For Business</a>
+    </div>
+  </div>
+  <div class="search-bar">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+    <input type="text" placeholder="Search within Web Development..." id="searchInput">
+  </div>
+  <div class="navbar-right">
+    <div class="avatar">IC</div>
+  </div>
+</nav>
+
+<!-- Breadcrumb -->
+<div class="breadcrumb">
+  <a href="#">Home</a>
+  <span class="sep">/</span>
+  <a href="#">Development</a>
+  <span class="sep">/</span>
+  <span style="color: #1a1a2e; font-weight: 500;">Web Development</span>
+</div>
+
+<!-- Page -->
+<div class="page">
+  <div class="page-header">
+    <h1>Web Development</h1>
+    <p id="pageSubtitle">Sorted by Relevance</p>
+  </div>
+
+  <!-- Sort Bar -->
+  <div class="sort-bar">
+    <span class="label">Sort by</span>
+    <button class="sort-btn active" data-sort="relevance">Relevance</button>
+    <button class="sort-btn" data-sort="highest-rated">Highest Rated</button>
+    <button class="sort-btn" data-sort="most-popular">Most Popular</button>
+    <button class="sort-btn" data-sort="newest">Newest</button>
+    <button class="sort-btn" data-sort="price-low">Price: Low to High</button>
+    <button class="sort-btn" data-sort="price-high">Price: High to Low</button>
+    <div class="toggle-wrap">
+      <span class="toggle-label" id="toggleLabel">Show Algorithm Details</span>
+      <label class="toggle">
+        <input type="checkbox" id="algoToggle">
+        <span class="toggle-slider"></span>
+      </label>
+    </div>
+  </div>
+
+  <!-- Active Filters -->
+  <div class="active-filters" id="activeFilters"></div>
+
+  <!-- Result Info -->
+  <div class="result-info">
+    <span id="resultCount"></span>
+  </div>
+
+  <!-- Content -->
+  <div class="content">
+    <!-- Filter Sidebar -->
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <h3>Filters</h3>
+        <button class="clear-btn" id="clearAll">Clear all</button>
+      </div>
+
+      <!-- Rating -->
+      <div class="filter-section">
+        <div class="filter-title" data-toggle="ratingOpts">
+          Rating
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+        </div>
+        <div class="filter-options" id="ratingOpts">
+          <div class="filter-opt"><input type="radio" name="rating" value="4.5" id="r45"><label for="r45"><span class="stars-sm">&#9733;&#9733;&#9733;&#9733;&#9734; 4.5 & up</span></label></div>
+          <div class="filter-opt"><input type="radio" name="rating" value="4.0" id="r40"><label for="r40"><span class="stars-sm">&#9733;&#9733;&#9733;&#9733; 4.0 & up</span></label></div>
+          <div class="filter-opt"><input type="radio" name="rating" value="3.5" id="r35"><label for="r35"><span class="stars-sm">&#9733;&#9733;&#9733;&#9734; 3.5 & up</span></label></div>
+          <div class="filter-opt"><input type="radio" name="rating" value="3.0" id="r30"><label for="r30"><span class="stars-sm">&#9733;&#9733;&#9733; 3.0 & up</span></label></div>
+        </div>
+      </div>
+      <hr class="filter-sep">
+
+      <!-- Level -->
+      <div class="filter-section">
+        <div class="filter-title" data-toggle="levelOpts">
+          Skill Level
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+        </div>
+        <div class="filter-options" id="levelOpts">
+          <div class="filter-opt"><input type="checkbox" value="Beginner" id="lvBeg"><label for="lvBeg">Beginner</label></div>
+          <div class="filter-opt"><input type="checkbox" value="Intermediate" id="lvInt"><label for="lvInt">Intermediate</label></div>
+          <div class="filter-opt"><input type="checkbox" value="Advanced" id="lvAdv"><label for="lvAdv">Advanced</label></div>
+          <div class="filter-opt"><input type="checkbox" value="All Levels" id="lvAll"><label for="lvAll">All Levels</label></div>
+        </div>
+      </div>
+      <hr class="filter-sep">
+
+      <!-- Duration -->
+      <div class="filter-section">
+        <div class="filter-title" data-toggle="durationOpts">
+          Duration
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+        </div>
+        <div class="filter-options" id="durationOpts">
+          <div class="filter-opt"><input type="checkbox" value="0-2" id="d02"><label for="d02">0 - 2 hours</label></div>
+          <div class="filter-opt"><input type="checkbox" value="2-5" id="d25"><label for="d25">2 - 5 hours</label></div>
+          <div class="filter-opt"><input type="checkbox" value="5-15" id="d515"><label for="d515">5 - 15 hours</label></div>
+          <div class="filter-opt"><input type="checkbox" value="15+" id="d15p"><label for="d15p">15+ hours</label></div>
+        </div>
+      </div>
+      <hr class="filter-sep">
+
+      <!-- Price -->
+      <div class="filter-section">
+        <div class="filter-title" data-toggle="priceOpts">
+          Price
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+        </div>
+        <div class="filter-options" id="priceOpts">
+          <div class="filter-opt"><input type="checkbox" value="free" id="pFree"><label for="pFree">Free</label></div>
+          <div class="filter-opt"><input type="checkbox" value="paid" id="pPaid"><label for="pPaid">Paid</label></div>
+        </div>
+      </div>
+      <hr class="filter-sep">
+
+      <!-- Language -->
+      <div class="filter-section">
+        <div class="filter-title" data-toggle="langOpts">
+          Language
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+        </div>
+        <div class="filter-options" id="langOpts">
+          <div class="filter-opt"><input type="checkbox" value="English" id="lEn"><label for="lEn">English</label></div>
+          <div class="filter-opt"><input type="checkbox" value="Spanish" id="lEs"><label for="lEs">Spanish</label></div>
+          <div class="filter-opt"><input type="checkbox" value="French" id="lFr"><label for="lFr">French</label></div>
+          <div class="filter-opt"><input type="checkbox" value="German" id="lDe"><label for="lDe">German</label></div>
+        </div>
+      </div>
+      <hr class="filter-sep">
+
+      <!-- Features -->
+      <div class="filter-section">
+        <div class="filter-title" data-toggle="featureOpts">
+          Features
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+        </div>
+        <div class="filter-options" id="featureOpts">
+          <div class="filter-opt"><input type="checkbox" value="subtitles" id="fSub"><label for="fSub">Subtitles</label></div>
+          <div class="filter-opt"><input type="checkbox" value="certificate" id="fCert"><label for="fCert">Certificate</label></div>
+          <div class="filter-opt"><input type="checkbox" value="exercises" id="fExer"><label for="fExer">Exercises</label></div>
+          <div class="filter-opt"><input type="checkbox" value="projects" id="fProj"><label for="fProj">Projects</label></div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Course Grid -->
+    <div class="course-grid" id="courseGrid"></div>
+  </div>
+
+  <!-- Pagination -->
+  <div class="pagination" id="pagination"></div>
+</div>
+
+<script>
+// ============================================================
+// COURSE RANKING ALGORITHM v2 — DUMMY DATA
+// All courses belong to Web Development category.
+// Each course includes every parameter used by the ranking
+// algorithm: quality signals (reviews with completion%, word
+// count, verified status, age), engagement metrics, freshness,
+// instructor reputation, refund rate, NLP sentiment, and
+// category type for weight tuning.
+// ============================================================
+
+const GLOBAL_MEAN_RATING = 4.12; // M: global mean across all platform courses
+const CONFIDENCE_PARAM = 25;     // C: Bayesian confidence parameter
+
+const courses = [
+  {
+    id: 1,
+    title: "The Complete JavaScript Course: From Zero to Expert",
+    instructor: "Jonas Schmedtmann",
+    instructorOrg: "CodeMaster",
+    level: "All Levels",
+    language: "English",
+    price: 39.99,
+    originalPrice: 149.99,
+    durationHours: 69,
+    publishDate: "2022-12-01",
+    lastUpdated: "2026-03-01",
+    thumbColor: "orange",
+    badge: "bestseller",
+    topics: ["JavaScript", "ES6+", "DOM"],
+    features: ["subtitles", "certificate", "exercises", "projects"],
+    // === Quality Signals ===
+    // Individual reviews with quality weight inputs
+    reviews: [
+      { rating: 5, completionPct: 94, wordCount: 110, isVerified: true, ageInDays: 4 },
+      { rating: 5, completionPct: 88, wordCount: 72, isVerified: true, ageInDays: 11 },
+      { rating: 4, completionPct: 76, wordCount: 45, isVerified: true, ageInDays: 28 },
+      { rating: 5, completionPct: 91, wordCount: 130, isVerified: true, ageInDays: 55 },
+      { rating: 4, completionPct: 60, wordCount: 22, isVerified: false, ageInDays: 110 },
+    ],
+    totalReviews: 22400,
+    rawAvgRating: 4.74,
+    // === Engagement Signals ===
+    completionRate: 0.56,        // % of enrolled who finish
+    enrollmentVelocity: 940,     // new enrollments per week (trailing 30d)
+    totalEnrollments: 148000,
+    watchTimeRatio: 0.63,        // avg watch time / course duration
+    // === Freshness ===
+    daysSinceUpdate: 15,         // days since last major content update
+    isMajorUpdate: true,         // >20% content changed
+    // === Instructor Reputation ===
+    instructorAvgRating: 4.72,   // Bayesian avg across all instructor courses
+    instructorTotalReviews: 67000,
+    instructorCourseCount: 6,
+    // === Refund Rate ===
+    refundRate: 0.04,
+    categoryMedianRefundRate: 0.06,
+    maxRefundRate: 0.18,
+    // === NLP Sentiment (-1 to +1 per dimension) ===
+    sentiment: {
+      contentQuality: 0.88,
+      audioVideoQuality: 0.84,
+      instructorClarity: 0.92,
+      relevanceFreshness: 0.80,
+      exerciseQuality: 0.82,
+    },
+    // === Category Type (for weight tuning) ===
+    categoryType: "fast-moving-tech", // lambda=0.008, higher freshness weight
+  },
+  {
+    id: 2,
+    title: "React - The Complete Guide (incl. Next.js & Redux)",
+    instructor: "Maximilian Schwarzmuller",
+    instructorOrg: "Academind",
+    level: "Intermediate",
+    language: "English",
+    price: 44.99,
+    originalPrice: 179.99,
+    durationHours: 52,
+    publishDate: "2023-05-10",
+    lastUpdated: "2026-02-15",
+    thumbColor: "blue",
+    badge: "trending",
+    topics: ["React", "Next.js", "Redux"],
+    features: ["subtitles", "certificate", "exercises", "projects"],
+    reviews: [
+      { rating: 5, completionPct: 90, wordCount: 85, isVerified: true, ageInDays: 6 },
+      { rating: 4, completionPct: 74, wordCount: 52, isVerified: true, ageInDays: 22 },
+      { rating: 5, completionPct: 86, wordCount: 98, isVerified: true, ageInDays: 65 },
+      { rating: 5, completionPct: 78, wordCount: 40, isVerified: true, ageInDays: 120 },
+    ],
+    totalReviews: 17200,
+    rawAvgRating: 4.71,
+    completionRate: 0.50,
+    enrollmentVelocity: 810,
+    totalEnrollments: 115000,
+    watchTimeRatio: 0.58,
+    daysSinceUpdate: 29,
+    isMajorUpdate: true,
+    instructorAvgRating: 4.68,
+    instructorTotalReviews: 82000,
+    instructorCourseCount: 15,
+    refundRate: 0.05,
+    categoryMedianRefundRate: 0.06,
+    maxRefundRate: 0.18,
+    sentiment: {
+      contentQuality: 0.86,
+      audioVideoQuality: 0.80,
+      instructorClarity: 0.88,
+      relevanceFreshness: 0.86,
+      exerciseQuality: 0.79,
+    },
+    categoryType: "fast-moving-tech",
+  },
+  {
+    id: 3,
+    title: "The Web Developer Bootcamp 2026",
+    instructor: "Colt Steele",
+    instructorOrg: "",
+    level: "Beginner",
+    language: "English",
+    price: 34.99,
+    originalPrice: 159.99,
+    durationHours: 63,
+    publishDate: "2021-11-20",
+    lastUpdated: "2026-01-10",
+    thumbColor: "green",
+    badge: "bestseller",
+    topics: ["HTML", "CSS", "Node.js"],
+    features: ["subtitles", "certificate", "exercises", "projects"],
+    reviews: [
+      { rating: 5, completionPct: 82, wordCount: 65, isVerified: true, ageInDays: 10 },
+      { rating: 5, completionPct: 78, wordCount: 55, isVerified: true, ageInDays: 30 },
+      { rating: 4, completionPct: 65, wordCount: 30, isVerified: true, ageInDays: 90 },
+      { rating: 4, completionPct: 50, wordCount: 18, isVerified: false, ageInDays: 200 },
+      { rating: 5, completionPct: 95, wordCount: 140, isVerified: true, ageInDays: 300 },
+    ],
+    totalReviews: 28500,
+    rawAvgRating: 4.70,
+    completionRate: 0.45,
+    enrollmentVelocity: 680,
+    totalEnrollments: 210000,
+    watchTimeRatio: 0.52,
+    daysSinceUpdate: 65,
+    isMajorUpdate: true,
+    instructorAvgRating: 4.65,
+    instructorTotalReviews: 95000,
+    instructorCourseCount: 9,
+    refundRate: 0.05,
+    categoryMedianRefundRate: 0.06,
+    maxRefundRate: 0.18,
+    sentiment: {
+      contentQuality: 0.82,
+      audioVideoQuality: 0.75,
+      instructorClarity: 0.88,
+      relevanceFreshness: 0.68,
+      exerciseQuality: 0.80,
+    },
+    categoryType: "fast-moving-tech",
+  },
+  {
+    id: 4,
+    title: "Next.js 15 & React - The Complete App Router Guide",
+    instructor: "James Park",
+    instructorOrg: "DevEdge",
+    level: "Intermediate",
+    language: "English",
+    price: 29.99,
+    originalPrice: null,
+    durationHours: 24,
+    publishDate: "2025-12-10",
+    lastUpdated: "2026-03-05",
+    thumbColor: "purple",
+    badge: "hot",
+    topics: ["Next.js", "React", "App Router"],
+    features: ["subtitles", "exercises", "projects"],
+    reviews: [
+      { rating: 5, completionPct: 96, wordCount: 155, isVerified: true, ageInDays: 2 },
+      { rating: 5, completionPct: 82, wordCount: 48, isVerified: true, ageInDays: 8 },
+      { rating: 4, completionPct: 72, wordCount: 60, isVerified: true, ageInDays: 18 },
+    ],
+    totalReviews: 620,
+    rawAvgRating: 4.78,
+    completionRate: 0.62,
+    enrollmentVelocity: 1100,
+    totalEnrollments: 5800,
+    watchTimeRatio: 0.84,
+    daysSinceUpdate: 11,
+    isMajorUpdate: true,
+    instructorAvgRating: 4.55,
+    instructorTotalReviews: 8500,
+    instructorCourseCount: 3,
+    refundRate: 0.02,
+    categoryMedianRefundRate: 0.06,
+    maxRefundRate: 0.18,
+    sentiment: {
+      contentQuality: 0.90,
+      audioVideoQuality: 0.86,
+      instructorClarity: 0.84,
+      relevanceFreshness: 0.95,
+      exerciseQuality: 0.78,
+    },
+    categoryType: "fast-moving-tech",
+  },
+  {
+    id: 5,
+    title: "Angular - The Complete Guide (2026 Edition)",
+    instructor: "Maximilian Schwarzmuller",
+    instructorOrg: "Academind",
+    level: "Intermediate",
+    language: "English",
+    price: 44.99,
+    originalPrice: 179.99,
+    durationHours: 44,
+    publishDate: "2023-02-15",
+    lastUpdated: "2025-11-20",
+    thumbColor: "teal",
+    badge: null,
+    topics: ["Angular", "TypeScript", "RxJS"],
+    features: ["subtitles", "certificate", "exercises", "projects"],
+    reviews: [
+      { rating: 5, completionPct: 85, wordCount: 78, isVerified: true, ageInDays: 18 },
+      { rating: 4, completionPct: 68, wordCount: 35, isVerified: true, ageInDays: 55 },
+      { rating: 4, completionPct: 60, wordCount: 28, isVerified: false, ageInDays: 130 },
+      { rating: 5, completionPct: 90, wordCount: 95, isVerified: true, ageInDays: 220 },
+    ],
+    totalReviews: 12800,
+    rawAvgRating: 4.58,
+    completionRate: 0.46,
+    enrollmentVelocity: 380,
+    totalEnrollments: 78000,
+    watchTimeRatio: 0.60,
+    daysSinceUpdate: 116,
+    isMajorUpdate: true,
+    instructorAvgRating: 4.68,
+    instructorTotalReviews: 82000,
+    instructorCourseCount: 15,
+    refundRate: 0.06,
+    categoryMedianRefundRate: 0.06,
+    maxRefundRate: 0.18,
+    sentiment: {
+      contentQuality: 0.78,
+      audioVideoQuality: 0.80,
+      instructorClarity: 0.85,
+      relevanceFreshness: 0.52,
+      exerciseQuality: 0.74,
+    },
+    categoryType: "fast-moving-tech",
+  },
+  {
+    id: 6,
+    title: "Vue.js 3 - The Practical Guide (incl. Composition API)",
+    instructor: "Maximilian Schwarzmuller",
+    instructorOrg: "Academind",
+    level: "Intermediate",
+    language: "English",
+    price: 39.99,
+    originalPrice: 149.99,
+    durationHours: 32,
+    publishDate: "2023-08-01",
+    lastUpdated: "2025-12-01",
+    thumbColor: "green",
+    badge: null,
+    topics: ["Vue.js", "Composition API", "Vuex"],
+    features: ["subtitles", "certificate", "exercises"],
+    reviews: [
+      { rating: 5, completionPct: 88, wordCount: 70, isVerified: true, ageInDays: 15 },
+      { rating: 4, completionPct: 72, wordCount: 42, isVerified: true, ageInDays: 50 },
+      { rating: 4, completionPct: 55, wordCount: 20, isVerified: false, ageInDays: 140 },
+    ],
+    totalReviews: 6400,
+    rawAvgRating: 4.52,
+    completionRate: 0.54,
+    enrollmentVelocity: 290,
+    totalEnrollments: 42000,
+    watchTimeRatio: 0.68,
+    daysSinceUpdate: 105,
+    isMajorUpdate: false,
+    instructorAvgRating: 4.68,
+    instructorTotalReviews: 82000,
+    instructorCourseCount: 15,
+    refundRate: 0.04,
+    categoryMedianRefundRate: 0.06,
+    maxRefundRate: 0.18,
+    sentiment: {
+      contentQuality: 0.76,
+      audioVideoQuality: 0.82,
+      instructorClarity: 0.86,
+      relevanceFreshness: 0.58,
+      exerciseQuality: 0.70,
+    },
+    categoryType: "fast-moving-tech",
+  },
+  {
+    id: 7,
+    title: "CSS - The Complete Guide (Flexbox, Grid, Sass)",
+    instructor: "Maximilian Schwarzmuller",
+    instructorOrg: "Academind",
+    level: "Beginner",
+    language: "English",
+    price: 24.99,
+    originalPrice: 99.99,
+    durationHours: 22,
+    publishDate: "2022-06-15",
+    lastUpdated: "2025-09-10",
+    thumbColor: "blue",
+    badge: null,
+    topics: ["CSS", "Flexbox", "Grid"],
+    features: ["subtitles", "certificate", "exercises"],
+    reviews: [
+      { rating: 4, completionPct: 80, wordCount: 55, isVerified: true, ageInDays: 25 },
+      { rating: 5, completionPct: 90, wordCount: 85, isVerified: true, ageInDays: 70 },
+      { rating: 4, completionPct: 62, wordCount: 28, isVerified: false, ageInDays: 180 },
+      { rating: 4, completionPct: 70, wordCount: 38, isVerified: true, ageInDays: 320 },
+    ],
+    totalReviews: 7600,
+    rawAvgRating: 4.42,
+    completionRate: 0.60,
+    enrollmentVelocity: 250,
+    totalEnrollments: 52000,
+    watchTimeRatio: 0.72,
+    daysSinceUpdate: 187,
+    isMajorUpdate: true,
+    instructorAvgRating: 4.68,
+    instructorTotalReviews: 82000,
+    instructorCourseCount: 15,
+    refundRate: 0.03,
+    categoryMedianRefundRate: 0.06,
+    maxRefundRate: 0.18,
+    sentiment: {
+      contentQuality: 0.72,
+      audioVideoQuality: 0.78,
+      instructorClarity: 0.82,
+      relevanceFreshness: 0.42,
+      exerciseQuality: 0.68,
+    },
+    categoryType: "fast-moving-tech",
+  },
+  {
+    id: 8,
+    title: "Node.js, Express & MongoDB - The Complete Backend Bootcamp",
+    instructor: "Colt Steele",
+    instructorOrg: "",
+    level: "Intermediate",
+    language: "English",
+    price: 36.99,
+    originalPrice: 149.99,
+    durationHours: 42,
+    publishDate: "2024-01-20",
+    lastUpdated: "2026-01-28",
+    thumbColor: "slate",
+    badge: null,
+    topics: ["Node.js", "Express", "MongoDB"],
+    features: ["subtitles", "certificate", "exercises", "projects"],
+    reviews: [
+      { rating: 5, completionPct: 86, wordCount: 75, isVerified: true, ageInDays: 12 },
+      { rating: 4, completionPct: 70, wordCount: 45, isVerified: true, ageInDays: 40 },
+      { rating: 5, completionPct: 82, wordCount: 90, isVerified: true, ageInDays: 95 },
+      { rating: 3, completionPct: 35, wordCount: 15, isVerified: false, ageInDays: 180 },
+    ],
+    totalReviews: 9200,
+    rawAvgRating: 4.48,
+    completionRate: 0.48,
+    enrollmentVelocity: 420,
+    totalEnrollments: 58000,
+    watchTimeRatio: 0.62,
+    daysSinceUpdate: 47,
+    isMajorUpdate: true,
+    instructorAvgRating: 4.65,
+    instructorTotalReviews: 95000,
+    instructorCourseCount: 9,
+    refundRate: 0.06,
+    categoryMedianRefundRate: 0.06,
+    maxRefundRate: 0.18,
+    sentiment: {
+      contentQuality: 0.74,
+      audioVideoQuality: 0.70,
+      instructorClarity: 0.80,
+      relevanceFreshness: 0.72,
+      exerciseQuality: 0.75,
+    },
+    categoryType: "fast-moving-tech",
+  },
+  {
+    id: 9,
+    title: "TypeScript Masterclass: Build Type-Safe Applications",
+    instructor: "Dmytro Danylov",
+    instructorOrg: "TS Academy",
+    level: "Intermediate",
+    language: "English",
+    price: 27.99,
+    originalPrice: null,
+    durationHours: 18,
+    publishDate: "2025-06-01",
+    lastUpdated: "2026-02-10",
+    thumbColor: "purple",
+    badge: null,
+    topics: ["TypeScript", "Generics", "Type Safety"],
+    features: ["subtitles", "exercises", "projects"],
+    reviews: [
+      { rating: 5, completionPct: 92, wordCount: 100, isVerified: true, ageInDays: 8 },
+      { rating: 5, completionPct: 80, wordCount: 55, isVerified: true, ageInDays: 30 },
+      { rating: 4, completionPct: 68, wordCount: 35, isVerified: true, ageInDays: 70 },
+    ],
+    totalReviews: 2800,
+    rawAvgRating: 4.62,
+    completionRate: 0.64,
+    enrollmentVelocity: 380,
+    totalEnrollments: 15000,
+    watchTimeRatio: 0.78,
+    daysSinceUpdate: 34,
+    isMajorUpdate: false,
+    instructorAvgRating: 4.48,
+    instructorTotalReviews: 7200,
+    instructorCourseCount: 2,
+    refundRate: 0.03,
+    categoryMedianRefundRate: 0.06,
+    maxRefundRate: 0.18,
+    sentiment: {
+      contentQuality: 0.82,
+      audioVideoQuality: 0.78,
+      instructorClarity: 0.80,
+      relevanceFreshness: 0.85,
+      exerciseQuality: 0.72,
+    },
+    categoryType: "fast-moving-tech",
+  },
+  {
+    id: 10,
+    title: "Svelte & SvelteKit - The Complete Guide",
+    instructor: "James Park",
+    instructorOrg: "DevEdge",
+    level: "Intermediate",
+    language: "English",
+    price: 32.99,
+    originalPrice: null,
+    durationHours: 20,
+    publishDate: "2026-01-15",
+    lastUpdated: "2026-03-08",
+    thumbColor: "amber",
+    badge: "new",
+    topics: ["Svelte", "SvelteKit", "SSR"],
+    features: ["subtitles", "exercises", "projects"],
+    reviews: [
+      { rating: 5, completionPct: 95, wordCount: 120, isVerified: true, ageInDays: 3 },
+      { rating: 5, completionPct: 78, wordCount: 42, isVerified: true, ageInDays: 10 },
+    ],
+    totalReviews: 85,
+    rawAvgRating: 4.88,
+    completionRate: 0.70,
+    enrollmentVelocity: 450,
+    totalEnrollments: 1200,
+    watchTimeRatio: 0.88,
+    daysSinceUpdate: 8,
+    isMajorUpdate: true,
+    instructorAvgRating: 4.55,
+    instructorTotalReviews: 8500,
+    instructorCourseCount: 3,
+    refundRate: 0.01,
+    categoryMedianRefundRate: 0.06,
+    maxRefundRate: 0.18,
+    sentiment: {
+      contentQuality: 0.92,
+      audioVideoQuality: 0.88,
+      instructorClarity: 0.86,
+      relevanceFreshness: 0.96,
+      exerciseQuality: 0.80,
+    },
+    categoryType: "fast-moving-tech",
+  },
+  {
+    id: 11,
+    title: "Build Responsive Websites: HTML & CSS from Scratch",
+    instructor: "Jonas Schmedtmann",
+    instructorOrg: "CodeMaster",
+    level: "Beginner",
+    language: "English",
+    price: 0,
+    originalPrice: null,
+    durationHours: 8,
+    publishDate: "2024-04-10",
+    lastUpdated: "2025-06-15",
+    thumbColor: "pink",
+    badge: null,
+    topics: ["HTML", "CSS", "Responsive Design"],
+    features: ["subtitles", "exercises"],
+    reviews: [
+      { rating: 4, completionPct: 85, wordCount: 45, isVerified: true, ageInDays: 50 },
+      { rating: 5, completionPct: 92, wordCount: 70, isVerified: true, ageInDays: 120 },
+      { rating: 4, completionPct: 60, wordCount: 20, isVerified: false, ageInDays: 250 },
+    ],
+    totalReviews: 4200,
+    rawAvgRating: 4.38,
+    completionRate: 0.72,
+    enrollmentVelocity: 310,
+    totalEnrollments: 62000,
+    watchTimeRatio: 0.85,
+    daysSinceUpdate: 274,
+    isMajorUpdate: false,
+    instructorAvgRating: 4.72,
+    instructorTotalReviews: 67000,
+    instructorCourseCount: 6,
+    refundRate: 0.02,
+    categoryMedianRefundRate: 0.06,
+    maxRefundRate: 0.18,
+    sentiment: {
+      contentQuality: 0.70,
+      audioVideoQuality: 0.74,
+      instructorClarity: 0.82,
+      relevanceFreshness: 0.40,
+      exerciseQuality: 0.62,
+    },
+    categoryType: "fast-moving-tech",
+  },
+  {
+    id: 12,
+    title: "Full-Stack Web Development with Python & Django",
+    instructor: "Dr. Angela Yu",
+    instructorOrg: "London App Brewery",
+    level: "Beginner",
+    language: "English",
+    price: 36.99,
+    originalPrice: 139.99,
+    durationHours: 48,
+    publishDate: "2024-07-01",
+    lastUpdated: "2025-10-30",
+    thumbColor: "green",
+    badge: null,
+    topics: ["Python", "Django", "PostgreSQL"],
+    features: ["subtitles", "certificate", "exercises", "projects"],
+    reviews: [
+      { rating: 5, completionPct: 80, wordCount: 65, isVerified: true, ageInDays: 20 },
+      { rating: 4, completionPct: 72, wordCount: 42, isVerified: true, ageInDays: 60 },
+      { rating: 5, completionPct: 88, wordCount: 95, isVerified: true, ageInDays: 130 },
+      { rating: 4, completionPct: 55, wordCount: 25, isVerified: false, ageInDays: 190 },
+    ],
+    totalReviews: 8900,
+    rawAvgRating: 4.55,
+    completionRate: 0.44,
+    enrollmentVelocity: 350,
+    totalEnrollments: 45000,
+    watchTimeRatio: 0.56,
+    daysSinceUpdate: 137,
+    isMajorUpdate: true,
+    instructorAvgRating: 4.72,
+    instructorTotalReviews: 67000,
+    instructorCourseCount: 6,
+    refundRate: 0.05,
+    categoryMedianRefundRate: 0.06,
+    maxRefundRate: 0.18,
+    sentiment: {
+      contentQuality: 0.76,
+      audioVideoQuality: 0.72,
+      instructorClarity: 0.84,
+      relevanceFreshness: 0.55,
+      exerciseQuality: 0.74,
+    },
+    categoryType: "fast-moving-tech",
+  },
+  {
+    id: 13,
+    title: "Tailwind CSS From Scratch - Build Modern UIs Fast",
+    instructor: "Brad Traversy",
+    instructorOrg: "Traversy Media",
+    level: "Beginner",
+    language: "English",
+    price: 19.99,
+    originalPrice: null,
+    durationHours: 12,
+    publishDate: "2025-09-01",
+    lastUpdated: "2026-01-20",
+    thumbColor: "teal",
+    badge: null,
+    topics: ["Tailwind CSS", "Utility-First", "Responsive"],
+    features: ["subtitles", "exercises", "projects"],
+    reviews: [
+      { rating: 5, completionPct: 90, wordCount: 80, isVerified: true, ageInDays: 10 },
+      { rating: 5, completionPct: 82, wordCount: 55, isVerified: true, ageInDays: 35 },
+      { rating: 4, completionPct: 70, wordCount: 40, isVerified: true, ageInDays: 80 },
+    ],
+    totalReviews: 3100,
+    rawAvgRating: 4.60,
+    completionRate: 0.68,
+    enrollmentVelocity: 520,
+    totalEnrollments: 18000,
+    watchTimeRatio: 0.82,
+    daysSinceUpdate: 55,
+    isMajorUpdate: false,
+    instructorAvgRating: 4.58,
+    instructorTotalReviews: 48000,
+    instructorCourseCount: 12,
+    refundRate: 0.03,
+    categoryMedianRefundRate: 0.06,
+    maxRefundRate: 0.18,
+    sentiment: {
+      contentQuality: 0.80,
+      audioVideoQuality: 0.82,
+      instructorClarity: 0.85,
+      relevanceFreshness: 0.78,
+      exerciseQuality: 0.70,
+    },
+    categoryType: "fast-moving-tech",
+  },
+  {
+    id: 14,
+    title: "GraphQL with Node.js & React - Full Stack Guide",
+    instructor: "Andrew Mead",
+    instructorOrg: "",
+    level: "Advanced",
+    language: "English",
+    price: 42.99,
+    originalPrice: null,
+    durationHours: 28,
+    publishDate: "2024-03-15",
+    lastUpdated: "2025-08-22",
+    thumbColor: "pink",
+    badge: null,
+    topics: ["GraphQL", "Apollo", "Node.js"],
+    features: ["subtitles", "certificate", "projects"],
+    reviews: [
+      { rating: 4, completionPct: 78, wordCount: 60, isVerified: true, ageInDays: 35 },
+      { rating: 4, completionPct: 65, wordCount: 30, isVerified: true, ageInDays: 100 },
+      { rating: 5, completionPct: 90, wordCount: 110, isVerified: true, ageInDays: 200 },
+    ],
+    totalReviews: 4100,
+    rawAvgRating: 4.35,
+    completionRate: 0.40,
+    enrollmentVelocity: 160,
+    totalEnrollments: 22000,
+    watchTimeRatio: 0.58,
+    daysSinceUpdate: 206,
+    isMajorUpdate: false,
+    instructorAvgRating: 4.52,
+    instructorTotalReviews: 35000,
+    instructorCourseCount: 5,
+    refundRate: 0.07,
+    categoryMedianRefundRate: 0.06,
+    maxRefundRate: 0.18,
+    sentiment: {
+      contentQuality: 0.65,
+      audioVideoQuality: 0.60,
+      instructorClarity: 0.70,
+      relevanceFreshness: 0.35,
+      exerciseQuality: 0.62,
+    },
+    categoryType: "fast-moving-tech",
+  },
+  {
+    id: 15,
+    title: "Desarrollo Web Completo: De HTML a React",
+    instructor: "Juan Pablo De la torre",
+    instructorOrg: "Codigo con Juan",
+    level: "Beginner",
+    language: "Spanish",
+    price: 22.99,
+    originalPrice: 89.99,
+    durationHours: 55,
+    publishDate: "2023-11-01",
+    lastUpdated: "2025-10-15",
+    thumbColor: "orange",
+    badge: null,
+    topics: ["HTML", "CSS", "JavaScript", "React"],
+    features: ["subtitles", "certificate", "exercises"],
+    reviews: [
+      { rating: 5, completionPct: 82, wordCount: 55, isVerified: true, ageInDays: 30 },
+      { rating: 4, completionPct: 70, wordCount: 40, isVerified: true, ageInDays: 80 },
+      { rating: 4, completionPct: 58, wordCount: 22, isVerified: false, ageInDays: 200 },
+    ],
+    totalReviews: 5600,
+    rawAvgRating: 4.45,
+    completionRate: 0.42,
+    enrollmentVelocity: 280,
+    totalEnrollments: 38000,
+    watchTimeRatio: 0.50,
+    daysSinceUpdate: 152,
+    isMajorUpdate: true,
+    instructorAvgRating: 4.42,
+    instructorTotalReviews: 14000,
+    instructorCourseCount: 4,
+    refundRate: 0.05,
+    categoryMedianRefundRate: 0.06,
+    maxRefundRate: 0.18,
+    sentiment: {
+      contentQuality: 0.68,
+      audioVideoQuality: 0.65,
+      instructorClarity: 0.72,
+      relevanceFreshness: 0.48,
+      exerciseQuality: 0.60,
+    },
+    categoryType: "fast-moving-tech",
+  },
+  {
+    id: 16,
+    title: "Web Performance Optimization & Core Web Vitals",
+    instructor: "Addy Osmani",
+    instructorOrg: "PerfMatters",
+    level: "Advanced",
+    language: "English",
+    price: 0,
+    originalPrice: null,
+    durationHours: 4,
+    publishDate: "2026-02-01",
+    lastUpdated: "2026-02-01",
+    thumbColor: "slate",
+    badge: "new",
+    topics: ["Performance", "Core Web Vitals", "Lighthouse"],
+    features: ["subtitles", "exercises"],
+    reviews: [
+      { rating: 5, completionPct: 100, wordCount: 140, isVerified: true, ageInDays: 1 },
+      { rating: 5, completionPct: 90, wordCount: 80, isVerified: true, ageInDays: 5 },
+    ],
+    totalReviews: 42,
+    rawAvgRating: 4.95,
+    completionRate: 0.85,
+    enrollmentVelocity: 600,
+    totalEnrollments: 980,
+    watchTimeRatio: 0.92,
+    daysSinceUpdate: 43,
+    isMajorUpdate: false,
+    instructorAvgRating: 4.80,
+    instructorTotalReviews: 28000,
+    instructorCourseCount: 4,
+    refundRate: 0.01,
+    categoryMedianRefundRate: 0.06,
+    maxRefundRate: 0.18,
+    sentiment: {
+      contentQuality: 0.94,
+      audioVideoQuality: 0.90,
+      instructorClarity: 0.92,
+      relevanceFreshness: 0.98,
+      exerciseQuality: 0.85,
+    },
+    categoryType: "fast-moving-tech",
+  },
+  {
+    id: 17,
+    title: "Cours Complet Developpement Web - HTML, CSS, JS",
+    instructor: "Pierre Giraud",
+    instructorOrg: "",
+    level: "Beginner",
+    language: "French",
+    price: 18.99,
+    originalPrice: null,
+    durationHours: 35,
+    publishDate: "2023-06-10",
+    lastUpdated: "2025-04-20",
+    thumbColor: "blue",
+    badge: null,
+    topics: ["HTML", "CSS", "JavaScript"],
+    features: ["subtitles", "certificate"],
+    reviews: [
+      { rating: 4, completionPct: 75, wordCount: 50, isVerified: true, ageInDays: 60 },
+      { rating: 4, completionPct: 62, wordCount: 30, isVerified: false, ageInDays: 200 },
+    ],
+    totalReviews: 1800,
+    rawAvgRating: 4.15,
+    completionRate: 0.38,
+    enrollmentVelocity: 110,
+    totalEnrollments: 12500,
+    watchTimeRatio: 0.48,
+    daysSinceUpdate: 330,
+    isMajorUpdate: false,
+    instructorAvgRating: 4.10,
+    instructorTotalReviews: 4200,
+    instructorCourseCount: 2,
+    refundRate: 0.07,
+    categoryMedianRefundRate: 0.06,
+    maxRefundRate: 0.18,
+    sentiment: {
+      contentQuality: 0.52,
+      audioVideoQuality: 0.48,
+      instructorClarity: 0.58,
+      relevanceFreshness: 0.25,
+      exerciseQuality: 0.40,
+    },
+    categoryType: "fast-moving-tech",
+  },
+  {
+    id: 18,
+    title: "MERN Stack Crash Course - Build & Deploy a Full App",
+    instructor: "Brad Traversy",
+    instructorOrg: "Traversy Media",
+    level: "Intermediate",
+    language: "English",
+    price: 0,
+    originalPrice: null,
+    durationHours: 5,
+    publishDate: "2025-11-10",
+    lastUpdated: "2025-11-10",
+    thumbColor: "amber",
+    badge: null,
+    topics: ["MongoDB", "Express", "React", "Node.js"],
+    features: ["subtitles", "projects"],
+    reviews: [
+      { rating: 5, completionPct: 88, wordCount: 62, isVerified: true, ageInDays: 15 },
+      { rating: 4, completionPct: 75, wordCount: 38, isVerified: true, ageInDays: 50 },
+      { rating: 4, completionPct: 60, wordCount: 20, isVerified: false, ageInDays: 90 },
+    ],
+    totalReviews: 1400,
+    rawAvgRating: 4.32,
+    completionRate: 0.78,
+    enrollmentVelocity: 480,
+    totalEnrollments: 24000,
+    watchTimeRatio: 0.90,
+    daysSinceUpdate: 126,
+    isMajorUpdate: false,
+    instructorAvgRating: 4.58,
+    instructorTotalReviews: 48000,
+    instructorCourseCount: 12,
+    refundRate: 0.02,
+    categoryMedianRefundRate: 0.06,
+    maxRefundRate: 0.18,
+    sentiment: {
+      contentQuality: 0.72,
+      audioVideoQuality: 0.76,
+      instructorClarity: 0.80,
+      relevanceFreshness: 0.60,
+      exerciseQuality: 0.55,
+    },
+    categoryType: "fast-moving-tech",
+  },
+];
+
+
+// ============================================================
+// RANKING ALGORITHM IMPLEMENTATION
+// (Follows Course_Ranking_Algorithm_v2.docx exactly)
+// ============================================================
+
+// 3.1 — Review Quality Weight
+function calcReviewQuality(review) {
+  const wCompletion = 0.50;
+  const wLength = 0.30;
+  const wVerified = 0.20;
+  return wCompletion * (review.completionPct / 100)
+       + wLength * Math.min(1, review.wordCount / 50)
+       + wVerified * (review.isVerified ? 1 : 0);
+}
+
+// 3.1 — Bayesian Average Rating (quality-weighted)
+function calcBAR(course) {
+  const C = CONFIDENCE_PARAM;
+  const M = GLOBAL_MEAN_RATING;
+  let sumQR = 0, sumQ = 0;
+  for (const r of course.reviews) {
+    const q = calcReviewQuality(r);
+    sumQR += q * r.rating;
+    sumQ += q;
+  }
+  return (C * M + sumQR) / (C + sumQ);
+}
+
+// 3.2 — Recency-Weighted Rating
+function calcRWR(course) {
+  const lambda = 0.008; // fast-moving-tech decay rate
+  let sumWQR = 0, sumWQ = 0;
+  for (const r of course.reviews) {
+    const w = Math.exp(-lambda * r.ageInDays);
+    const q = calcReviewQuality(r);
+    sumWQR += w * q * r.rating;
+    sumWQ += w * q;
+  }
+  return sumWQ > 0 ? sumWQR / sumWQ : GLOBAL_MEAN_RATING;
+}
+
+// 3.3 — Engagement Score (normalized within category)
+function calcEngagement(course, allCourses) {
+  const norm = (val, getter) => {
+    const vals = allCourses.map(getter);
+    const min = Math.min(...vals), max = Math.max(...vals);
+    return max === min ? 0.5 : (val - min) / (max - min);
+  };
+  const cr = norm(course.completionRate, c => c.completionRate);
+  const ev = norm(course.enrollmentVelocity, c => c.enrollmentVelocity);
+  const wtr = norm(course.watchTimeRatio, c => c.watchTimeRatio);
+  return 0.40 * cr + 0.30 * ev + 0.30 * wtr;
+}
+
+// 3.4 — Freshness Bonus
+function calcFreshness(course) {
+  return Math.max(0, 1 - course.daysSinceUpdate / 90);
+}
+
+// U6 — Instructor Reputation Score
+function calcIRS(course) {
+  return course.instructorAvgRating * Math.log(1 + course.instructorTotalReviews);
+}
+
+// 3.5 — Refund Rate Penalty
+function calcRefundPenalty(course) {
+  const excess = Math.max(0, course.refundRate - course.categoryMedianRefundRate);
+  return excess / course.maxRefundRate;
+}
+
+// Section 4 — Composite Score
+function calcCompositeScore(course, allCourses) {
+  const bar = calcBAR(course);
+  const rwr = calcRWR(course);
+  const es = calcEngagement(course, allCourses);
+  const fb = calcFreshness(course);
+  const irs = calcIRS(course);
+
+  const norm = (val, fn) => {
+    const vals = allCourses.map(fn);
+    const min = Math.min(...vals), max = Math.max(...vals);
+    return max === min ? 0.5 : (val - min) / (max - min);
+  };
+
+  const barNorm = norm(bar, c => calcBAR(c));
+  const rwrNorm = norm(rwr, c => calcRWR(c));
+  const irsNorm = norm(irs, c => calcIRS(c));
+
+  // Weights: BAR 45%, RWR 20%, Engagement 20%, Freshness 10%, IRS 5%
+  const composite = 0.45 * barNorm + 0.20 * rwrNorm + 0.20 * es + 0.10 * fb + 0.05 * irsNorm;
+  const penalty = calcRefundPenalty(course);
+  return composite * (1 - penalty);
+}
+
+// Pre-compute all scores
+courses.forEach(c => {
+  c.bayesianAvg = calcBAR(c);
+  c.recencyWeightedRating = calcRWR(c);
+  c.engagementScore = calcEngagement(c, courses);
+  c.freshnessBonus = calcFreshness(c);
+  c.instructorReputation = calcIRS(c);
+  c.refundPenalty = calcRefundPenalty(c);
+  c.compositeScore = calcCompositeScore(c, courses);
+});
+
+
+// ============================================================
+// UI LOGIC
+// ============================================================
+
+let currentSort = "relevance";
+let showAlgoDetails = false;
+let filters = { rating: null, levels: [], durations: [], prices: [], languages: [], features: [] };
+
+function getFilteredCourses() {
+  let result = [...courses];
+
+  // Search within category
+  const q = document.getElementById("searchInput").value.toLowerCase().trim();
+  if (q) {
+    result = result.filter(c =>
+      c.title.toLowerCase().includes(q) ||
+      c.instructor.toLowerCase().includes(q) ||
+      c.topics.some(t => t.toLowerCase().includes(q))
+    );
+  }
+
+  // Rating (Bayesian avg)
+  if (filters.rating) {
+    result = result.filter(c => c.bayesianAvg >= parseFloat(filters.rating));
+  }
+
+  // Level (OR within group)
+  if (filters.levels.length > 0) {
+    result = result.filter(c => filters.levels.includes(c.level));
+  }
+
+  // Duration (OR within group)
+  if (filters.durations.length > 0) {
+    result = result.filter(c => {
+      const h = c.durationHours;
+      return filters.durations.some(d => {
+        if (d === "0-2") return h <= 2;
+        if (d === "2-5") return h > 2 && h <= 5;
+        if (d === "5-15") return h > 5 && h <= 15;
+        if (d === "15+") return h > 15;
+        return false;
+      });
+    });
+  }
+
+  // Price (OR)
+  if (filters.prices.length > 0) {
+    result = result.filter(c => {
+      return filters.prices.some(p => {
+        if (p === "free") return c.price === 0;
+        if (p === "paid") return c.price > 0;
+        return false;
+      });
+    });
+  }
+
+  // Language (OR)
+  if (filters.languages.length > 0) {
+    result = result.filter(c => filters.languages.includes(c.language));
+  }
+
+  // Features (AND — all selected must be present)
+  if (filters.features.length > 0) {
+    result = result.filter(c => filters.features.every(f => c.features.includes(f)));
+  }
+
+  return result;
+}
+
+function sortCourses(arr) {
+  const sorted = [...arr];
+  switch (currentSort) {
+    case "relevance":
+      sorted.sort((a, b) => b.compositeScore - a.compositeScore);
+      break;
+    case "highest-rated":
+      // Section 6: sorted by Bayesian average only
+      sorted.sort((a, b) => b.bayesianAvg - a.bayesianAvg);
+      break;
+    case "most-popular":
+      // Section 6: sorted by total enrollment count, descending
+      sorted.sort((a, b) => b.totalEnrollments - a.totalEnrollments);
+      break;
+    case "newest":
+      sorted.sort((a, b) => new Date(b.publishDate) - new Date(a.publishDate));
+      break;
+    case "price-low":
+      sorted.sort((a, b) => a.price - b.price);
+      break;
+    case "price-high":
+      sorted.sort((a, b) => b.price - a.price);
+      break;
+  }
+  return sorted;
+}
+
+function renderStars(rating) {
+  const full = Math.floor(rating);
+  const half = rating - full >= 0.3;
+  let stars = "";
+  for (let i = 0; i < full; i++) stars += "\u2605";
+  if (half && full < 5) stars += "\u00BD";
+  return stars;
+}
+
+function algoBar(label, value, max, colorClass) {
+  const pct = Math.min(100, Math.round((value / max) * 100));
+  return `<div class="algo-bar-wrap">
+    <span class="algo-key">${label}</span>
+    <div class="algo-bar-track"><div class="algo-bar-fill ${colorClass}" style="width:${pct}%"></div></div>
+    <span class="algo-pct">${pct}%</span>
+  </div>`;
+}
+
+function renderAlgoDetails(c) {
+  // Sentiment avg
+  const sentVals = Object.values(c.sentiment);
+  const sentAvg = sentVals.reduce((a, b) => a + b, 0) / sentVals.length;
+
+  return `
+    <div class="algo-details">
+      <div class="algo-section-title">Rating Signals</div>
+      <div class="algo-row"><span class="algo-key">Bayesian Avg (BAR)</span><span class="algo-val">${c.bayesianAvg.toFixed(3)}</span></div>
+      <div class="algo-row"><span class="algo-key">Recency-Weighted (RWR)</span><span class="algo-val">${c.recencyWeightedRating.toFixed(3)}</span></div>
+      <div class="algo-row"><span class="algo-key">Raw Avg Rating</span><span class="algo-val">${c.rawAvgRating.toFixed(2)}</span></div>
+
+      <div class="algo-section-title">Engagement</div>
+      ${algoBar("Completion", c.completionRate, 1, "green")}
+      ${algoBar("Watch Time", c.watchTimeRatio, 1, "blue")}
+      <div class="algo-row"><span class="algo-key">Enrollment Velocity</span><span class="algo-val">${c.enrollmentVelocity.toLocaleString()}/wk</span></div>
+      <div class="algo-row"><span class="algo-key">Total Enrollments</span><span class="algo-val">${c.totalEnrollments.toLocaleString()}</span></div>
+      <div class="algo-row"><span class="algo-key">Engagement Score</span><span class="algo-val">${c.engagementScore.toFixed(3)}</span></div>
+
+      <div class="algo-section-title">Freshness</div>
+      <div class="algo-row"><span class="algo-key">Days Since Update</span><span class="algo-val">${c.daysSinceUpdate}d</span></div>
+      <div class="algo-row"><span class="algo-key">Major Update</span><span class="algo-val">${c.isMajorUpdate ? "Yes" : "No"}</span></div>
+      ${algoBar("Freshness Bonus", c.freshnessBonus, 1, "green")}
+
+      <div class="algo-section-title">Instructor Reputation</div>
+      <div class="algo-row"><span class="algo-key">Instructor Avg Rating</span><span class="algo-val">${c.instructorAvgRating.toFixed(2)}</span></div>
+      <div class="algo-row"><span class="algo-key">Instructor Reviews</span><span class="algo-val">${c.instructorTotalReviews.toLocaleString()}</span></div>
+      <div class="algo-row"><span class="algo-key">Instructor Courses</span><span class="algo-val">${c.instructorCourseCount}</span></div>
+
+      <div class="algo-section-title">Refund Rate</div>
+      ${algoBar("Refund Rate", c.refundRate, c.maxRefundRate, c.refundRate > c.categoryMedianRefundRate ? "red" : "amber")}
+      <div class="algo-row"><span class="algo-key">Category Median</span><span class="algo-val">${(c.categoryMedianRefundRate * 100).toFixed(0)}%</span></div>
+      <div class="algo-row"><span class="algo-key">Penalty Applied</span><span class="algo-val">${c.refundPenalty > 0 ? (c.refundPenalty * 100).toFixed(1) + "%" : "None"}</span></div>
+
+      <div class="algo-section-title">NLP Sentiment</div>
+      ${algoBar("Content", c.sentiment.contentQuality, 1, "blue")}
+      ${algoBar("Audio/Video", c.sentiment.audioVideoQuality, 1, "blue")}
+      ${algoBar("Clarity", c.sentiment.instructorClarity, 1, "blue")}
+      ${algoBar("Relevance", c.sentiment.relevanceFreshness, 1, "blue")}
+      ${algoBar("Exercises", c.sentiment.exerciseQuality, 1, "blue")}
+      <div class="algo-row"><span class="algo-key">Sentiment Avg</span><span class="algo-val">${sentAvg.toFixed(2)}</span></div>
+
+      <div class="composite-score">
+        <span class="cs-label">Composite Score</span>
+        <span class="cs-value">${c.compositeScore.toFixed(4)}</span>
+      </div>
+    </div>
+  `;
+}
+
+function renderCard(course) {
+  const badgeHtml = course.badge
+    ? `<span class="card-badge ${course.badge}">${
+        course.badge === "bestseller" ? "Bestseller" :
+        course.badge === "trending" ? "Trending" :
+        course.badge === "new" ? "New" :
+        course.badge === "hot" ? "Hot" : ""
+      }</span>`
+    : "";
+
+  const priceHtml = course.price === 0
+    ? `<div class="price free">Free</div>`
+    : `<div class="price">$${course.price.toFixed(2)}${course.originalPrice ? `<span class="original">$${course.originalPrice.toFixed(2)}</span>` : ""}</div>`;
+
+  const org = course.instructorOrg ? ` · ${course.instructorOrg}` : "";
+
+  return `
+    <div class="course-card">
+      <div class="card-thumb">
+        <div class="thumb-placeholder ${course.thumbColor}">
+          ${course.topics.slice(0, 2).join(" / ")}
+        </div>
+        ${badgeHtml}
+      </div>
+      <div class="card-body">
+        <div class="card-title">${course.title}</div>
+        <div class="card-instructor">${course.instructor}${org}</div>
+        <div class="card-rating">
+          <span class="rating-num">${course.bayesianAvg.toFixed(1)}</span>
+          <span class="rating-stars">${renderStars(course.bayesianAvg)}</span>
+          <span class="rating-count">(${course.totalReviews.toLocaleString()})</span>
+        </div>
+        <div class="card-meta">
+          <span class="meta-tag level">${course.level}</span>
+          <span class="meta-tag duration">${course.durationHours} hrs</span>
+          ${course.topics.slice(0, 2).map(t => `<span class="meta-tag topic">${t}</span>`).join("")}
+        </div>
+        <div class="card-footer">
+          ${priceHtml}
+          <button class="enroll-btn">Enroll</button>
+        </div>
+        ${showAlgoDetails ? renderAlgoDetails(course) : ""}
+      </div>
+    </div>
+  `;
+}
+
+function renderActiveFilters() {
+  const container = document.getElementById("activeFilters");
+  const chips = [];
+
+  if (filters.rating) chips.push({ label: `${filters.rating}+ rating`, type: "rating" });
+  filters.levels.forEach(l => chips.push({ label: l, type: "level", value: l }));
+  filters.durations.forEach(d => chips.push({ label: d === "15+" ? "15+ hrs" : `${d} hrs`, type: "duration", value: d }));
+  filters.prices.forEach(p => chips.push({ label: p === "free" ? "Free" : "Paid", type: "price", value: p }));
+  filters.languages.forEach(l => chips.push({ label: l, type: "language", value: l }));
+  filters.features.forEach(f => chips.push({ label: f.charAt(0).toUpperCase() + f.slice(1), type: "feature", value: f }));
+
+  container.innerHTML = chips.map(chip =>
+    `<div class="chip">${chip.label}<button data-type="${chip.type}" data-value="${chip.value || ''}">&times;</button></div>`
+  ).join("");
+
+  container.querySelectorAll("button").forEach(btn => {
+    btn.addEventListener("click", () => {
+      const type = btn.dataset.type;
+      const value = btn.dataset.value;
+      if (type === "rating") {
+        filters.rating = null;
+        document.querySelectorAll('input[name="rating"]').forEach(r => r.checked = false);
+      } else if (type === "level") {
+        filters.levels = filters.levels.filter(l => l !== value);
+        uncheckFilter("levelOpts", value);
+      } else if (type === "duration") {
+        filters.durations = filters.durations.filter(d => d !== value);
+        uncheckFilter("durationOpts", value);
+      } else if (type === "price") {
+        filters.prices = filters.prices.filter(p => p !== value);
+        uncheckFilter("priceOpts", value);
+      } else if (type === "language") {
+        filters.languages = filters.languages.filter(l => l !== value);
+        uncheckFilter("langOpts", value);
+      } else if (type === "feature") {
+        filters.features = filters.features.filter(f => f !== value);
+        uncheckFilter("featureOpts", value);
+      }
+      render();
+    });
+  });
+}
+
+function uncheckFilter(containerId, value) {
+  const el = document.querySelector(`#${containerId} input[value="${value}"]`);
+  if (el) el.checked = false;
+}
+
+function render() {
+  const filtered = getFilteredCourses();
+  const sorted = sortCourses(filtered);
+
+  const grid = document.getElementById("courseGrid");
+  if (sorted.length === 0) {
+    grid.innerHTML = `<div class="empty-state"><h3>No courses match your filters</h3><p>Try adjusting your filters or search terms.</p></div>`;
+  } else {
+    grid.innerHTML = sorted.map(renderCard).join("");
+  }
+
+  document.getElementById("resultCount").textContent = `${sorted.length} course${sorted.length !== 1 ? "s" : ""} found`;
+
+  const sortNames = {
+    relevance: "Relevance",
+    "highest-rated": "Highest Rated",
+    "most-popular": "Most Popular",
+    newest: "Newest",
+    "price-low": "Price: Low to High",
+    "price-high": "Price: High to Low",
+  };
+  document.getElementById("pageSubtitle").textContent = `Sorted by ${sortNames[currentSort]}`;
+
+  renderActiveFilters();
+}
+
+
+// ── Event Listeners ──
+
+// Sort
+document.querySelectorAll(".sort-btn").forEach(btn => {
+  btn.addEventListener("click", () => {
+    document.querySelectorAll(".sort-btn").forEach(b => b.classList.remove("active"));
+    btn.classList.add("active");
+    currentSort = btn.dataset.sort;
+    render();
+  });
+});
+
+// Filter section collapse
+document.querySelectorAll(".filter-title").forEach(title => {
+  title.addEventListener("click", () => {
+    const target = document.getElementById(title.dataset.toggle);
+    if (target) {
+      target.classList.toggle("hidden");
+      title.classList.toggle("collapsed");
+    }
+  });
+});
+
+// Rating
+document.querySelectorAll('input[name="rating"]').forEach(input => {
+  input.addEventListener("change", () => { filters.rating = input.value; render(); });
+});
+
+// Checkbox filters
+function setupCheckboxFilter(containerId, filterKey) {
+  document.querySelectorAll(`#${containerId} input[type="checkbox"]`).forEach(input => {
+    input.addEventListener("change", () => {
+      if (input.checked) filters[filterKey].push(input.value);
+      else filters[filterKey] = filters[filterKey].filter(v => v !== input.value);
+      render();
+    });
+  });
+}
+setupCheckboxFilter("levelOpts", "levels");
+setupCheckboxFilter("durationOpts", "durations");
+setupCheckboxFilter("priceOpts", "prices");
+setupCheckboxFilter("langOpts", "languages");
+setupCheckboxFilter("featureOpts", "features");
+
+// Clear all
+document.getElementById("clearAll").addEventListener("click", () => {
+  filters = { rating: null, levels: [], durations: [], prices: [], languages: [], features: [] };
+  document.querySelectorAll(".sidebar input").forEach(input => {
+    if (input.type === "checkbox") input.checked = false;
+    if (input.type === "radio") input.checked = false;
+  });
+  render();
+});
+
+// Algorithm details toggle
+document.getElementById("algoToggle").addEventListener("change", (e) => {
+  showAlgoDetails = e.target.checked;
+  document.getElementById("toggleLabel").classList.toggle("active-label", showAlgoDetails);
+  render();
+});
+
+// Search (debounced)
+let searchTimeout;
+document.getElementById("searchInput").addEventListener("input", () => {
+  clearTimeout(searchTimeout);
+  searchTimeout = setTimeout(render, 300);
+});
+
+// Initial render
+render();
+</script>
+</body>
+</html>
