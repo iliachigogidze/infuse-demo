@@ -186,6 +186,8 @@
   .filter-title.collapsed svg { transform: rotate(-90deg); }
   .filter-options { }
   .filter-options.hidden { display: none; }
+  .filter-opt.hidden-filter-opt { display: none; }
+  .filter-options.show-all .filter-opt.hidden-filter-opt { display: flex; }
   .filter-opt {
     display: flex;
     align-items: center;
@@ -209,6 +211,21 @@
     justify-content: space-between;
   }
   .filter-opt .count { font-size: 12px; color: #9ca3af; }
+  .show-more-btn {
+    font-size: 13px;
+    color: #6366f1;
+    cursor: pointer;
+    border: none;
+    background: none;
+    font-weight: 500;
+    padding: 4px 0;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+  .show-more-btn:hover { text-decoration: underline; }
+  .show-more-btn svg { transition: transform 0.2s; }
+  .show-more-btn.expanded svg { transform: rotate(180deg); }
   .filter-sep { border: none; border-top: 1px solid #f3f4f6; margin: 16px 0; }
   .stars-sm { color: #f59e0b; font-size: 12px; }
 
@@ -644,6 +661,50 @@
         <button class="clear-btn" id="clearAll">Clear all</button>
       </div>
 
+      <!-- Topic -->
+      <div class="filter-section">
+        <div class="filter-title" data-toggle="topicOpts">
+          Topic
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+        </div>
+        <div class="filter-options" id="topicOpts">
+          <div class="filter-opt"><input type="checkbox" value="JavaScript" id="tJS"><label for="tJS">JavaScript <span class="count">(755)</span></label></div>
+          <div class="filter-opt"><input type="checkbox" value="React" id="tReact"><label for="tReact">React JS <span class="count">(647)</span></label></div>
+          <div class="filter-opt"><input type="checkbox" value="HTML" id="tHTML"><label for="tHTML">HTML <span class="count">(639)</span></label></div>
+          <div class="filter-opt"><input type="checkbox" value="CSS" id="tCSS"><label for="tCSS">CSS <span class="count">(580)</span></label></div>
+          <div class="filter-opt hidden-filter-opt"><input type="checkbox" value="Node.js" id="tNode"><label for="tNode">Node.js <span class="count">(412)</span></label></div>
+          <div class="filter-opt hidden-filter-opt"><input type="checkbox" value="TypeScript" id="tTS"><label for="tTS">TypeScript <span class="count">(358)</span></label></div>
+          <div class="filter-opt hidden-filter-opt"><input type="checkbox" value="Next.js" id="tNext"><label for="tNext">Next.js <span class="count">(295)</span></label></div>
+          <div class="filter-opt hidden-filter-opt"><input type="checkbox" value="Angular" id="tAng"><label for="tAng">Angular <span class="count">(270)</span></label></div>
+          <div class="filter-opt hidden-filter-opt"><input type="checkbox" value="Vue.js" id="tVue"><label for="tVue">Vue.js <span class="count">(210)</span></label></div>
+          <div class="filter-opt hidden-filter-opt"><input type="checkbox" value="Python" id="tPython"><label for="tPython">Python <span class="count">(185)</span></label></div>
+          <div class="filter-opt hidden-filter-opt"><input type="checkbox" value="GraphQL" id="tGraphQL"><label for="tGraphQL">GraphQL <span class="count">(120)</span></label></div>
+          <div class="filter-opt hidden-filter-opt"><input type="checkbox" value="Svelte" id="tSvelte"><label for="tSvelte">Svelte <span class="count">(88)</span></label></div>
+        </div>
+        <button class="show-more-btn" data-target="topicOpts">Show more <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg></button>
+      </div>
+      <hr class="filter-sep">
+
+      <!-- Subcategory -->
+      <div class="filter-section">
+        <div class="filter-title" data-toggle="subcatOpts">
+          Subcategory
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+        </div>
+        <div class="filter-options" id="subcatOpts">
+          <div class="filter-opt"><input type="checkbox" value="Web Development" id="scWeb"><label for="scWeb">Web Development <span class="count">(10,000)</span></label></div>
+          <div class="filter-opt"><input type="checkbox" value="Frontend Development" id="scFront"><label for="scFront">Frontend Development <span class="count">(4,200)</span></label></div>
+          <div class="filter-opt"><input type="checkbox" value="Backend Development" id="scBack"><label for="scBack">Backend Development <span class="count">(2,800)</span></label></div>
+          <div class="filter-opt"><input type="checkbox" value="Full-Stack Development" id="scFull"><label for="scFull">Full-Stack Development <span class="count">(1,950)</span></label></div>
+          <div class="filter-opt hidden-filter-opt"><input type="checkbox" value="CSS & Design" id="scCSS"><label for="scCSS">CSS & Design <span class="count">(890)</span></label></div>
+          <div class="filter-opt hidden-filter-opt"><input type="checkbox" value="JavaScript Frameworks" id="scJSFW"><label for="scJSFW">JavaScript Frameworks <span class="count">(760)</span></label></div>
+          <div class="filter-opt hidden-filter-opt"><input type="checkbox" value="API Development" id="scAPI"><label for="scAPI">API Development <span class="count">(430)</span></label></div>
+          <div class="filter-opt hidden-filter-opt"><input type="checkbox" value="Performance & Testing" id="scPerf"><label for="scPerf">Performance & Testing <span class="count">(310)</span></label></div>
+        </div>
+        <button class="show-more-btn" data-target="subcatOpts">Show more <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg></button>
+      </div>
+      <hr class="filter-sep">
+
       <!-- Rating -->
       <div class="filter-section">
         <div class="filter-title" data-toggle="ratingOpts">
@@ -770,6 +831,7 @@ const courses = [
     thumbColor: "orange",
     badge: "bestseller",
     topics: ["JavaScript", "ES6+", "DOM"],
+    subcategory: "Web Development",
     features: ["subtitles", "certificate", "exercises", "projects"],
     // === Quality Signals ===
     // Individual reviews with quality weight inputs
@@ -824,6 +886,7 @@ const courses = [
     thumbColor: "blue",
     badge: "trending",
     topics: ["React", "Next.js", "Redux"],
+    subcategory: "JavaScript Frameworks",
     features: ["subtitles", "certificate", "exercises", "projects"],
     reviews: [
       { rating: 5, completionPct: 90, wordCount: 85, isVerified: true, ageInDays: 6 },
@@ -869,6 +932,7 @@ const courses = [
     thumbColor: "green",
     badge: "bestseller",
     topics: ["HTML", "CSS", "Node.js"],
+    subcategory: "Full-Stack Development",
     features: ["subtitles", "certificate", "exercises", "projects"],
     reviews: [
       { rating: 5, completionPct: 82, wordCount: 65, isVerified: true, ageInDays: 10 },
@@ -915,6 +979,7 @@ const courses = [
     thumbColor: "purple",
     badge: "hot",
     topics: ["Next.js", "React", "App Router"],
+    subcategory: "JavaScript Frameworks",
     features: ["subtitles", "exercises", "projects"],
     reviews: [
       { rating: 5, completionPct: 96, wordCount: 155, isVerified: true, ageInDays: 2 },
@@ -959,6 +1024,7 @@ const courses = [
     thumbColor: "teal",
     badge: null,
     topics: ["Angular", "TypeScript", "RxJS"],
+    subcategory: "JavaScript Frameworks",
     features: ["subtitles", "certificate", "exercises", "projects"],
     reviews: [
       { rating: 5, completionPct: 85, wordCount: 78, isVerified: true, ageInDays: 18 },
@@ -1004,6 +1070,7 @@ const courses = [
     thumbColor: "green",
     badge: null,
     topics: ["Vue.js", "Composition API", "Vuex"],
+    subcategory: "JavaScript Frameworks",
     features: ["subtitles", "certificate", "exercises"],
     reviews: [
       { rating: 5, completionPct: 88, wordCount: 70, isVerified: true, ageInDays: 15 },
@@ -1048,6 +1115,7 @@ const courses = [
     thumbColor: "blue",
     badge: null,
     topics: ["CSS", "Flexbox", "Grid"],
+    subcategory: "CSS & Design",
     features: ["subtitles", "certificate", "exercises"],
     reviews: [
       { rating: 4, completionPct: 80, wordCount: 55, isVerified: true, ageInDays: 25 },
@@ -1093,6 +1161,7 @@ const courses = [
     thumbColor: "slate",
     badge: null,
     topics: ["Node.js", "Express", "MongoDB"],
+    subcategory: "Backend Development",
     features: ["subtitles", "certificate", "exercises", "projects"],
     reviews: [
       { rating: 5, completionPct: 86, wordCount: 75, isVerified: true, ageInDays: 12 },
@@ -1138,6 +1207,7 @@ const courses = [
     thumbColor: "purple",
     badge: null,
     topics: ["TypeScript", "Generics", "Type Safety"],
+    subcategory: "Web Development",
     features: ["subtitles", "exercises", "projects"],
     reviews: [
       { rating: 5, completionPct: 92, wordCount: 100, isVerified: true, ageInDays: 8 },
@@ -1182,6 +1252,7 @@ const courses = [
     thumbColor: "amber",
     badge: "new",
     topics: ["Svelte", "SvelteKit", "SSR"],
+    subcategory: "JavaScript Frameworks",
     features: ["subtitles", "exercises", "projects"],
     reviews: [
       { rating: 5, completionPct: 95, wordCount: 120, isVerified: true, ageInDays: 3 },
@@ -1225,6 +1296,7 @@ const courses = [
     thumbColor: "pink",
     badge: null,
     topics: ["HTML", "CSS", "Responsive Design"],
+    subcategory: "Frontend Development",
     features: ["subtitles", "exercises"],
     reviews: [
       { rating: 4, completionPct: 85, wordCount: 45, isVerified: true, ageInDays: 50 },
@@ -1269,6 +1341,7 @@ const courses = [
     thumbColor: "green",
     badge: null,
     topics: ["Python", "Django", "PostgreSQL"],
+    subcategory: "Backend Development",
     features: ["subtitles", "certificate", "exercises", "projects"],
     reviews: [
       { rating: 5, completionPct: 80, wordCount: 65, isVerified: true, ageInDays: 20 },
@@ -1314,6 +1387,7 @@ const courses = [
     thumbColor: "teal",
     badge: null,
     topics: ["Tailwind CSS", "Utility-First", "Responsive"],
+    subcategory: "CSS & Design",
     features: ["subtitles", "exercises", "projects"],
     reviews: [
       { rating: 5, completionPct: 90, wordCount: 80, isVerified: true, ageInDays: 10 },
@@ -1358,6 +1432,7 @@ const courses = [
     thumbColor: "pink",
     badge: null,
     topics: ["GraphQL", "Apollo", "Node.js"],
+    subcategory: "API Development",
     features: ["subtitles", "certificate", "projects"],
     reviews: [
       { rating: 4, completionPct: 78, wordCount: 60, isVerified: true, ageInDays: 35 },
@@ -1402,6 +1477,7 @@ const courses = [
     thumbColor: "orange",
     badge: null,
     topics: ["HTML", "CSS", "JavaScript", "React"],
+    subcategory: "Frontend Development",
     features: ["subtitles", "certificate", "exercises"],
     reviews: [
       { rating: 5, completionPct: 82, wordCount: 55, isVerified: true, ageInDays: 30 },
@@ -1446,6 +1522,7 @@ const courses = [
     thumbColor: "slate",
     badge: "new",
     topics: ["Performance", "Core Web Vitals", "Lighthouse"],
+    subcategory: "Performance & Testing",
     features: ["subtitles", "exercises"],
     reviews: [
       { rating: 5, completionPct: 100, wordCount: 140, isVerified: true, ageInDays: 1 },
@@ -1489,6 +1566,7 @@ const courses = [
     thumbColor: "blue",
     badge: null,
     topics: ["HTML", "CSS", "JavaScript"],
+    subcategory: "Web Development",
     features: ["subtitles", "certificate"],
     reviews: [
       { rating: 4, completionPct: 75, wordCount: 50, isVerified: true, ageInDays: 60 },
@@ -1532,6 +1610,7 @@ const courses = [
     thumbColor: "amber",
     badge: null,
     topics: ["MongoDB", "Express", "React", "Node.js"],
+    subcategory: "Full-Stack Development",
     features: ["subtitles", "projects"],
     reviews: [
       { rating: 5, completionPct: 88, wordCount: 62, isVerified: true, ageInDays: 15 },
@@ -1676,7 +1755,7 @@ courses.forEach(c => {
 
 let currentSort = "relevance";
 let showAlgoDetails = false;
-let filters = { rating: null, levels: [], durations: [], prices: [], languages: [], features: [] };
+let filters = { rating: null, topics: [], subcategories: [], levels: [], durations: [], prices: [], languages: [], features: [] };
 
 function getFilteredCourses() {
   let result = [...courses];
@@ -1689,6 +1768,16 @@ function getFilteredCourses() {
       c.instructor.toLowerCase().includes(q) ||
       c.topics.some(t => t.toLowerCase().includes(q))
     );
+  }
+
+  // Topics (OR — course must have at least one selected topic)
+  if (filters.topics.length > 0) {
+    result = result.filter(c => filters.topics.some(t => c.topics.includes(t)));
+  }
+
+  // Subcategories (OR)
+  if (filters.subcategories.length > 0) {
+    result = result.filter(c => filters.subcategories.includes(c.subcategory));
   }
 
   // Rating (Bayesian avg)
@@ -1885,6 +1974,8 @@ function renderActiveFilters() {
   const container = document.getElementById("activeFilters");
   const chips = [];
 
+  filters.topics.forEach(t => chips.push({ label: t, type: "topic", value: t }));
+  filters.subcategories.forEach(s => chips.push({ label: s, type: "subcategory", value: s }));
   if (filters.rating) chips.push({ label: `${filters.rating}+ rating`, type: "rating" });
   filters.levels.forEach(l => chips.push({ label: l, type: "level", value: l }));
   filters.durations.forEach(d => chips.push({ label: d === "15+" ? "15+ hrs" : `${d} hrs`, type: "duration", value: d }));
@@ -1900,7 +1991,13 @@ function renderActiveFilters() {
     btn.addEventListener("click", () => {
       const type = btn.dataset.type;
       const value = btn.dataset.value;
-      if (type === "rating") {
+      if (type === "topic") {
+        filters.topics = filters.topics.filter(t => t !== value);
+        uncheckFilter("topicOpts", value);
+      } else if (type === "subcategory") {
+        filters.subcategories = filters.subcategories.filter(s => s !== value);
+        uncheckFilter("subcatOpts", value);
+      } else if (type === "rating") {
         filters.rating = null;
         document.querySelectorAll('input[name="rating"]').forEach(r => r.checked = false);
       } else if (type === "level") {
@@ -1979,6 +2076,21 @@ document.querySelectorAll(".filter-title").forEach(title => {
   });
 });
 
+// Show more / Show less toggle
+document.querySelectorAll(".show-more-btn").forEach(btn => {
+  btn.addEventListener("click", () => {
+    const target = document.getElementById(btn.dataset.target);
+    if (target) {
+      target.classList.toggle("show-all");
+      const expanded = target.classList.contains("show-all");
+      btn.innerHTML = expanded
+        ? 'Show less <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>'
+        : 'Show more <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>';
+      btn.classList.toggle("expanded", expanded);
+    }
+  });
+});
+
 // Rating
 document.querySelectorAll('input[name="rating"]').forEach(input => {
   input.addEventListener("change", () => { filters.rating = input.value; render(); });
@@ -1994,6 +2106,8 @@ function setupCheckboxFilter(containerId, filterKey) {
     });
   });
 }
+setupCheckboxFilter("topicOpts", "topics");
+setupCheckboxFilter("subcatOpts", "subcategories");
 setupCheckboxFilter("levelOpts", "levels");
 setupCheckboxFilter("durationOpts", "durations");
 setupCheckboxFilter("priceOpts", "prices");
@@ -2002,7 +2116,7 @@ setupCheckboxFilter("featureOpts", "features");
 
 // Clear all
 document.getElementById("clearAll").addEventListener("click", () => {
-  filters = { rating: null, levels: [], durations: [], prices: [], languages: [], features: [] };
+  filters = { rating: null, topics: [], subcategories: [], levels: [], durations: [], prices: [], languages: [], features: [] };
   document.querySelectorAll(".sidebar input").forEach(input => {
     if (input.type === "checkbox") input.checked = false;
     if (input.type === "radio") input.checked = false;
