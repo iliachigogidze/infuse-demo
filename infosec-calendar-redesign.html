@@ -298,35 +298,23 @@ footer h4{color:#fff;font-size:14px;margin-bottom:16px}
     </div>
   </div>
 
-  <!-- Day -->
+  <!-- When -->
   <div class="filter-section">
     <button class="filter-toggle" onclick="toggleSection(this)" aria-expanded="false">
-      <span>Day</span>
+      <span>When</span>
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
     </button>
-    <div class="filter-body" data-group="day">
-      <label><input type="checkbox" value="Monday"/><span class="cb-label">Monday</span></label>
-      <label><input type="checkbox" value="Tuesday"/><span class="cb-label">Tuesday</span></label>
-      <label><input type="checkbox" value="Wednesday"/><span class="cb-label">Wednesday</span></label>
-      <label><input type="checkbox" value="Thursday"/><span class="cb-label">Thursday</span></label>
-      <label><input type="checkbox" value="Friday"/><span class="cb-label">Friday</span></label>
-      <label><input type="checkbox" value="Saturday"/><span class="cb-label">Saturday</span></label>
-      <label><input type="checkbox" value="Sunday"/><span class="cb-label">Sunday</span></label>
-    </div>
-  </div>
-
-  <!-- Time -->
-  <div class="filter-section">
-    <button class="filter-toggle" onclick="toggleSection(this)" aria-expanded="false">
-      <span>Time</span>
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
-    </button>
-    <div class="filter-body" data-group="time">
-      <label><input type="checkbox" value="allday"/><span class="cb-label">All Day</span></label>
-      <label><input type="checkbox" value="morning"/><span class="cb-label">Morning (6am – 12pm)</span></label>
-      <label><input type="checkbox" value="afternoon"/><span class="cb-label">Afternoon (12 – 5pm)</span></label>
-      <label><input type="checkbox" value="evening"/><span class="cb-label">Evening (5 – 9pm)</span></label>
-      <label><input type="checkbox" value="night"/><span class="cb-label">Night (9pm – 6am)</span></label>
+    <div class="filter-body" data-group="when">
+      <label><input type="checkbox" value="today"/><span class="cb-label">Today</span></label>
+      <label><input type="checkbox" value="tomorrow"/><span class="cb-label">Tomorrow</span></label>
+      <label><input type="checkbox" value="this-week"/><span class="cb-label">This week</span></label>
+      <label><input type="checkbox" value="this-weekend"/><span class="cb-label">This weekend</span></label>
+      <label><input type="checkbox" value="this-month"/><span class="cb-label">This month</span></label>
+      <label><input type="checkbox" value="next-month"/><span class="cb-label">Next month</span></label>
+      <div style="border-top:1px solid var(--border);margin:8px 0;padding-top:8px">
+        <label style="font-size:12px;font-weight:600;color:var(--text-muted);margin-bottom:4px;display:block;padding:0 4px;cursor:default;gap:0">Specific date</label>
+        <input type="date" id="specificDate" style="width:100%;padding:8px 10px;border:1px solid var(--border);border-radius:6px;font-size:13px;font-family:inherit;color:var(--text);background:var(--surface);cursor:pointer" onchange="applyDateFilter(this.value)" aria-label="Pick a specific date"/>
+      </div>
     </div>
   </div>
 
