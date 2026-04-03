@@ -1,0 +1,736 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>InfoSecurity Calendar — Events Redesign</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#f6f8fa;--surface:#fff;--primary:#0e7490;--primary-dark:#0a5c72;
+  --primary-light:#e0f4f8;--accent:#f59e0b;--text:#1e293b;--text-sec:#475569;
+  --text-muted:#64748b;--border:#e2e8f0;--border-h:#cbd5e1;--success:#10b981;
+  --radius:12px;--radius-sm:8px;
+  --shadow:0 1px 3px rgba(0,0,0,.08),0 1px 2px rgba(0,0,0,.04);
+  --shadow-md:0 4px 12px rgba(0,0,0,.08);--tr:.2s ease;
+}
+body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;background:var(--bg);color:var(--text);font-size:16px;line-height:1.6;-webkit-font-smoothing:antialiased}
+a{color:var(--primary);text-decoration:none;transition:color var(--tr)}a:hover{color:var(--primary-dark)}
+a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid var(--primary);outline-offset:2px;border-radius:4px}
+.skip-link{position:absolute;top:-100%;left:16px;z-index:9999;padding:8px 16px;background:var(--primary);color:#fff;border-radius:var(--radius-sm);font-weight:600}
+.skip-link:focus{top:16px}
+
+/* NAV */
+.topnav{background:#fff;border-bottom:1px solid var(--border);position:sticky;top:0;z-index:100}
+.nav-inner{max-width:1280px;margin:0 auto;padding:0 24px;display:flex;align-items:center;justify-content:space-between;height:64px}
+.logo{display:flex;align-items:center;gap:10px;font-weight:800;font-size:18px;color:var(--text)}
+.nav-links{display:flex;gap:8px;list-style:none}
+.nav-links a{padding:8px 14px;border-radius:var(--radius-sm);font-size:14px;font-weight:500;color:var(--text-sec);transition:all var(--tr)}
+.nav-links a:hover{background:var(--bg);color:var(--text)}.nav-links a.active{background:var(--primary-light);color:var(--primary)}
+.nav-cta{padding:8px 18px;background:var(--primary);color:#fff!important;border-radius:var(--radius-sm);font-weight:600;font-size:14px;transition:background var(--tr)}
+.nav-cta:hover{background:var(--primary-dark);color:#fff!important}
+
+/* DEMO TOGGLE */
+.demo-bar{background:#fef3c7;border-bottom:1px solid #fcd34d;padding:8px 24px;display:flex;align-items:center;justify-content:center;gap:12px;font-size:13px;font-weight:600;color:#92400e}
+.demo-toggle{display:flex;background:#fff;border-radius:100px;overflow:hidden;border:2px solid #f59e0b}
+.demo-toggle button{padding:6px 16px;border:none;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit;transition:all var(--tr);background:transparent;color:#92400e}
+.demo-toggle button.active{background:#f59e0b;color:#000}
+
+/* HERO */
+.hero{background:linear-gradient(135deg,#0e7490 0%,#164e63 100%);color:#fff;padding:48px 24px 40px;text-align:center}
+.hero h1{font-size:32px;font-weight:800;margin-bottom:8px;letter-spacing:-.5px}
+.hero p{font-size:17px;opacity:.85;max-width:550px;margin:0 auto 28px}
+.search-bar{max-width:840px;margin:0 auto;display:flex;gap:8px;background:rgba(255,255,255,.15);backdrop-filter:blur(8px);border-radius:var(--radius);padding:8px;border:1px solid rgba(255,255,255,.2)}
+.search-bar input{flex:1;padding:14px 20px;border:none;border-radius:var(--radius-sm);font-size:16px;font-family:inherit;background:#fff;color:var(--text);min-width:0}
+.search-bar select{flex:0 0 180px;padding:14px 16px;border:none;border-radius:var(--radius-sm);font-size:15px;font-family:inherit;background:#fff;color:var(--text);cursor:pointer;appearance:auto}
+.search-bar button{flex-shrink:0;padding:14px 28px;background:var(--accent);color:#000;border:none;border-radius:var(--radius-sm);font-weight:700;font-size:16px;cursor:pointer;font-family:inherit;transition:background var(--tr)}
+.search-bar button:hover{background:#d97706}
+
+/* 3-COL LAYOUT */
+.main{max-width:1280px;margin:0 auto;padding:32px 24px 80px}
+.layout-3{display:grid;grid-template-columns:240px 1fr 280px;gap:28px;align-items:start}
+
+/* ── LEFT SIDEBAR: FILTERS ── */
+.filter-panel{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);position:sticky;top:88px;overflow:hidden}
+.filter-panel-header{display:flex;align-items:center;justify-content:space-between;padding:16px 18px;border-bottom:1px solid var(--border)}
+.filter-panel-header h2{font-size:15px;font-weight:700;display:flex;align-items:center;gap:8px}
+.filter-panel-header h2 svg{width:18px;height:18px;color:var(--primary)}
+.filter-clear{font-size:12px;font-weight:600;color:var(--text-muted);cursor:pointer;background:none;border:none;font-family:inherit;transition:color var(--tr);padding:4px 8px;border-radius:4px}
+.filter-clear:hover{color:#ef4444;background:#fef2f2}
+
+.filter-section{border-bottom:1px solid var(--border)}
+.filter-section:last-child{border-bottom:none}
+.filter-toggle{width:100%;display:flex;align-items:center;justify-content:space-between;padding:14px 18px;background:none;border:none;cursor:pointer;font-family:inherit;font-size:13px;font-weight:700;color:var(--text);text-transform:uppercase;letter-spacing:.5px;transition:background var(--tr)}
+.filter-toggle:hover{background:var(--bg)}
+.filter-toggle svg{width:16px;height:16px;color:var(--text-muted);transition:transform var(--tr);flex-shrink:0}
+.filter-toggle.open svg{transform:rotate(180deg)}
+.filter-toggle .filter-count{background:var(--primary);color:#fff;font-size:10px;font-weight:700;min-width:18px;height:18px;border-radius:9px;display:inline-flex;align-items:center;justify-content:center;padding:0 5px;margin-left:6px}
+
+.filter-body{padding:0 18px 14px;display:none}
+.filter-body.open{display:block}
+.filter-body label{display:flex;align-items:center;gap:8px;padding:5px 4px;border-radius:6px;font-size:13px;cursor:pointer;transition:background var(--tr);color:var(--text-sec);user-select:none}
+.filter-body label:hover{background:var(--bg);color:var(--text)}
+.filter-body input[type="checkbox"]{width:16px;height:16px;accent-color:var(--primary);cursor:pointer;flex-shrink:0}
+.filter-body .cb-label{flex:1}
+.filter-body .cb-count{font-size:11px;color:var(--text-muted);margin-left:auto}
+
+/* MOBILE FILTER BUTTON */
+.mobile-filter-btn{display:none;padding:10px 18px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-sm);font-size:14px;font-weight:600;cursor:pointer;font-family:inherit;color:var(--text-sec);gap:8px;align-items:center;transition:all var(--tr)}
+.mobile-filter-btn:hover{border-color:var(--primary);color:var(--primary)}
+.mobile-filter-btn svg{width:18px;height:18px}
+.filter-overlay{display:none}
+
+/* TOOLBAR */
+.toolbar{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:20px}
+.toolbar-left{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.result-count{font-size:15px;color:var(--text-muted)}.result-count strong{color:var(--text);font-weight:700}
+.time-tabs{display:flex;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-sm);overflow:hidden}
+.time-tab{padding:8px 18px;border:none;background:transparent;cursor:pointer;font-size:14px;font-weight:600;color:var(--text-muted);font-family:inherit;transition:all var(--tr);position:relative}
+.time-tab.active{color:var(--primary);background:var(--primary-light)}
+.time-tab .tab-count{font-size:11px;font-weight:700;background:var(--bg);color:var(--text-muted);padding:1px 7px;border-radius:100px;margin-left:6px}
+.time-tab.active .tab-count{background:rgba(14,116,144,.15);color:var(--primary)}
+.view-toggle{display:flex;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-sm);overflow:hidden}
+.view-btn{padding:8px 14px;border:none;background:transparent;cursor:pointer;display:flex;align-items:center;gap:6px;font-size:13px;font-weight:500;color:var(--text-muted);font-family:inherit;transition:all var(--tr)}
+.view-btn.active{background:var(--primary);color:#fff}
+.view-btn svg{width:16px;height:16px}
+
+/* ACTIVE FILTER TAGS */
+.active-tags{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px}
+.active-tags:empty{display:none}
+.active-tag{display:inline-flex;align-items:center;gap:4px;padding:4px 10px;background:var(--primary-light);border:1px solid #b2e0ec;border-radius:100px;font-size:12px;font-weight:600;color:var(--primary);cursor:default}
+.active-tag button{background:none;border:none;cursor:pointer;color:var(--primary);font-size:14px;line-height:1;padding:0 0 0 2px;font-weight:700;opacity:.6;transition:opacity var(--tr)}
+.active-tag button:hover{opacity:1}
+
+/* EVENT CARDS */
+.events-grid{display:flex;flex-direction:column;gap:16px}
+.event-card{display:grid;grid-template-columns:88px 1fr auto;align-items:center;gap:20px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:20px 24px;transition:all var(--tr);cursor:pointer}
+.event-card:hover{border-color:var(--border-h);box-shadow:var(--shadow-md);transform:translateY(-1px)}
+.date-badge{display:flex;flex-direction:column;align-items:center;justify-content:center;background:var(--primary-light);border-radius:var(--radius-sm);padding:12px 8px;min-width:80px;text-align:center}
+.date-badge .month{font-size:12px;font-weight:700;text-transform:uppercase;color:var(--primary);letter-spacing:.5px}
+.date-badge .day{font-size:28px;font-weight:800;color:var(--primary-dark);line-height:1.1}
+.date-badge .year{font-size:11px;color:var(--text-muted);margin-top:2px}
+.event-info{min-width:0}
+.event-meta{display:flex;align-items:center;gap:12px;margin-bottom:6px;flex-wrap:wrap}
+.event-tag{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;padding:3px 10px;border-radius:100px}
+.tag-conference{background:#dbeafe;color:#1e40af}.tag-webinar{background:#f3e8ff;color:#6b21a8}
+.tag-workshop{background:#fef3c7;color:#92400e}.tag-forum{background:#d1fae5;color:#065f46}
+.tag-course{background:#ffe4e6;color:#9f1239}.tag-symposium{background:#e0e7ff;color:#3730a3}
+.tag-event{background:#f1f5f9;color:#334155}.tag-featured{background:#fff7ed;color:#c2410c}
+.event-title{font-size:18px;font-weight:700;color:var(--text);margin-bottom:6px;line-height:1.35;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.event-details{display:flex;align-items:center;gap:16px;flex-wrap:wrap;font-size:14px;color:var(--text-muted)}
+.event-details span{display:flex;align-items:center;gap:5px}.event-details svg{width:15px;height:15px;flex-shrink:0}
+.event-right{display:flex;flex-direction:column;align-items:flex-end;gap:10px;flex-shrink:0}
+.event-price{font-size:18px;font-weight:700;color:var(--text)}.event-price.free{color:var(--success)}
+.event-btn{padding:8px 20px;border:2px solid var(--primary);color:var(--primary);border-radius:var(--radius-sm);font-weight:600;font-size:13px;background:transparent;cursor:pointer;font-family:inherit;transition:all var(--tr);white-space:nowrap}
+.event-btn:hover{background:var(--primary);color:#fff}
+.event-card.featured{border:2px solid var(--accent);position:relative;overflow:visible}
+.featured-badge{position:absolute;top:-10px;left:24px;background:var(--accent);color:#000;font-size:11px;font-weight:700;padding:3px 12px;border-radius:100px;text-transform:uppercase;letter-spacing:.5px}
+.month-separator{display:flex;align-items:center;gap:16px;margin:16px 0 8px;font-size:14px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:1px}
+.month-separator::after{content:'';flex:1;height:1px;background:var(--border)}
+
+/* CALENDAR */
+.calendar-grid{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;min-width:0}
+.cal-header{display:flex;align-items:center;justify-content:space-between;padding:16px 20px;border-bottom:1px solid var(--border)}
+.cal-header h3{font-size:18px;font-weight:700}
+.cal-nav{display:flex;gap:8px}
+.cal-nav button{width:36px;height:36px;border:1px solid var(--border);border-radius:var(--radius-sm);background:var(--surface);cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center;transition:all var(--tr);color:var(--text)}
+.cal-nav button:hover{background:var(--bg);border-color:var(--primary)}
+.cal-weekdays{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));background:var(--bg);border-bottom:1px solid var(--border)}
+.cal-weekdays span{padding:10px;text-align:center;font-size:12px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.5px}
+.cal-days{display:grid;grid-template-columns:repeat(7,minmax(0,1fr))}
+.cal-day{min-height:100px;border-right:1px solid var(--border);border-bottom:1px solid var(--border);padding:6px 8px;transition:background var(--tr);overflow:hidden;min-width:0}
+.cal-day:nth-child(7n){border-right:none}
+.cal-day:hover{background:var(--bg)}
+.cal-day.other-month{background:#fafbfc}
+.cal-day .day-num{font-size:13px;font-weight:600;color:var(--text-muted);margin-bottom:4px}
+.cal-day.today .day-num{background:var(--primary);color:#fff;width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px}
+.cal-event{font-size:10px;font-weight:600;padding:2px 6px;border-radius:4px;margin-bottom:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;cursor:pointer}
+.cal-event:hover{opacity:.85}
+.cal-event.ce-conf{background:#dbeafe;color:#1e40af}.cal-event.ce-web{background:#f3e8ff;color:#6b21a8}
+.cal-event.ce-work{background:#fef3c7;color:#92400e}.cal-event.ce-forum{background:#d1fae5;color:#065f46}
+.cal-event.ce-course{background:#ffe4e6;color:#9f1239}.cal-event.ce-symp{background:#e0e7ff;color:#3730a3}
+
+/* EMPTY STATE */
+.empty-state{text-align:center;padding:80px 24px;background:var(--surface);border:2px dashed var(--border);border-radius:var(--radius)}
+.empty-icon{width:80px;height:80px;margin:0 auto 20px;background:var(--primary-light);border-radius:50%;display:flex;align-items:center;justify-content:center}
+.empty-icon svg{width:40px;height:40px;color:var(--primary)}
+.empty-state h2{font-size:22px;font-weight:700;margin-bottom:8px;color:var(--text)}
+.empty-state p{font-size:16px;color:var(--text-muted);max-width:440px;margin:0 auto 24px;line-height:1.6}
+.empty-actions{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+.empty-btn{padding:12px 24px;border-radius:var(--radius-sm);font-weight:600;font-size:14px;cursor:pointer;font-family:inherit;transition:all var(--tr);border:none}
+.empty-btn.primary{background:var(--primary);color:#fff}.empty-btn.primary:hover{background:var(--primary-dark)}
+.empty-btn.secondary{background:var(--surface);color:var(--primary);border:2px solid var(--primary)}.empty-btn.secondary:hover{background:var(--primary-light)}
+.empty-subscribe{display:flex;gap:8px;max-width:420px;margin:0 auto;justify-content:center}
+.empty-subscribe input{flex:1;padding:12px 16px;border:2px solid var(--border);border-radius:var(--radius-sm);font-size:15px;font-family:inherit;color:var(--text);min-width:0;transition:border-color var(--tr)}
+.empty-subscribe input:focus{border-color:var(--primary);outline:none}
+
+/* RIGHT SIDEBAR */
+.sidebar{display:flex;flex-direction:column;gap:20px;position:sticky;top:88px}
+.sidebar-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:24px}
+.sidebar-card h3{font-size:16px;font-weight:700;margin-bottom:12px}
+.alert-card{background:linear-gradient(135deg,#0e7490,#164e63);color:#fff;border:none;text-align:center}
+.alert-card h3{color:#fff;font-size:18px;margin-bottom:8px}
+.alert-card p{font-size:14px;opacity:.85;margin-bottom:16px}
+.alert-input{display:flex;gap:8px}
+.alert-input input{flex:1;padding:10px 14px;border:none;border-radius:var(--radius-sm);font-size:14px;font-family:inherit;min-width:0}
+.alert-input button{padding:10px 16px;background:var(--accent);color:#000;border:none;border-radius:var(--radius-sm);font-weight:700;cursor:pointer;font-family:inherit;font-size:14px;white-space:nowrap}
+.upcoming-list{list-style:none}
+.upcoming-list li{padding:10px 0;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:12px}
+.upcoming-list li:last-child{border-bottom:none}
+.mini-date{background:var(--bg);border-radius:6px;padding:6px 10px;text-align:center;flex-shrink:0;min-width:50px}
+.mini-date .m{font-size:10px;font-weight:700;text-transform:uppercase;color:var(--primary)}
+.mini-date .d{font-size:16px;font-weight:800;color:var(--text)}
+.mini-title{font-size:13px;font-weight:600;color:var(--text);line-height:1.3}
+.mini-loc{font-size:11px;color:var(--text-muted)}
+
+/* PAGINATION */
+.pagination{display:flex;align-items:center;justify-content:center;gap:4px;margin-top:40px}
+.page-btn{padding:10px 16px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-sm);font-size:14px;font-weight:500;cursor:pointer;color:var(--text-sec);font-family:inherit;transition:all var(--tr)}
+.page-btn:hover{border-color:var(--primary);color:var(--primary)}
+.page-btn.active{background:var(--primary);color:#fff;border-color:var(--primary)}
+
+/* FOOTER */
+footer{background:#0f172a;color:#94a3b8;padding:48px 24px 32px}
+.footer-inner{max-width:1280px;margin:0 auto;display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:40px}
+footer h4{color:#fff;font-size:14px;margin-bottom:16px}
+.footer-about{font-size:14px;line-height:1.7}
+.footer-links{list-style:none}.footer-links li{margin-bottom:8px}
+.footer-links a{color:#94a3b8;font-size:14px}.footer-links a:hover{color:#fff}
+.footer-bottom{max-width:1280px;margin:32px auto 0;padding-top:24px;border-top:1px solid #1e293b;display:flex;justify-content:space-between;font-size:13px;flex-wrap:wrap;gap:12px}
+
+/* RESPONSIVE */
+@media(max-width:1060px){
+  .layout-3{grid-template-columns:1fr 280px}
+  .filter-panel{display:none}
+  .filter-panel.mobile-open{display:block;position:fixed;top:0;left:0;width:300px;height:100%;z-index:200;border-radius:0;overflow-y:auto}
+  .filter-overlay{position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:199;display:none}
+  .filter-overlay.open{display:block}
+  .mobile-filter-btn{display:inline-flex}
+}
+@media(max-width:780px){
+  .layout-3{grid-template-columns:1fr}
+  .sidebar{position:static}
+  .footer-inner{grid-template-columns:1fr 1fr}
+  .hero h1{font-size:24px}.search-bar{flex-direction:column}.search-bar select{flex:1}
+  .event-card{grid-template-columns:1fr;gap:12px;padding:16px}
+  .event-right{flex-direction:row;align-items:center;justify-content:space-between;width:100%}
+  .nav-links{display:none}.toolbar{flex-direction:column;align-items:flex-start}
+  .footer-inner{grid-template-columns:1fr}.cal-day{min-height:60px}
+}
+</style>
+</head>
+<body>
+
+<a href="#main-content" class="skip-link">Skip to main content</a>
+
+<!-- NAV -->
+<nav class="topnav" role="navigation" aria-label="Main navigation">
+  <div class="nav-inner">
+    <a href="#" class="logo">
+      <svg width="32" height="32" viewBox="0 0 32 32" fill="none"><rect width="32" height="32" rx="8" fill="#0e7490"/><path d="M8 12h16M8 16h16M8 20h10" stroke="#fff" stroke-width="2" stroke-linecap="round"/><circle cx="24" cy="10" r="4" fill="#f59e0b"/></svg>
+      InfoSec Calendar
+    </a>
+    <ul class="nav-links">
+      <li><a href="#">Home</a></li>
+      <li><a href="#" class="active">Events</a></li>
+      <li><a href="#">Videos</a></li>
+      <li><a href="#">Free Alerts</a></li>
+      <li><a href="#">Contact</a></li>
+    </ul>
+    <a href="#" class="nav-cta">+ Submit Event</a>
+  </div>
+</nav>
+
+<!-- DEMO TOGGLE -->
+<div class="demo-bar">
+  <span>Demo mode:</span>
+  <div class="demo-toggle">
+    <button id="demoEvents" class="active" onclick="setDemo('events')">With Events</button>
+    <button id="demoEmpty" onclick="setDemo('empty')">Empty State</button>
+  </div>
+</div>
+
+<!-- HERO -->
+<header class="hero">
+  <h1>Cybersecurity Events Worldwide</h1>
+  <p>Find conferences, workshops, and webinars that matter for your security career.</p>
+  <form class="search-bar" role="search" aria-label="Search events" onsubmit="return false">
+    <input type="text" placeholder="Search events, topics, speakers..." aria-label="Search events by keyword"/>
+    <select aria-label="Filter by region">
+      <option value="">All Regions</option>
+      <option>Africa</option><option>Asia</option><option>Australia</option>
+      <option>Canada</option><option>Europe</option><option>South America</option><option>United States</option>
+    </select>
+    <button type="submit">Search</button>
+  </form>
+</header>
+
+<!-- MAIN -->
+<main class="main" id="main-content">
+<div class="layout-3">
+
+<!-- LEFT SIDEBAR: FILTERS -->
+<div class="filter-panel" id="filterPanel" role="region" aria-label="Filters">
+  <div class="filter-panel-header">
+    <h2>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M7 12h10M10 18h4"/></svg>
+      Filters
+    </h2>
+    <button class="filter-clear" onclick="clearAllFilters()">Clear all</button>
+  </div>
+
+  <!-- Category -->
+  <div class="filter-section">
+    <button class="filter-toggle open" onclick="toggleSection(this)" aria-expanded="true">
+      <span>Category</span>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+    </button>
+    <div class="filter-body open" data-group="cat">
+      <label><input type="checkbox" value="Conference"/><span class="cb-label">Conference</span><span class="cb-count">3</span></label>
+      <label><input type="checkbox" value="Course"/><span class="cb-label">Course</span><span class="cb-count">1</span></label>
+      <label><input type="checkbox" value="Event"/><span class="cb-label">Event</span><span class="cb-count">1</span></label>
+      <label><input type="checkbox" value="Featured"/><span class="cb-label">Featured</span><span class="cb-count">2</span></label>
+      <label><input type="checkbox" value="Forum"/><span class="cb-label">Forum</span><span class="cb-count">1</span></label>
+      <label><input type="checkbox" value="Symposium"/><span class="cb-label">Symposium</span><span class="cb-count">1</span></label>
+      <label><input type="checkbox" value="Webinar"/><span class="cb-label">Webinar</span><span class="cb-count">2</span></label>
+      <label><input type="checkbox" value="Workshop"/><span class="cb-label">Workshop</span><span class="cb-count">1</span></label>
+    </div>
+  </div>
+
+  <!-- Day -->
+  <div class="filter-section">
+    <button class="filter-toggle" onclick="toggleSection(this)" aria-expanded="false">
+      <span>Day</span>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+    </button>
+    <div class="filter-body" data-group="day">
+      <label><input type="checkbox" value="Monday"/><span class="cb-label">Monday</span></label>
+      <label><input type="checkbox" value="Tuesday"/><span class="cb-label">Tuesday</span></label>
+      <label><input type="checkbox" value="Wednesday"/><span class="cb-label">Wednesday</span></label>
+      <label><input type="checkbox" value="Thursday"/><span class="cb-label">Thursday</span></label>
+      <label><input type="checkbox" value="Friday"/><span class="cb-label">Friday</span></label>
+      <label><input type="checkbox" value="Saturday"/><span class="cb-label">Saturday</span></label>
+      <label><input type="checkbox" value="Sunday"/><span class="cb-label">Sunday</span></label>
+    </div>
+  </div>
+
+  <!-- Time -->
+  <div class="filter-section">
+    <button class="filter-toggle" onclick="toggleSection(this)" aria-expanded="false">
+      <span>Time</span>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+    </button>
+    <div class="filter-body" data-group="time">
+      <label><input type="checkbox" value="allday"/><span class="cb-label">All Day</span></label>
+      <label><input type="checkbox" value="morning"/><span class="cb-label">Morning (6am – 12pm)</span></label>
+      <label><input type="checkbox" value="afternoon"/><span class="cb-label">Afternoon (12 – 5pm)</span></label>
+      <label><input type="checkbox" value="evening"/><span class="cb-label">Evening (5 – 9pm)</span></label>
+      <label><input type="checkbox" value="night"/><span class="cb-label">Night (9pm – 6am)</span></label>
+    </div>
+  </div>
+
+  <!-- Cost -->
+  <div class="filter-section">
+    <button class="filter-toggle" onclick="toggleSection(this)" aria-expanded="false">
+      <span>Cost</span>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+    </button>
+    <div class="filter-body" data-group="cost">
+      <label><input type="checkbox" value="free"/><span class="cb-label">Free</span><span class="cb-count">2</span></label>
+      <label><input type="checkbox" value="under100"/><span class="cb-label">Under $100</span></label>
+      <label><input type="checkbox" value="100-500"/><span class="cb-label">$100 – $500</span><span class="cb-count">2</span></label>
+      <label><input type="checkbox" value="500-1000"/><span class="cb-label">$500 – $1,000</span><span class="cb-count">2</span></label>
+      <label><input type="checkbox" value="1000-5000"/><span class="cb-label">$1,000 – $5,000</span><span class="cb-count">3</span></label>
+      <label><input type="checkbox" value="5000+"/><span class="cb-label">$5,000+</span><span class="cb-count">1</span></label>
+    </div>
+  </div>
+</div>
+
+<!-- MOBILE OVERLAY -->
+<div class="filter-overlay" id="filterOverlay" onclick="closeMobileFilters()"></div>
+
+<!-- CENTER: CONTENT -->
+<div>
+  <div class="toolbar">
+    <div class="toolbar-left">
+      <button class="mobile-filter-btn" onclick="openMobileFilters()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M7 12h10M10 18h4"/></svg>
+        Filters
+      </button>
+      <div class="time-tabs" role="tablist" aria-label="Event time period">
+        <button class="time-tab active" id="tabUpcoming" onclick="setTimeTab('upcoming')" role="tab" aria-selected="true">Upcoming<span class="tab-count" id="countUpcoming">10</span></button>
+        <button class="time-tab" id="tabPast" onclick="setTimeTab('past')" role="tab" aria-selected="false">Past<span class="tab-count" id="countPast">3</span></button>
+      </div>
+      <span class="result-count" id="resultCount">Showing <strong>10</strong> upcoming events</span>
+    </div>
+    <div class="view-toggle" role="group" aria-label="View options">
+      <button class="view-btn active" id="viewList" onclick="setView('list')" aria-pressed="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="4" y1="6" x2="20" y2="6"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="18" x2="14" y2="18"/></svg>
+        List
+      </button>
+      <button class="view-btn" id="viewCal" onclick="setView('calendar')" aria-pressed="false">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="3" y1="10" x2="21" y2="10"/><line x1="9" y1="4" x2="9" y2="22"/><line x1="15" y1="4" x2="15" y2="22"/><line x1="3" y1="16" x2="21" y2="16"/></svg>
+        Calendar
+      </button>
+    </div>
+  </div>
+
+  <!-- ACTIVE FILTER TAGS -->
+  <div class="active-tags" id="activeTags"></div>
+
+  <!-- LIST VIEW -->
+  <div id="listView">
+    <div class="events-grid" id="eventsList"></div>
+    <nav class="pagination" aria-label="Event listing pages" id="pagination"></nav>
+  </div>
+
+  <!-- CALENDAR VIEW -->
+  <div id="calendarView" style="display:none">
+    <div class="calendar-grid">
+      <div class="cal-header">
+        <div class="cal-nav"><button onclick="changeMonth(-1)" aria-label="Previous month">&#8592;</button></div>
+        <h3 id="calMonthTitle">April 2026</h3>
+        <div class="cal-nav"><button onclick="changeMonth(1)" aria-label="Next month">&#8594;</button></div>
+      </div>
+      <div class="cal-weekdays"><span>Sun</span><span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span></div>
+      <div class="cal-days" id="calDays"></div>
+    </div>
+  </div>
+
+  <!-- EMPTY STATE -->
+  <div id="emptyState" style="display:none">
+    <div class="empty-state">
+      <div class="empty-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/><circle cx="12" cy="16" r="1"/></svg>
+      </div>
+      <h2>No Upcoming Events Right Now</h2>
+      <p>We're curating the next wave of cybersecurity events. Subscribe to get notified the moment new conferences, webinars, and workshops are added.</p>
+      <form class="empty-subscribe" onsubmit="return false" aria-label="Subscribe for event alerts">
+        <input type="email" placeholder="Enter your email address" aria-label="Email for event alerts"/>
+        <button class="empty-btn primary" type="submit">Get Email Alerts</button>
+      </form>
+      <div class="empty-actions" style="margin-top:12px">
+        <button class="empty-btn secondary" onclick="setDemo('events');setTimeTab('past')">Browse Past Events</button>
+      </div>
+    </div>
+    <div style="margin-top:32px">
+      <h3 style="font-size:18px;font-weight:700;margin-bottom:16px">Recently Concluded</h3>
+      <div class="events-grid" id="pastEventsList"></div>
+    </div>
+  </div>
+</div>
+
+<!-- RIGHT SIDEBAR -->
+<aside class="sidebar" aria-label="Sidebar">
+  <div class="sidebar-card alert-card">
+    <h3>Never Miss an Event</h3>
+    <p>Get weekly alerts for cybersecurity events in your region.</p>
+    <div class="alert-input">
+      <input type="email" placeholder="Your email" aria-label="Email for event alerts"/>
+      <button>Subscribe</button>
+    </div>
+  </div>
+  <div class="sidebar-card">
+    <h3>Coming Soon</h3>
+    <ul class="upcoming-list" id="sidebarUpcoming"></ul>
+  </div>
+</aside>
+
+</div>
+</main>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-inner">
+    <div>
+      <h4>About Us</h4>
+      <p class="footer-about">Info Security Calendar is a regularly updated directory of all the important cybersecurity events, including conferences, courses, forums, webinars, workshops, and everything in between. Our platform also enables you to submit your own event, view presentations and promo videos from conferences, or even subscribe to free email notifications for the events you're interested in. The Info Security Calendar team will keep you up to date with all cybersecurity events that matter for your organization!</p>
+    </div>
+    <div>
+      <h4>Navigate</h4>
+      <ul class="footer-links">
+        <li><a href="#">Home</a></li><li><a href="#">Events</a></li>
+        <li><a href="#">Submit Event</a></li><li><a href="#">Videos</a></li><li><a href="#">Free Alerts</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4>Legal</h4>
+      <ul class="footer-links">
+        <li><a href="#">Privacy Policy</a></li><li><a href="#">CCPA Privacy Policy</a></li>
+        <li><a href="#">GDPR</a></li><li><a href="#">LGPD</a></li><li><a href="#">Cookie Policy</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4>Connect</h4>
+      <ul class="footer-links">
+        <li><a href="#">Twitter / X</a></li><li><a href="#">LinkedIn</a></li><li><a href="#">Contact Us</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>&copy; 2026 InfoSecurity Calendar. All rights reserved.</span>
+    <span>Made for the cybersecurity community</span>
+  </div>
+</footer>
+
+<script>
+// ─── ICONS ───
+const icons = {
+  loc:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>',
+  cal:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>',
+  time:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>',
+  online:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>'
+};
+
+// ─── DATA ───
+const events = [
+  {title:"RSA Conference 2026",cat:"Conference",loc:"San Francisco, CA",start:"2026-04-20",end:"2026-04-24",price:2400,featured:true},
+  {title:"OWASP Global AppSec EU 2026",cat:"Conference",loc:"Dublin, Ireland",start:"2026-04-27",end:"2026-04-30",price:850},
+  {title:"Cloud Security Fundamentals: Zero Trust in Practice",cat:"Webinar",loc:"Online",start:"2026-04-29",end:"2026-04-29",price:0},
+  {title:"Hands-On Incident Response Workshop",cat:"Workshop",loc:"London, UK",start:"2026-05-04",end:"2026-05-05",price:495},
+  {title:"CISO Forum: Boardroom Cybersecurity Strategy",cat:"Forum",loc:"Washington, DC",start:"2026-05-11",end:"2026-05-11",price:150},
+  {title:"SANS SEC504: Hacker Tools, Techniques & Incident Handling",cat:"Course",loc:"Online (Live)",start:"2026-05-18",end:"2026-05-23",price:7270},
+  {title:"AI-Powered Threat Detection: What CISOs Need to Know",cat:"Webinar",loc:"Online",start:"2026-05-22",end:"2026-05-22",price:0},
+  {title:"Gartner Security & Risk Management Summit",cat:"Conference",loc:"National Harbor, MD",start:"2026-06-08",end:"2026-06-11",price:3750},
+  {title:"IEEE Symposium on Security and Privacy (S&P)",cat:"Symposium",loc:"San Jose, CA",start:"2026-06-15",end:"2026-06-18",price:950},
+  {title:"InfoSec World 2026",cat:"Event",loc:"Orlando, FL",start:"2026-06-22",end:"2026-06-24",price:1295,featured:true},
+];
+const pastEvents = [
+  {title:"Black Hat USA 2025",cat:"Conference",loc:"Las Vegas, NV",start:"2025-08-02",end:"2025-08-07",price:2800},
+  {title:"DEF CON 33",cat:"Event",loc:"Las Vegas, NV",start:"2025-08-07",end:"2025-08-10",price:0},
+  {title:"BSides Las Vegas 2025",cat:"Event",loc:"Las Vegas, NV",start:"2025-08-05",end:"2025-08-06",price:0},
+  {title:"USENIX Security Symposium 2025",cat:"Symposium",loc:"Seattle, WA",start:"2025-08-13",end:"2025-08-15",price:1050},
+  {title:"Cyber Threat Intelligence Summit",cat:"Forum",loc:"Arlington, VA",start:"2025-07-14",end:"2025-07-15",price:600},
+  {title:"SANS Cloud Security Workshop",cat:"Workshop",loc:"Online",start:"2025-06-23",end:"2025-06-27",price:3200},
+  {title:"Ransomware Defense Strategies Webinar",cat:"Webinar",loc:"Online",start:"2025-06-10",end:"2025-06-10",price:0},
+  {title:"CyberRisk CISO Dinner: NYC",cat:"Forum",loc:"New York, NY",start:"2025-05-20",end:"2025-05-20",price:0},
+  {title:"SANS SEC560: Enterprise Penetration Testing",cat:"Course",loc:"Online (Live)",start:"2025-05-05",end:"2025-05-10",price:7640},
+];
+let currentTab = 'upcoming';
+
+// ─── HELPERS ───
+const months=["January","February","March","April","May","June","July","August","September","October","November","December"];
+const monthsShort=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+const tagClasses={Conference:"tag-conference",Webinar:"tag-webinar",Workshop:"tag-workshop",Forum:"tag-forum",Course:"tag-course",Symposium:"tag-symposium",Event:"tag-event",Featured:"tag-featured"};
+const calClasses={Conference:"ce-conf",Webinar:"ce-web",Workshop:"ce-work",Forum:"ce-forum",Course:"ce-course",Symposium:"ce-symp",Event:"ce-conf",Featured:"ce-conf"};
+
+function fmtDate(d){const p=new Date(d+'T00:00:00');return monthsShort[p.getMonth()]+" "+p.getDate()+", "+p.getFullYear()}
+function fmtDateShort(d){const p=new Date(d+'T00:00:00');return monthsShort[p.getMonth()]+" "+p.getDate()}
+function fmtPrice(p){return p===0?'Free':'$'+p.toLocaleString()}
+function daysBetween(a,b){return Math.round((new Date(b+'T00:00:00')-new Date(a+'T00:00:00'))/86400000)+1}
+
+function eventCard(ev){
+  const d=new Date(ev.start+'T00:00:00');
+  const dur=daysBetween(ev.start,ev.end);
+  const isOnline=ev.loc.toLowerCase().includes('online');
+  const dateRange=ev.start===ev.end?fmtDate(ev.start):fmtDateShort(ev.start)+" – "+fmtDate(ev.end);
+  const durStr=dur===1?(isOnline?'':'1 day'):dur+' days';
+  return `<article class="event-card${ev.featured?' featured':''}" aria-label="${ev.title}">
+    ${ev.featured?'<span class="featured-badge">Featured</span>':''}
+    <div class="date-badge"><span class="month">${monthsShort[d.getMonth()]}</span><span class="day">${d.getDate()}</span><span class="year">${d.getFullYear()}</span></div>
+    <div class="event-info">
+      <div class="event-meta"><span class="event-tag ${tagClasses[ev.cat]||'tag-event'}">${ev.cat}</span></div>
+      <h3 class="event-title">${ev.title}</h3>
+      <div class="event-details">
+        <span>${isOnline?icons.online:icons.loc} ${ev.loc}</span>
+        <span>${icons.cal} ${dateRange}</span>
+        ${durStr?`<span>${icons.time} ${durStr}</span>`:''}
+      </div>
+    </div>
+    <div class="event-right">
+      <span class="event-price${ev.price===0?' free':''}">${fmtPrice(ev.price)}</span>
+      <button class="event-btn">${ev.price===0?'Register':'View Details'}</button>
+    </div>
+  </article>`;
+}
+
+// ─── ACCORDION FILTERS ───
+function toggleSection(btn){
+  const body=btn.nextElementSibling;
+  const isOpen=btn.classList.contains('open');
+  btn.classList.toggle('open',!isOpen);
+  body.classList.toggle('open',!isOpen);
+  btn.setAttribute('aria-expanded',!isOpen);
+}
+
+function clearAllFilters(){
+  document.querySelectorAll('.filter-body input[type="checkbox"]').forEach(cb=>{cb.checked=false});
+  renderActiveTags();
+  updateFilterCounts();
+}
+
+function removeFilter(group,value){
+  const body=document.querySelector(`.filter-body[data-group="${group}"]`);
+  if(body){
+    const cb=body.querySelector(`input[value="${value}"]`);
+    if(cb) cb.checked=false;
+  }
+  renderActiveTags();
+  updateFilterCounts();
+}
+
+function renderActiveTags(){
+  const tags=[];
+  document.querySelectorAll('.filter-body').forEach(body=>{
+    const group=body.dataset.group;
+    body.querySelectorAll('input:checked').forEach(cb=>{
+      const label=cb.closest('label').querySelector('.cb-label').textContent;
+      tags.push({group,value:cb.value,label});
+    });
+  });
+  const el=document.getElementById('activeTags');
+  el.innerHTML=tags.map(t=>`<span class="active-tag">${t.label}<button onclick="removeFilter('${t.group}','${t.value}')" aria-label="Remove ${t.label} filter">&times;</button></span>`).join('');
+}
+
+function updateFilterCounts(){
+  document.querySelectorAll('.filter-toggle').forEach(btn=>{
+    const body=btn.nextElementSibling;
+    const count=body.querySelectorAll('input:checked').length;
+    let badge=btn.querySelector('.filter-count');
+    if(count>0){
+      if(!badge){badge=document.createElement('span');badge.className='filter-count';btn.querySelector('span').appendChild(badge)}
+      badge.textContent=count;
+    } else if(badge){badge.remove()}
+  });
+}
+
+// Listen for checkbox changes
+document.addEventListener('change',function(e){
+  if(e.target.type==='checkbox'&&e.target.closest('.filter-body')){
+    renderActiveTags();
+    updateFilterCounts();
+  }
+});
+
+// ─── MOBILE FILTERS ───
+function openMobileFilters(){
+  document.getElementById('filterPanel').classList.add('mobile-open');
+  document.getElementById('filterOverlay').classList.add('open');
+  document.body.style.overflow='hidden';
+}
+function closeMobileFilters(){
+  document.getElementById('filterPanel').classList.remove('mobile-open');
+  document.getElementById('filterOverlay').classList.remove('open');
+  document.body.style.overflow='';
+}
+
+// ─── RENDER ───
+function renderEventList(data, label){
+  let html='',curMonth='';
+  data.forEach(ev=>{
+    const d=new Date(ev.start+'T00:00:00');
+    const mk=months[d.getMonth()]+' '+d.getFullYear();
+    if(mk!==curMonth){curMonth=mk;html+=`<div class="month-separator" role="heading" aria-level="2">${mk}</div>`}
+    html+=eventCard(ev);
+  });
+  document.getElementById('eventsList').innerHTML=html;
+  document.getElementById('resultCount').innerHTML=`Showing <strong>${data.length}</strong> ${label} events`;
+  document.getElementById('pagination').innerHTML=data.length>0?`
+    <button class="page-btn" aria-label="Previous page">&larr; Prev</button>
+    <button class="page-btn active" aria-current="page">1</button>
+    <button class="page-btn">2</button><button class="page-btn">3</button>
+    <button class="page-btn" aria-label="Next page">Next &rarr;</button>`:'';
+}
+
+function renderList(){renderEventList(events,'upcoming')}
+function renderPastList(){renderEventList(pastEvents,'past')}
+
+function renderPastEvents(){document.getElementById('pastEventsList').innerHTML=pastEvents.map(ev=>eventCard(ev)).join('')}
+
+// ─── TIME TAB (Upcoming / Past) ───
+function setTimeTab(tab){
+  currentTab=tab;
+  const isUpcoming=tab==='upcoming';
+  document.getElementById('tabUpcoming').classList.toggle('active',isUpcoming);
+  document.getElementById('tabPast').classList.toggle('active',!isUpcoming);
+  document.getElementById('tabUpcoming').setAttribute('aria-selected',isUpcoming);
+  document.getElementById('tabPast').setAttribute('aria-selected',!isUpcoming);
+  // Show/hide calendar toggle (only for upcoming)
+  document.querySelector('.view-toggle').style.display=isUpcoming?'flex':'none';
+  // Always show list view when switching tabs
+  document.getElementById('listView').style.display='block';
+  document.getElementById('calendarView').style.display='none';
+  document.getElementById('viewList').classList.add('active');
+  document.getElementById('viewCal').classList.remove('active');
+  if(isUpcoming){renderList()}else{renderPastList()}
+}
+
+function renderSidebar(){
+  document.getElementById('sidebarUpcoming').innerHTML=events.slice(0,4).map(ev=>{
+    const d=new Date(ev.start+'T00:00:00');
+    return `<li><div class="mini-date"><div class="m">${monthsShort[d.getMonth()]}</div><div class="d">${d.getDate()}</div></div>
+    <div><div class="mini-title">${ev.title.length>28?ev.title.slice(0,28)+'...':ev.title}</div><div class="mini-loc">${ev.loc}</div></div></li>`;
+  }).join('');
+}
+
+// ─── CALENDAR ───
+let calYear=2026,calMonth=3;
+function renderCalendar(){
+  document.getElementById('calMonthTitle').textContent=months[calMonth]+' '+calYear;
+  const firstDay=new Date(calYear,calMonth,1).getDay();
+  const daysInMonth=new Date(calYear,calMonth+1,0).getDate();
+  const prevDays=new Date(calYear,calMonth,0).getDate();
+  const today=new Date();
+  let html='';
+  for(let i=firstDay-1;i>=0;i--) html+=`<div class="cal-day other-month"><div class="day-num">${prevDays-i}</div></div>`;
+  for(let d=1;d<=daysInMonth;d++){
+    const isToday=d===today.getDate()&&calMonth===today.getMonth()&&calYear===today.getFullYear();
+    const ds=`${calYear}-${String(calMonth+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+    const de=events.filter(ev=>ds>=ev.start&&ds<=ev.end);
+    html+=`<div class="cal-day${isToday?' today':''}"><div class="day-num">${d}</div>
+      ${de.slice(0,3).map(ev=>`<div class="cal-event ${calClasses[ev.cat]||'ce-conf'}" title="${ev.title}">${ev.title.length>18?ev.title.slice(0,18)+'…':ev.title}</div>`).join('')}
+      ${de.length>3?`<div style="font-size:10px;color:var(--text-muted);padding:0 6px">+${de.length-3} more</div>`:''}</div>`;
+  }
+  const tot=firstDay+daysInMonth;const rem=tot%7===0?0:7-tot%7;
+  for(let i=1;i<=rem;i++) html+=`<div class="cal-day other-month"><div class="day-num">${i}</div></div>`;
+  document.getElementById('calDays').innerHTML=html;
+}
+function changeMonth(dir){calMonth+=dir;if(calMonth>11){calMonth=0;calYear++}if(calMonth<0){calMonth=11;calYear--}renderCalendar()}
+
+// ─── VIEW / DEMO ───
+function setView(v){
+  const isList=v==='list';
+  document.getElementById('listView').style.display=isList?'block':'none';
+  document.getElementById('calendarView').style.display=isList?'none':'block';
+  document.getElementById('viewList').classList.toggle('active',isList);
+  document.getElementById('viewCal').classList.toggle('active',!isList);
+  if(!isList) renderCalendar();
+}
+
+function setDemo(mode){
+  const has=mode==='events';
+  const layout=document.querySelector('.layout-3');
+  document.getElementById('demoEvents').classList.toggle('active',has);
+  document.getElementById('demoEmpty').classList.toggle('active',!has);
+  document.getElementById('listView').style.display=has?'block':'none';
+  document.getElementById('calendarView').style.display='none';
+  document.getElementById('emptyState').style.display=has?'none':'block';
+  document.getElementById('viewList').classList.add('active');
+  document.getElementById('viewCal').classList.remove('active');
+  document.getElementById('filterPanel').style.display=has?'':'none';
+  document.getElementById('activeTags').innerHTML='';
+  // Reset to upcoming tab
+  document.getElementById('tabUpcoming').classList.add('active');
+  document.getElementById('tabPast').classList.remove('active');
+  document.querySelector('.view-toggle').style.display='flex';
+  currentTab='upcoming';
+  if(has){
+    layout.style.gridTemplateColumns='240px 1fr 280px';
+    document.querySelector('.toolbar').style.display='flex';
+    renderList();
+  } else {
+    layout.style.gridTemplateColumns='1fr 280px';
+    document.querySelector('.toolbar').style.display='none';
+    renderPastEvents();
+  }
+}
+
+// ─── INIT ───
+document.getElementById('countUpcoming').textContent=events.length;
+document.getElementById('countPast').textContent=pastEvents.length;
+renderList();
+renderSidebar();
+</script>
+</body>
+</html>
