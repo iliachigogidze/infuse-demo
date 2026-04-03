@@ -119,8 +119,9 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible{ou
 .tag-workshop{background:#fef3c7;color:#92400e}.tag-forum{background:#d1fae5;color:#065f46}
 .tag-course{background:#ffe4e6;color:#9f1239}.tag-symposium{background:#e0e7ff;color:#3730a3}
 .tag-event{background:#f1f5f9;color:#334155}.tag-featured{background:#fff7ed;color:#c2410c}
-.event-title{font-size:18px;font-weight:700;color:var(--text);margin-bottom:6px;line-height:1.35;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
-.event-details{display:flex;align-items:center;gap:16px;flex-wrap:wrap;font-size:14px;color:var(--text-muted)}
+.event-title{font-size:18px;font-weight:700;color:var(--text);margin-bottom:4px;line-height:1.35;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.event-city{display:flex;align-items:center;gap:5px;font-size:14px;font-weight:600;color:var(--primary);margin-bottom:8px}.event-city svg{width:14px;height:14px;flex-shrink:0}
+.event-details{display:flex;align-items:center;gap:16px;flex-wrap:wrap;font-size:13px;color:var(--text-muted)}
 .event-details span{display:flex;align-items:center;gap:5px}.event-details svg{width:15px;height:15px;flex-shrink:0}
 .event-right{display:flex;flex-direction:column;align-items:flex-end;gap:10px;flex-shrink:0}
 .event-price{font-size:18px;font-weight:700;color:var(--text)}.event-price.free{color:var(--success)}
@@ -297,6 +298,24 @@ footer h4{color:#fff;font-size:14px;margin-bottom:16px}
       <label><input type="checkbox" value="Symposium"/><span class="cb-label">Symposium</span><span class="cb-count">1</span></label>
       <label><input type="checkbox" value="Webinar"/><span class="cb-label">Webinar</span><span class="cb-count">2</span></label>
       <label><input type="checkbox" value="Workshop"/><span class="cb-label">Workshop</span><span class="cb-count">1</span></label>
+    </div>
+  </div>
+
+  <!-- City -->
+  <div class="filter-section">
+    <button class="filter-toggle" onclick="toggleSection(this)" aria-expanded="false">
+      <span>City</span>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+    </button>
+    <div class="filter-body" data-group="city">
+      <label><input type="checkbox" value="Online"/><span class="cb-label">Online</span><span class="cb-count">3</span></label>
+      <label><input type="checkbox" value="San Francisco, CA"/><span class="cb-label">San Francisco, CA</span><span class="cb-count">1</span></label>
+      <label><input type="checkbox" value="Dublin, Ireland"/><span class="cb-label">Dublin, Ireland</span><span class="cb-count">1</span></label>
+      <label><input type="checkbox" value="London, UK"/><span class="cb-label">London, UK</span><span class="cb-count">1</span></label>
+      <label><input type="checkbox" value="Washington, DC"/><span class="cb-label">Washington, DC</span><span class="cb-count">1</span></label>
+      <label><input type="checkbox" value="National Harbor, MD"/><span class="cb-label">National Harbor, MD</span><span class="cb-count">1</span></label>
+      <label><input type="checkbox" value="San Jose, CA"/><span class="cb-label">San Jose, CA</span><span class="cb-count">1</span></label>
+      <label><input type="checkbox" value="Orlando, FL"/><span class="cb-label">Orlando, FL</span><span class="cb-count">1</span></label>
     </div>
   </div>
 
@@ -519,8 +538,8 @@ function eventCard(ev){
     <div class="event-info">
       <div class="event-meta"><span class="event-tag ${tagClasses[ev.cat]||'tag-event'}">${ev.cat}</span></div>
       <h3 class="event-title">${ev.title}</h3>
+      <div class="event-city">${isOnline?icons.online:icons.loc} ${ev.loc}</div>
       <div class="event-details">
-        <span>${isOnline?icons.online:icons.loc} ${ev.loc}</span>
         <span>${icons.cal} ${dateRange}</span>
         ${durStr?`<span>${icons.time} ${durStr}</span>`:''}
       </div>
