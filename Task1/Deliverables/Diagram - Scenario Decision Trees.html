@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>DPO Platform - Scenario Decision Trees</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: Arial, sans-serif; background: #f5f6fa; color: #2d3436; }
+
+  /* ─── Nav ─── */
+  .nav { position: sticky; top: 0; z-index: 100; background: #1a237e; display: flex; align-items: center; padding: 0 24px; height: 52px; gap: 8px; box-shadow: 0 2px 8px rgba(0,0,0,.15); }
+  .nav-title { color: #fff; font-size: 15px; font-weight: 700; margin-right: 20px; white-space: nowrap; }
+  .nav a { color: rgba(255,255,255,.85); text-decoration: none; font-size: 13px; padding: 6px 14px; border-radius: 4px; transition: background .15s; white-space: nowrap; }
+  .nav a:hover, .nav a.active { background: rgba(255,255,255,.15); color: #fff; }
+
+  /* ─── Sections ─── */
+  .section { max-width: 1100px; margin: 32px auto; padding: 0 20px; }
+  .section-header { display: flex; align-items: center; gap: 12px; margin-bottom: 16px; }
+  .section-number { background: #4285f4; color: #fff; font-weight: 700; font-size: 14px; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .section-title { font-size: 20px; font-weight: 700; color: #1a237e; }
+  .section-subtitle { font-size: 13px; color: #636e72; margin-bottom: 20px; }
+
+  /* ─── Diagram card ─── */
+  .diagram-card { background: #fff; border-radius: 10px; box-shadow: 0 1px 4px rgba(0,0,0,.08); padding: 28px 24px; overflow-x: auto; }
+  .mermaid { display: flex; justify-content: center; }
+
+  /* ─── Legend ─── */
+  .legend { display: flex; gap: 16px; flex-wrap: wrap; margin-bottom: 16px; font-size: 12px; }
+  .legend-item { display: flex; align-items: center; gap: 5px; }
+  .legend-box { width: 14px; height: 14px; border-radius: 3px; border: 1px solid #aaa; }
+
+  /* ─── Scroll padding for sticky nav ─── */
+  [id] { scroll-margin-top: 64px; }
+
+  @media print {
+    .nav { display: none; }
+    .section { page-break-inside: avoid; }
+  }
+</style>
+</head>
+<body>
+
+<div class="nav">
+  <span class="nav-title">DPO Platform -Scenario Decision Trees</span>
+  <a href="#s1">S1: Lead Limit</a>
+  <a href="#s2">S2: Duplicates</a>
+  <a href="#s3">S3: Criteria Change</a>
+  <a href="#s4">S4: Cross-Channel</a>
+  <a href="#s5">S5: ABM Versioning</a>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════ -->
+<!-- SCENARIO 1 -->
+<!-- ═══════════════════════════════════════════════════════════ -->
+<div class="section" id="s1">
+  <div class="section-header">
+    <div class="section-number">1</div>
+    <div class="section-title">Lead per Company Limit -Vendor Scope Split Rules</div>
+  </div>
+  <div class="section-subtitle">How the DPO Admin splits a campaign across vendors. The admin picks one or more split methods and combines them. If no split is possible, the counter-only fallback is used.</div>
+
+  <div class="legend">
+    <div class="legend-item"><div class="legend-box" style="background:#e3f2fd"></div> Process Step</div>
+    <div class="legend-item"><div class="legend-box" style="background:#e8f5e9"></div> Split Method</div>
+    <div class="legend-item"><div class="legend-box" style="background:#fff3e0"></div> Fallback / Counter Only</div>
+    <div class="legend-item"><div class="legend-box" style="background:#f3e5f5"></div> Enforcement Layer</div>
+  </div>
+
+  <div class="diagram-card">
+    <div class="mermaid">
+flowchart TD
+    classDef step fill:#e3f2fd,stroke:#1565c0,color:#000
+    classDef split fill:#e8f5e9,stroke:#2e7d32,color:#000
+    classDef fallback fill:#fff3e0,stroke:#e65100,color:#000
+    classDef enforce fill:#f3e5f5,stroke:#6a1b9a,color:#000
+
+    START(["New Campaign Received"]):::step
+    START --> ADMIN["<b>DPO Admin reviews campaign</b><br/>Looks at ABM list, target regions,<br/>industries, and company sizes"]:::step
+    ADMIN --> PICK{"Admin picks one or more<br/>split methods to combine"}:::step
+
+    PICK --> R1["<b>ABM List Split</b><br/>Divide target list into<br/>exclusive vendor chunks<br/>Each vendor sees only their slice"]:::split
+    PICK --> R2["<b>Geography Split</b><br/>Assign vendor per territory<br/>e.g., Vendor A: UK<br/>Vendor B: Ireland"]:::split
+    PICK --> R3["<b>Industry Split</b><br/>Assign vendor per vertical<br/>e.g., Vendor A: Financial Services<br/>Vendor B: Healthcare"]:::split
+    PICK --> R4["<b>Size Band Split</b><br/>Assign vendor per company size<br/>e.g., Vendor A: Enterprise 5000+<br/>Vendor B: Mid-market 500-5000"]:::split
+
+    R1 --> COMBINED["<b>Combined scope per vendor</b><br/>Each vendor gets a unique,<br/>non-overlapping slice of companies<br/>Recycle: 5-day idle or quota hit"]:::split
+    R2 --> COMBINED
+    R3 --> COMBINED
+    R4 --> COMBINED
+
+    COMBINED --> POOL["<b>Admin-Controlled Recycled Pool</b><br/>Returned companies sit in pool<br/>DPO Admin reviews and manually<br/>allocates to other vendors<br/>No auto-reassignment"]:::split
+
+    PICK --> |"No split<br/>possible"| R5["<b>Counter Only</b><br/>No split possible<br/>Vendors source freely<br/>Pre-check recommended<br/>Collision risk accepted"]:::fallback
+    R5 --> COUNTER
+
+    POOL --> COUNTER
+    COUNTER["<b>Slot Counter Active</b><br/>Tracks remaining slots per company<br/>Consumed on QA approval<br/>Leads in review are reserved<br/>0 slots = company closed"]:::enforce
+    COUNTER --> BRIEF["<b>Brief Vendors</b><br/>Each vendor gets: their scope,<br/>the company limit, suppression list,<br/>qualification questions<br/>Vendor never sees full campaign"]:::step
+    BRIEF --> MONITOR["<b>Monitor Campaign</b><br/>Watch slot dashboard<br/>Manage pool allocations<br/>Review auto-released companies"]:::step
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════ -->
+<!-- SCENARIO 2 -->
+<!-- ═══════════════════════════════════════════════════════════ -->
+<div class="section" id="s2">
+  <div class="section-header">
+    <div class="section-number">2</div>
+    <div class="section-title">Duplicate Leads -Prevention Layers</div>
+  </div>
+  <div class="section-subtitle">How the platform prevents duplicate lead submissions across vendors. Two layers inherited from Scenario 1, no net-new mechanism required.</div>
+
+  <div class="legend">
+    <div class="legend-item"><div class="legend-box" style="background:#e3f2fd"></div> Event / Trigger</div>
+    <div class="legend-item"><div class="legend-box" style="background:#e8f5e9"></div> Prevention Layer</div>
+    <div class="legend-item"><div class="legend-box" style="background:#e8eaf6"></div> Outcome</div>
+  </div>
+
+  <div class="diagram-card">
+    <div class="mermaid">
+flowchart TD
+    classDef event fill:#e3f2fd,stroke:#1565c0,color:#000
+    classDef layer fill:#e8f5e9,stroke:#2e7d32,color:#000
+    classDef outcome fill:#e8eaf6,stroke:#283593,color:#000
+
+    START(["Campaign Starts<br/>Multiple Vendors Assigned"]):::event
+
+    START --> L1["<b>Layer 1 -Vendor Scope Split</b><br/>(from Scenario 1)<br/>Each vendor gets exclusive companies<br/>Vendor A: 1–40 | Vendor B: 41–75<br/>Cannot work the same company"]:::layer
+
+    L1 --> Q1{"Same company<br/>possible?"}:::event
+    Q1 --> |"No -exclusive scopes"| SAFE1["Duplicate structurally<br/>prevented"]:::outcome
+
+    Q1 --> |"Company recycled<br/>(idle / quota hit)"| L2["<b>Layer 2 -Suppression List</b><br/>(from Scenario 1)<br/>Receiving vendor gets names + emails<br/>of already-contacted leads<br/>No vendor identifiers disclosed"]:::layer
+
+    L2 --> Q2{"Vendor checks<br/>suppression list?"}:::event
+    Q2 --> |"Yes -skips<br/>known contacts"| SAFE2["Contacts fresh leads only<br/>No re-contact possible"]:::outcome
+
+    Q2 --> |"Submits anyway"| BLOCK["Platform blocks at submission:<br/><i>'This lead cannot be accepted<br/>for this campaign'</i><br/>Neutral message -no vendor revealed"]:::outcome
+
+    SAFE1 --> RESULT(["Zero Duplicates"]):::outcome
+    SAFE2 --> RESULT
+    BLOCK --> RESULT
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════ -->
+<!-- SCENARIO 3 -->
+<!-- ═══════════════════════════════════════════════════════════ -->
+<div class="section" id="s3">
+  <div class="section-header">
+    <div class="section-number">3</div>
+    <div class="section-title">Client Requirement Change -Version Switch Decision Tree</div>
+  </div>
+  <div class="section-subtitle">What happens to every lead in the pipeline when the client changes campaign criteria mid-flight. The 24-hour clock starts when CST confirms.</div>
+
+  <div class="legend">
+    <div class="legend-item"><div class="legend-box" style="background:#e3f2fd"></div> Trigger / Action</div>
+    <div class="legend-item"><div class="legend-box" style="background:#fff3e0"></div> Decision Point</div>
+    <div class="legend-item"><div class="legend-box" style="background:#e8f5e9"></div> v1 (Old Rules)</div>
+    <div class="legend-item"><div class="legend-box" style="background:#e8eaf6"></div> v2 (New Rules)</div>
+    <div class="legend-item"><div class="legend-box" style="background:#ffebee"></div> Rejected / Closed</div>
+  </div>
+
+  <div class="diagram-card">
+    <div class="mermaid">
+flowchart TD
+    classDef trigger fill:#e3f2fd,stroke:#1565c0,color:#000
+    classDef decide fill:#fff3e0,stroke:#e65100,color:#000
+    classDef v1 fill:#e8f5e9,stroke:#2e7d32,color:#000
+    classDef v2 fill:#e8eaf6,stroke:#283593,color:#000
+    classDef rejected fill:#ffebee,stroke:#c62828,color:#000
+
+    CLIENT["Client requests<br/>criteria change"]:::trigger
+    CLIENT --> CST["<b>CST logs change</b><br/>New rules, effective time,<br/>pipeline treatment"]:::trigger
+    CST --> CONFIRM["<b>Client confirms</b><br/>24h clock starts NOW<br/>Platform notifies vendors"]:::trigger
+
+    CONFIRM --> CHECK{"Where is the<br/>lead right now?"}:::decide
+
+    CHECK --> |"Already approved<br/>by QA"| V1A["<b>Tagged v1</b><br/>Ships under old rules<br/>Within 24h of switch<br/>Vendor gets paid ✓"]:::v1
+
+    CHECK --> |"In QA review"| V1B["<b>Tagged v1</b><br/>Finishes review under old rules<br/>Within 24h deadline"]:::v1
+    V1B --> QAR{"Passes<br/>QA?"}:::decide
+    QAR --> |"Yes"| V1B2["Delivered under<br/>old rules ✓"]:::v1
+    QAR --> |"No"| FAIL["<b>Final -rejected</b><br/>Not re-checked under new rules<br/>No second chance"]:::rejected
+
+    CHECK --> |"Vendor still<br/>researching"| GRACE{"Within 2–4h<br/>grace window?"}:::decide
+    GRACE --> |"Yes -submitted<br/>in time"| V1C["<b>Tagged v1</b><br/>Reviewed under old rules<br/>Vendor paid ✓"]:::v1
+    GRACE --> |"No -missed<br/>grace window"| V2A["<b>Must meet v2 rules</b><br/>New criteria apply<br/>Standard timeline"]:::v2
+
+    CHECK --> |"Submitted after<br/>the switch"| V2B["<b>Tagged v2</b><br/>New rules apply<br/>Vendor paid ✓"]:::v2
+
+    V1A --> DASH["<b>Countdown Dashboard</b><br/>v1 remaining: 26 → 19 → 11 → 0<br/>DPO Admin monitors wind-down"]:::trigger
+    V1B2 --> DASH
+    V1C --> DASH
+    DASH --> REPORT["<b>Final Report</b><br/>Old rules: 32 leads (UK+IE+DE, 500+)<br/>New rules: 147 leads (IE+DE, 1000+)<br/>Full version split transparency"]:::trigger
+    V2A --> REPORT
+    V2B --> REPORT
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════ -->
+<!-- SCENARIO 4 -->
+<!-- ═══════════════════════════════════════════════════════════ -->
+<div class="section" id="s4">
+  <div class="section-header">
+    <div class="section-number">4</div>
+    <div class="section-title">Cross-Channel Contacts -Auto-Suppression Decision Tree</div>
+  </div>
+  <div class="section-subtitle">How the platform prevents the same person from being contacted by DPO and email marketing on the same campaign. Both channels read/write to a shared database.</div>
+
+  <div class="legend">
+    <div class="legend-item"><div class="legend-box" style="background:#e3f2fd"></div> DPO Channel</div>
+    <div class="legend-item"><div class="legend-box" style="background:#fff3e0"></div> Email Channel</div>
+    <div class="legend-item"><div class="legend-box" style="background:#e8f5e9"></div> Allowed</div>
+    <div class="legend-item"><div class="legend-box" style="background:#ffebee"></div> Blocked / Suppressed</div>
+    <div class="legend-item"><div class="legend-box" style="background:#f3e5f5"></div> Shared Database</div>
+  </div>
+
+  <div class="diagram-card">
+    <div class="mermaid">
+flowchart TD
+    classDef dpo fill:#e3f2fd,stroke:#1565c0,color:#000
+    classDef email fill:#fff3e0,stroke:#e65100,color:#000
+    classDef ok fill:#e8f5e9,stroke:#2e7d32,color:#000
+    classDef blocked fill:#ffebee,stroke:#c62828,color:#000
+    classDef db fill:#f3e5f5,stroke:#6a1b9a,color:#000
+
+    CAMP(["Campaign X Launches<br/>DPO + Email Marketing active"]):::dpo
+
+    CAMP --> DPO_PATH["<b>DPO Path</b><br/>Vendor prepares to call"]:::dpo
+    CAMP --> EMAIL_PATH["<b>Email Path</b><br/>Platform prepares<br/>nurture email"]:::email
+
+    DPO_PATH --> PRECALL["<b>Pre-Call Check</b><br/>Vendor views suppression list<br/>for their assigned companies.<br/>Shows who is already in<br/>the email sequence."]:::dpo
+    PRECALL --> SKIP_Q{"Person on<br/>suppression list?"}:::dpo
+    SKIP_Q --> |"Yes"| SKIP["Vendor skips this person<br/>No call made"]:::blocked
+    SKIP_Q --> |"No"| CALL["Vendor calls prospect"]:::dpo
+
+    CALL --> DPO_ADD["Vendor adds contact<br/>to Campaign X"]:::dpo
+    DPO_ADD --> DPO_OK["Contact added ✓<br/>Suppression flag written:<br/><i>DPO contact: Campaign X</i><br/>Flag is permanent for<br/>this campaign."]:::ok
+
+    DPO_OK --> DB["<b>Shared Database</b><br/>Suppression flag stored<br/>Visible to all channels"]:::db
+
+    EMAIL_PATH --> EMAIL_CHECK{"Person has DPO<br/>contact flag for<br/>Campaign X?"}:::email
+    EMAIL_CHECK --> |"No flag"| EMAIL_OK["Email sent ✓"]:::ok
+    EMAIL_CHECK --> |"Flag exists"| EMAIL_SKIP["Email suppressed<br/>Logged: <i>skipped-by-rule</i>"]:::blocked
+
+    DB --> EMAIL_CHECK
+
+    EMAIL_OK --> LOG["<b>Touch Log</b><br/>Every send, skip, and<br/>contact addition recorded"]:::db
+    EMAIL_SKIP --> LOG
+    DPO_OK --> LOG
+    SKIP --> LOG
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════ -->
+<!-- SCENARIO 5 -->
+<!-- ═══════════════════════════════════════════════════════════ -->
+<div class="section" id="s5">
+  <div class="section-header">
+    <div class="section-number">5</div>
+    <div class="section-title">ABM List Change History -Version Processing Decision Tree</div>
+  </div>
+  <div class="section-subtitle">What happens when the CST team uploads an updated ABM list to a campaign. Every company is compared to the previous version and handled by simple rules.</div>
+
+  <div class="legend">
+    <div class="legend-item"><div class="legend-box" style="background:#e3f2fd"></div> Process Step</div>
+    <div class="legend-item"><div class="legend-box" style="background:#fff3e0"></div> Decision Point</div>
+    <div class="legend-item"><div class="legend-box" style="background:#e8f5e9"></div> Action Taken</div>
+    <div class="legend-item"><div class="legend-box" style="background:#ffebee"></div> Removed / Halted</div>
+    <div class="legend-item"><div class="legend-box" style="background:#e8eaf6"></div> Protected / No Action</div>
+  </div>
+
+  <div class="diagram-card">
+    <div class="mermaid">
+flowchart TD
+    classDef step fill:#e3f2fd,stroke:#1565c0,color:#000
+    classDef decide fill:#fff3e0,stroke:#e65100,color:#000
+    classDef action fill:#e8f5e9,stroke:#2e7d32,color:#000
+    classDef removed fill:#ffebee,stroke:#c62828,color:#000
+    classDef safe fill:#e8eaf6,stroke:#283593,color:#000
+
+    UPLOAD["CST uploads updated<br/>ABM list to campaign"]:::step
+    UPLOAD --> DIFF["<b>Platform compares old vs new list</b><br/>Shows: 300 new companies,<br/>50 removed, 450 still there"]:::step
+    DIFF --> REVIEW["<b>Lead Delivery reviews the changes</b><br/>Sees exactly what was added/removed<br/>Nothing happens until they confirm"]:::step
+    REVIEW --> PROCESS["<b>Lead Delivery confirms.<br/>Platform processes only what changed.</b>"]:::step
+
+    PROCESS --> ADDED["<b>New companies (300)</b><br/>Added to vendor work queues"]:::action
+    PROCESS --> UNCHANGED["<b>Same companies (450)</b><br/>Nothing changes for these<br/>Work continues as before"]:::safe
+    PROCESS --> REMOVED{"<b>Removed companies (50)</b><br/>What is the status<br/>of each one?"}:::decide
+
+    REMOVED --> |"Lead already<br/>delivered"| RM_DEL["Safe. Already delivered<br/>to client. No action needed."]:::safe
+    REMOVED --> |"Vendor is actively<br/>working on it"| RM_GRACE["<b>Automatic 24h grace window</b><br/>Vendor gets 24 hours<br/>to finish and deliver.<br/>After 24h, company is pulled."]:::action
+    REMOVED --> |"Nobody started<br/>working on it"| RM_NEW["Removed from queue.<br/>Vendor notified:<br/>'Company X is no longer<br/>part of this campaign.'"]:::removed
+
+    ADDED --> DONE["<b>Campaign continues on updated list</b><br/>Vendors only see companies<br/>they can still work on"]:::step
+    RM_GRACE --> DONE
+
+    DONE --> AUDIT["<b>Full version history kept</b><br/>Every list version saved.<br/>Can always check what the list<br/>looked like at any point in time."]:::step
+    </div>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mermaid/10.9.0/mermaid.min.js"></script>
+<script>
+mermaid.initialize({
+  startOnLoad: true,
+  theme: 'base',
+  themeVariables: { fontSize: '13px', fontFamily: 'Arial' },
+  flowchart: { useMaxWidth: true, htmlLabels: true, curve: 'basis', padding: 15, nodeSpacing: 30, rankSpacing: 40 }
+});
+
+// Nav active state on scroll
+const sections = document.querySelectorAll('.section');
+const navLinks = document.querySelectorAll('.nav a');
+window.addEventListener('scroll', () => {
+  let current = '';
+  sections.forEach(s => { if (window.scrollY >= s.offsetTop - 80) current = s.id; });
+  navLinks.forEach(a => { a.classList.toggle('active', a.getAttribute('href') === '#' + current); });
+});
+</script>
+</body>
+</html>

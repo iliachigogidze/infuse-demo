@@ -66,6 +66,112 @@ body {
   font-style: italic;
 }
 
+/* Notification bell */
+.notif-bell {
+  position: relative;
+  margin-right: 12px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  padding: 4px 8px;
+  border-radius: 6px;
+  transition: background .15s;
+}
+.notif-bell:hover { background: #2d3436; }
+.notif-bell-icon { font-size: 16px; line-height: 1; }
+.notif-bell-count {
+  position: absolute;
+  top: 0px;
+  right: 2px;
+  background: #e17055;
+  color: #fff;
+  font-size: 9px;
+  font-weight: 800;
+  min-width: 14px;
+  height: 14px;
+  border-radius: 7px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 3px;
+  border: 1.5px solid #12121f;
+}
+.notif-panel {
+  display: none;
+  position: fixed;
+  top: 42px;
+  right: 0;
+  width: 340px;
+  background: #fff;
+  border-left: 1px solid #e0e0e0;
+  border-bottom: 1px solid #e0e0e0;
+  border-radius: 0 0 0 10px;
+  box-shadow: -4px 4px 20px rgba(0,0,0,.12);
+  z-index: 200;
+  max-height: calc(100vh - 42px);
+  overflow-y: auto;
+}
+.notif-panel.open { display: block; }
+.notif-panel-header {
+  padding: 14px 16px 10px;
+  border-bottom: 1px solid #f0f0f0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.notif-panel-title {
+  font-size: 13px;
+  font-weight: 800;
+  color: #1a1a2e;
+}
+.notif-panel-clear {
+  font-size: 11px;
+  color: #0984e3;
+  cursor: pointer;
+  font-weight: 600;
+}
+.notif-panel-clear:hover { text-decoration: underline; }
+.notif-item {
+  padding: 12px 16px;
+  border-bottom: 1px solid #f5f5f5;
+  cursor: pointer;
+  transition: background .12s;
+}
+.notif-item:hover { background: #f8f9ff; }
+.notif-item-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 4px;
+}
+.notif-item-dot {
+  width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0;
+}
+.notif-item-title { font-size: 12px; font-weight: 700; color: #1a1a2e; }
+.notif-item-body  { font-size: 11px; color: #636e72; line-height: 1.5; padding-left: 16px; }
+.notif-item-time  { font-size: 10px; color: #b2bec3; padding-left: 16px; margin-top: 3px; }
+.notif-empty {
+  padding: 28px 16px;
+  text-align: center;
+  font-size: 12px;
+  color: #b2bec3;
+}
+
+/* Pool chip on campaign row */
+.pool-chip {
+  display: inline-block;
+  margin-left: 7px;
+  padding: 1px 7px;
+  border-radius: 10px;
+  font-size: 10px;
+  font-weight: 800;
+  background: #fff3e0;
+  color: #c0680a;
+  border: 1px solid #fbc870;
+  vertical-align: middle;
+  white-space: nowrap;
+}
+
 /* Vendor switcher (only visible when vendor role is active) */
 .vendor-switcher {
   display: none;
@@ -197,13 +303,10 @@ body.s1-mode .s1-table-wrap {
 body.s1-mode .s1-table-wrap .card {
   margin-bottom: 0;
   border-radius: 10px 10px 0 0;
-  height: 100%;
-  display: flex;
-  flex-direction: column;
   overflow: visible;
 }
 body.s1-mode .s1-table-wrap table {
-  height: 100%;
+  height: auto;
 }
 body.s1-mode .s1-add-row-fixed {
   position: sticky;
@@ -311,7 +414,7 @@ body.s1-mode .s1-add-row-fixed {
 
 /* Compact rows inside the spreadsheet sheet view */
 .s1-table-wrap .data-table td {
-  padding: 4px 10px;
+  padding: 6px 10px;
   font-size: 12px;
   line-height: 1.3;
   white-space: nowrap;
@@ -675,56 +778,77 @@ body.s1-mode .s1-add-row-fixed {
 .form-row.thirds { grid-template-columns: 1fr 1fr 1fr; }
 .form-group { display: flex; flex-direction: column; gap: 6px; }
 .form-group label {
-  font-size: 12px;
-  font-weight: 600;
-  color: #4a5568;
-  letter-spacing: 0;
+  font-size: 11px;
+  font-weight: 700;
+  color: #2d3436;
+  letter-spacing: .04em;
+  text-transform: uppercase;
 }
-.form-group label .req { color: #d63031; margin-left: 2px; }
+.form-group label .req { color: #e84393; margin-left: 2px; }
 .form-group .field-hint {
   font-size: 11px;
-  color: #b2bec3;
+  color: #a0aab4;
   line-height: 1.4;
+  font-weight: 400;
+  text-transform: none;
+  letter-spacing: 0;
 }
 .form-group input,
 .form-group select,
-.form-group textarea {
-  padding: 9px 12px;
-  border: 1.5px solid #dfe6e9;
-  border-radius: 8px;
+.form-group textarea,
+.form-input {
+  padding: 10px 13px;
+  border: 1.5px solid #e2e8f0;
+  border-radius: 9px;
   font-size: 13px;
   font-family: inherit;
-  color: #2d3436;
-  background: white;
-  transition: border-color 0.15s;
+  color: #1a202c;
+  background: #f8fafc;
+  transition: border-color .15s, box-shadow .15s, background .15s;
   outline: none;
+  box-shadow: 0 1px 2px rgba(0,0,0,.04) inset;
+  box-sizing: border-box;
 }
+.form-group input::placeholder,
+.form-group textarea::placeholder,
+.form-input::placeholder { color: #a0aab4; font-weight: 400; }
+.form-group input:hover,
+.form-group select:hover,
+.form-group textarea:hover,
+.form-input:hover { border-color: #b8c8da; background: #f4f8fc; }
 .form-group input:focus,
 .form-group select:focus,
-.form-group textarea:focus { border-color: #0984e3; box-shadow: 0 0 0 3px rgba(9,132,227,0.08); }
+.form-group textarea:focus,
+.form-input:focus {
+  border-color: #0984e3;
+  background: #fff;
+  box-shadow: 0 0 0 3px rgba(9,132,227,.12), 0 1px 3px rgba(0,0,0,.06);
+}
 .form-group textarea { resize: vertical; min-height: 80px; }
+.form-group select,
+select.form-input { appearance: none; -webkit-appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%2374838f' stroke-width='1.5' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 12px center; padding-right: 34px; cursor: pointer; }
 
 /* Searchable dropdown */
 .searchable-wrap { position: relative; }
 .searchable-input-row { display: flex; gap: 0; }
 .searchable-input-row input {
-  border-radius: 8px 0 0 8px;
+  border-radius: 9px 0 0 9px;
   border-right: none;
   flex: 1;
 }
 .searchable-input-row input:focus { z-index: 1; }
 .searchable-clear {
   padding: 0 12px;
-  border: 1.5px solid #dfe6e9;
+  border: 1.5px solid #e2e8f0;
   border-left: none;
-  border-radius: 0 8px 8px 0;
-  background: #f8f9fa;
-  color: #b2bec3;
+  border-radius: 0 9px 9px 0;
+  background: #f0f3f7;
+  color: #a0aab4;
   cursor: pointer;
   font-size: 14px;
-  transition: color 0.15s;
+  transition: color 0.15s, background .15s;
 }
-.searchable-clear:hover { color: #636e72; }
+.searchable-clear:hover { color: #2d3436; background: #e8ecf0; }
 .searchable-dropdown {
   position: absolute;
   top: calc(100% + 4px);
@@ -778,17 +902,21 @@ body.s1-mode .s1-add-row-fixed {
 }
 .subgoal-row select {
   flex: 1;
-  padding: 7px 10px;
-  border: 1.5px solid #dfe6e9;
-  border-radius: 8px;
+  padding: 8px 32px 8px 10px;
+  border: 1.5px solid #e2e8f0;
+  border-radius: 9px;
   font-size: 13px;
   font-family: inherit;
-  color: #2d3436;
-  background: white;
+  color: #1a202c;
+  background: #f8fafc url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%2374838f' stroke-width='1.5' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") no-repeat right 10px center;
+  -webkit-appearance: none; appearance: none;
   outline: none;
-  transition: border-color 0.15s;
+  box-shadow: 0 1px 2px rgba(0,0,0,.04) inset;
+  transition: border-color .15s, box-shadow .15s, background .15s;
+  cursor: pointer;
 }
-.subgoal-row select:focus { border-color: #0984e3; }
+.subgoal-row select:hover { border-color: #b8c8da; background-color: #f4f8fc; }
+.subgoal-row select:focus { border-color: #0984e3; background-color: #fff; box-shadow: 0 0 0 3px rgba(9,132,227,.12); }
 .subgoal-row input {
   width: 80px;
   flex-shrink: 0;
@@ -1028,16 +1156,20 @@ body.s1-mode .s1-add-row-fixed {
 }
 .qual-question-input {
   flex: 1;
-  padding: 7px 10px;
-  border: 1.5px solid #dfe6e9;
-  border-radius: 8px;
+  padding: 8px 11px;
+  border: 1.5px solid #e2e8f0;
+  border-radius: 9px;
   font-size: 13px;
   font-family: inherit;
   outline: none;
-  transition: border-color 0.15s;
-  background: white;
+  transition: border-color .15s, box-shadow .15s, background .15s;
+  background: #f8fafc;
+  box-shadow: 0 1px 2px rgba(0,0,0,.04) inset;
+  color: #1a202c;
 }
-.qual-question-input:focus { border-color: #0984e3; }
+.qual-question-input::placeholder { color: #a0aab4; }
+.qual-question-input:hover { border-color: #b8c8da; background: #f4f8fc; }
+.qual-question-input:focus { border-color: #0984e3; background: #fff; box-shadow: 0 0 0 3px rgba(9,132,227,.12); }
 .qual-question-remove {
   width: 26px; height: 26px;
   border-radius: 50%;
@@ -1066,16 +1198,20 @@ body.s1-mode .s1-add-row-fixed {
 }
 .qual-answer-input {
   flex: 1;
-  padding: 6px 10px;
-  border: 1.5px solid #dfe6e9;
-  border-radius: 8px;
+  padding: 7px 11px;
+  border: 1.5px solid #e2e8f0;
+  border-radius: 9px;
   font-size: 12px;
   font-family: inherit;
   outline: none;
-  background: white;
-  transition: border-color 0.15s;
+  background: #f8fafc;
+  box-shadow: 0 1px 2px rgba(0,0,0,.04) inset;
+  color: #1a202c;
+  transition: border-color .15s, box-shadow .15s, background .15s;
 }
-.qual-answer-input:focus { border-color: #0984e3; }
+.qual-answer-input::placeholder { color: #a0aab4; }
+.qual-answer-input:hover { border-color: #b8c8da; background: #f4f8fc; }
+.qual-answer-input:focus { border-color: #0984e3; background: #fff; box-shadow: 0 0 0 3px rgba(9,132,227,.12); }
 .qual-answer-disq-toggle {
   padding: 4px 9px;
   font-size: 11px;
@@ -1242,17 +1378,19 @@ body.s1-mode .s1-add-row-fixed {
 .tag-input-area {
   min-height: 42px;
   padding: 5px 8px;
-  border: 1.5px solid #dfe6e9;
-  border-radius: 8px;
+  border: 1.5px solid #e2e8f0;
+  border-radius: 9px;
   display: flex;
   flex-wrap: wrap;
   gap: 5px;
   align-items: center;
   cursor: text;
-  transition: border-color 0.15s;
-  background: white;
+  transition: border-color .15s, box-shadow .15s, background .15s;
+  background: #f8fafc;
+  box-shadow: 0 1px 2px rgba(0,0,0,.04) inset;
 }
-.tag-input-area:focus-within { border-color: #0984e3; box-shadow: 0 0 0 3px rgba(9,132,227,0.08); }
+.tag-input-area:hover { border-color: #b8c8da; background: #f4f8fc; }
+.tag-input-area:focus-within { border-color: #0984e3; background: #fff; box-shadow: 0 0 0 3px rgba(9,132,227,.12); }
 .tag-chip {
   display: inline-flex;
   align-items: center;
@@ -1370,6 +1508,7 @@ body.s1-mode .s1-add-row-fixed {
    RESPONSIVE
 ═══════════════════════════════════════════════ */
 @keyframes spin { to { transform: rotate(360deg); } }
+@keyframes pulse { 0%,100% { opacity:1; transform:scale(1); } 50% { opacity:.4; transform:scale(.7); } }
 
 @media (max-width: 768px) {
   .role-bar { padding: 0 16px; }
@@ -1515,6 +1654,18 @@ body.s1-mode .s1-add-row-fixed {
 .sidebar-item-badge.warn { background: #e17055; }
 .sidebar-item-badge.muted { background: #2d3436; color: #b2bec3; }
 
+/* Notification dot — shown only for unread/new items, no number */
+.sidebar-notif-dot {
+  margin-left: auto;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #e17055;
+  flex-shrink: 0;
+  display: none;
+}
+.sidebar-notif-dot.visible { display: block; }
+
 
 .sidebar-footer {
   padding: 12px 16px;
@@ -1604,7 +1755,20 @@ body.s1-mode .s1-add-row-fixed {
     </select>
   </div>
   <span class="role-bar-spacer"></span>
+  <div class="notif-bell" id="notif-bell" onclick="toggleNotifPanel()" title="Scope Pool Alerts">
+    <span class="notif-bell-icon">🔔</span>
+    <span class="notif-bell-count" id="notif-count" style="display:none">0</span>
+  </div>
   <span class="role-indicator" id="role-desc">Full platform access</span>
+</div>
+
+<!-- ════════════ NOTIFICATION PANEL ════════════ -->
+<div class="notif-panel" id="notif-panel">
+  <div class="notif-panel-header">
+    <span class="notif-panel-title">Scope Pool Alerts</span>
+    <span class="notif-panel-clear" onclick="closeNotifPanel()">Dismiss</span>
+  </div>
+  <div id="notif-panel-body"></div>
 </div>
 
 <!-- ════════════ HEADER ════════════ -->
@@ -1613,7 +1777,7 @@ body.s1-mode .s1-add-row-fixed {
     <div class="tabs" id="tab-bar">
       <span style="font-size:11px;font-weight:600;color:#636e72;text-transform:uppercase;letter-spacing:1px;padding:0 14px 0 4px;align-self:center;white-space:nowrap">Scenarios</span>
       <button class="tab active" data-tab="campaigns">Campaigns</button>
-      <button class="tab" data-tab="s1"><span class="tab-num" style="background:#0984e3;color:#fff">1</span>Company Limit</button>
+      <button class="tab" data-tab="s1"><span class="tab-num" style="background:#0984e3;color:#fff">1</span>Company Limit<span id="s1-pool-dot" style="display:none;width:7px;height:7px;border-radius:50%;background:#e17055;margin-left:5px;flex-shrink:0;animation:pulse 1.5s infinite"></span></button>
       <button class="tab" data-tab="s2"><span class="tab-num" style="background:#00b894;color:#fff">2</span>Duplicates</button>
       <button class="tab" data-tab="s3"><span class="tab-num" style="background:#6c5ce7;color:#fff">3</span>Req Change</button>
       <button class="tab" data-tab="s4"><span class="tab-num" style="background:#e17055;color:#fff">4</span>Cross-Channel</button>
@@ -1648,17 +1812,15 @@ body.s1-mode .s1-add-row-fixed {
       <div class="sidebar-item" data-tab="campaigns" onclick="sidebarNav(this);switchTab('campaigns')">
         <span class="sidebar-item-icon">◈</span>
         Campaigns
-        <span class="sidebar-item-badge" id="sidebar-campaigns-badge">6</span>
+        <span class="sidebar-notif-dot" id="sidebar-campaigns-notif"></span>
       </div>
       <div class="sidebar-item" data-tab="vendors" onclick="sidebarNav(this);switchTab('vendors')">
         <span class="sidebar-item-icon">◎</span>
         Vendors
-        <span class="sidebar-item-badge muted" id="sidebar-vendors-badge">3</span>
       </div>
       <div class="sidebar-item" onclick="sidebarNav(this);showNotBuilt('Lead Inbox')">
         <span class="sidebar-item-icon">↓</span>
         Lead Inbox
-        <span class="sidebar-item-badge warn">12</span>
       </div>
     </div>
 
@@ -1676,7 +1838,6 @@ body.s1-mode .s1-add-row-fixed {
       <div class="sidebar-item" onclick="sidebarNav(this);showNotBuilt('ABM Lists')">
         <span class="sidebar-item-icon">◧</span>
         ABM Lists
-        <span class="sidebar-item-badge muted">3</span>
       </div>
       <div class="sidebar-item" onclick="sidebarNav(this);showNotBuilt('Integrations')">
         <span class="sidebar-item-icon">⇄</span>
@@ -1694,6 +1855,15 @@ body.s1-mode .s1-add-row-fixed {
       <div class="sidebar-item" onclick="sidebarNav(this);showNotBuilt('Audit Log')">
         <span class="sidebar-item-icon">≡</span>
         Audit Log
+      </div>
+    </div>
+
+    <!-- SCENARIOS section -->
+    <div class="sidebar-section">
+      <span class="sidebar-section-label">Reference</span>
+      <div class="sidebar-item" data-tab="scenarios" onclick="sidebarNav(this);switchTab('scenarios')">
+        <span class="sidebar-item-icon">◉</span>
+        Scenarios
       </div>
     </div>
 
@@ -1723,6 +1893,82 @@ body.s1-mode .s1-add-row-fixed {
   </div>
 
 </div><!-- /.app-shell -->
+
+<!-- ════════════ ADD LEAD MODAL ════════════ -->
+<div class="modal-overlay" id="modal-add-lead" onclick="addLeadModalOverlayClick(event)">
+  <div class="modal" style="max-width:560px;max-height:90vh;overflow-y:auto" onclick="event.stopPropagation()">
+    <div class="modal-header">
+      <h2 class="modal-title">Add Lead</h2>
+      <button class="modal-close" onclick="closeAddLeadModal()">✕</button>
+    </div>
+    <div class="modal-body" style="padding:24px">
+      <div id="add-lead-err" style="display:none;background:#ffeaea;border:1px solid #f4cccc;border-radius:6px;padding:10px 14px;margin-bottom:16px;font-size:12px;color:#cc0000"></div>
+      <div style="display:flex;justify-content:flex-end;margin-bottom:12px"><button class="btn btn-warning btn-sm" onclick="fillDummyLead()">&#9889; Complete with dummy</button></div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+        <div style="grid-column:span 2">
+          <label style="font-size:11px;font-weight:700;color:#2d3436;text-transform:uppercase;letter-spacing:0.05em;display:block;margin-bottom:6px">Campaign *</label>
+          <select id="al-campaign" class="form-input" style="width:100%"></select>
+        </div>
+        <div>
+          <label style="font-size:11px;font-weight:700;color:#2d3436;text-transform:uppercase;letter-spacing:0.05em;display:block;margin-bottom:6px">First Name *</label>
+          <input id="al-first" class="form-input" placeholder="Jane" style="width:100%">
+        </div>
+        <div>
+          <label style="font-size:11px;font-weight:700;color:#2d3436;text-transform:uppercase;letter-spacing:0.05em;display:block;margin-bottom:6px">Last Name *</label>
+          <input id="al-last" class="form-input" placeholder="Smith" style="width:100%">
+        </div>
+        <div>
+          <label style="font-size:11px;font-weight:700;color:#2d3436;text-transform:uppercase;letter-spacing:0.05em;display:block;margin-bottom:6px">Email *</label>
+          <input id="al-email" class="form-input" placeholder="jane@company.com" style="width:100%">
+        </div>
+        <div>
+          <label style="font-size:11px;font-weight:700;color:#2d3436;text-transform:uppercase;letter-spacing:0.05em;display:block;margin-bottom:6px">Company *</label>
+          <input id="al-company" class="form-input" placeholder="Acme Corp" style="width:100%">
+          <select id="al-company-select" class="form-input" style="width:100%;display:none"></select>
+        </div>
+        <div>
+          <label style="font-size:11px;font-weight:700;color:#2d3436;text-transform:uppercase;letter-spacing:0.05em;display:block;margin-bottom:6px">Job Title</label>
+          <input id="al-title" class="form-input" placeholder="VP Engineering" style="width:100%">
+        </div>
+        <div>
+          <label style="font-size:11px;font-weight:700;color:#2d3436;text-transform:uppercase;letter-spacing:0.05em;display:block;margin-bottom:6px">Telephone</label>
+          <input id="al-tel" class="form-input" placeholder="+44 7700 000000" style="width:100%">
+        </div>
+        <div>
+          <label style="font-size:11px;font-weight:700;color:#2d3436;text-transform:uppercase;letter-spacing:0.05em;display:block;margin-bottom:6px">Country</label>
+          <input id="al-country" class="form-input" placeholder="UK" style="width:100%">
+        </div>
+        <div>
+          <label style="font-size:11px;font-weight:700;color:#2d3436;text-transform:uppercase;letter-spacing:0.05em;display:block;margin-bottom:6px">Company Size</label>
+          <input id="al-compsize" class="form-input" placeholder="51-200" style="width:100%">
+        </div>
+        <div style="grid-column:span 2">
+          <label style="font-size:11px;font-weight:700;color:#2d3436;text-transform:uppercase;letter-spacing:0.05em;display:block;margin-bottom:6px">Opt-in</label>
+          <select id="al-optin" class="form-input" style="width:100%">
+            <option value="Yes">Yes</option>
+            <option value="No">No</option>
+          </select>
+        </div>
+        <div id="al-cq1-wrap" style="grid-column:span 2">
+          <label id="al-cq1-label" style="font-size:11px;font-weight:700;color:#2d3436;text-transform:uppercase;letter-spacing:0.05em;display:block;margin-bottom:6px">CQ1</label>
+          <input id="al-cq1" class="form-input" style="width:100%">
+        </div>
+        <div id="al-cq2-wrap" style="grid-column:span 2">
+          <label id="al-cq2-label" style="font-size:11px;font-weight:700;color:#2d3436;text-transform:uppercase;letter-spacing:0.05em;display:block;margin-bottom:6px">CQ2</label>
+          <input id="al-cq2" class="form-input" style="width:100%">
+        </div>
+        <div id="al-cq3-wrap" style="grid-column:span 2">
+          <label id="al-cq3-label" style="font-size:11px;font-weight:700;color:#2d3436;text-transform:uppercase;letter-spacing:0.05em;display:block;margin-bottom:6px">CQ3</label>
+          <input id="al-cq3" class="form-input" style="width:100%">
+        </div>
+      </div>
+      <div style="display:flex;justify-content:flex-end;gap:10px;margin-top:24px">
+        <button class="btn btn-ghost" onclick="closeAddLeadModal()">Cancel</button>
+        <button class="btn btn-primary" onclick="submitAddLead()">Add Lead</button>
+      </div>
+    </div>
+  </div>
+</div>
 
 <!-- ════════════ CAMPAIGN CREATION MODAL ════════════ -->
 <div class="modal-overlay" id="modal-create" onclick="modalOverlayClick(event)">
@@ -2239,6 +2485,56 @@ body.s1-mode .s1-add-row-fixed {
   </div>
 </div>
 
+<!-- ════════════ SCOPE REALLOCATION MODAL ════════════ -->
+<div class="modal-overlay" id="modal-realloc" onclick="reallocModalOverlayClick(event)" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:1100;align-items:center;justify-content:center">
+  <div class="modal" style="max-width:580px;width:100%;max-height:90vh;display:flex;flex-direction:column">
+    <div class="modal-header">
+      <h2 style="font-size:17px">Reallocate Scope</h2>
+      <button class="modal-close" onclick="closeReallocModal()">&#10005;</button>
+    </div>
+    <div style="padding:20px 24px;overflow-y:auto;flex:1">
+
+      <!-- STEP 1: Released Pool -->
+      <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:#636e72;margin-bottom:8px">Released Pool</div>
+      <div id="realloc-pool-cards" style="margin-bottom:20px"></div>
+
+      <!-- STEP 2: Distribution Mode -->
+      <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:#636e72;margin-bottom:8px">Redistribute To</div>
+      <div style="display:flex;gap:10px;margin-bottom:14px">
+        <label style="display:flex;align-items:center;gap:6px;font-size:13px;cursor:pointer">
+          <input type="radio" name="realloc-mode" value="random" checked onchange="setReallocMode('random')"
+            style="accent-color:#0984e3"> Random (auto-distribute)
+        </label>
+        <label style="display:flex;align-items:center;gap:6px;font-size:13px;cursor:pointer">
+          <input type="radio" name="realloc-mode" value="specific" onchange="setReallocMode('specific')"
+            style="accent-color:#0984e3"> Specific (assign accounts per vendor)
+        </label>
+      </div>
+
+      <!-- Random mode: multi-vendor checkboxes with lead goals -->
+      <div id="realloc-random-section">
+        <div style="font-size:12px;color:#636e72;margin-bottom:10px">Select which active vendors will receive a share of the pool. Companies will be distributed evenly.</div>
+        <div id="realloc-random-vendors" style="display:flex;flex-direction:column;gap:8px"></div>
+      </div>
+
+      <!-- Specific mode: per-vendor company picker -->
+      <div id="realloc-specific-section" style="display:none">
+        <div style="font-size:12px;color:#636e72;margin-bottom:10px">Manually assign specific companies from the pool to each vendor.</div>
+        <div id="realloc-specific-vendors" style="display:flex;flex-direction:column;gap:10px"></div>
+      </div>
+
+      <!-- Suppression note -->
+      <div style="background:#fffbf0;border:1px solid #fde68a;border-radius:6px;padding:10px 12px;margin-top:16px;font-size:11px;color:#92400e;line-height:1.5">
+        <strong>Note:</strong> Suppression list of already-contacted leads from the original vendor will be included in each handover to prevent duplicate outreach.
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeReallocModal()">Cancel</button>
+      <button class="btn btn-primary" onclick="confirmRealloc()">Confirm Reallocation</button>
+    </div>
+  </div>
+</div>
+
 <script>
 /* ═══════════════════════════════════════════════
    MOCK DATA
@@ -2250,30 +2546,42 @@ const VENDORS = [
 ];
 
 const COMPANIES = [
-  { id: 'c1', name: 'Meridian Software',  domain: 'meridian.io',    vendor: 'v1', geo: 'UK',      slots: 2, used: 2, status: 'done',    industry: 'SaaS' },
-  { id: 'c2', name: 'Axon Systems',       domain: 'axonsys.com',    vendor: 'v1', geo: 'UK',      slots: 2, used: 1, status: 'inprog',  industry: 'SaaS' },
-  { id: 'c3', name: 'Novatera Group',     domain: 'novatera.co.uk', vendor: 'v1', geo: 'UK',      slots: 2, used: 0, status: 'new',     industry: 'FinTech' },
-  { id: 'c4', name: 'Eirtech Solutions',  domain: 'eirtech.ie',     vendor: 'v2', geo: 'Ireland', slots: 2, used: 1, status: 'inprog',  industry: 'SaaS' },
-  { id: 'c5', name: 'Celtic Analytics',  domain: 'celticai.ie',    vendor: 'v2', geo: 'Ireland', slots: 2, used: 0, status: 'new',     industry: 'Analytics' },
-  { id: 'c6', name: 'Berlinium GmbH',    domain: 'berlinium.de',   vendor: 'v3', geo: 'Germany', slots: 2, used: 2, status: 'done',    industry: 'SaaS' },
-  { id: 'c7', name: 'Rhine Digital',     domain: 'rhinedigital.de', vendor: 'v3', geo: 'Germany', slots: 2, used: 1, status: 'inprog',  industry: 'FinTech' },
-  { id: 'c8', name: 'Hanseatic Tech',    domain: 'hanseatic.de',   vendor: 'v3', geo: 'Germany', slots: 2, used: 0, status: 'new',     industry: 'Manufacturing' },
+  { id: 'c1', name: 'Meridian Software',  domain: 'meridian.io',    vendor: 'v1', geo: 'UK',      slots: 2, used: 2, status: 'done',    industry: 'SaaS',          campaign: 'cam1' },
+  { id: 'c2', name: 'Axon Systems',       domain: 'axonsys.com',    vendor: 'v1', geo: 'UK',      slots: 2, used: 1, status: 'inprog',  industry: 'SaaS',          campaign: 'cam1' },
+  { id: 'c3', name: 'Novatera Group',     domain: 'novatera.co.uk', vendor: 'v1', geo: 'UK',      slots: 2, used: 0, status: 'new',     industry: 'FinTech',       campaign: 'cam1' },
+  { id: 'c4', name: 'Eirtech Solutions',  domain: 'eirtech.ie',     vendor: 'v2', geo: 'Ireland', slots: 2, used: 1, status: 'inprog',  industry: 'SaaS',          campaign: 'cam1' },
+  { id: 'c5', name: 'Celtic Analytics',  domain: 'celticai.ie',    vendor: 'v2', geo: 'Ireland', slots: 2, used: 0, status: 'new',     industry: 'Analytics',     campaign: 'cam1' },
+  { id: 'c6', name: 'Berlinium GmbH',    domain: 'berlinium.de',   vendor: 'v3', geo: 'Germany', slots: 2, used: 2, status: 'done',    industry: 'SaaS',          campaign: 'cam1' },
+  { id: 'c7', name: 'Rhine Digital',     domain: 'rhinedigital.de', vendor: 'v3', geo: 'Germany', slots: 2, used: 1, status: 'inprog',  industry: 'FinTech',       campaign: 'cam1' },
+  { id: 'c8', name: 'Hanseatic Tech',    domain: 'hanseatic.de',   vendor: 'v3', geo: 'Germany', slots: 2, used: 0, status: 'new',     industry: 'Manufacturing', campaign: 'cam1' },
 ];
 
 const LEADS = [
-  { id: 'l1',  name: 'Sophie Clarke',    company: 'Meridian Software', vendor: 'v1', title: 'VP Engineering',   status: 'accepted',  version: 'v1' },
-  { id: 'l2',  name: 'James Owens',      company: 'Meridian Software', vendor: 'v1', title: 'IT Director',      status: 'accepted',  version: 'v1' },
-  { id: 'l3',  name: 'Niall Brady',      company: 'Axon Systems',      vendor: 'v1', title: 'CTO',              status: 'in-review', version: 'v1' },
-  { id: 'l4',  name: 'Aoife Murphy',     company: 'Eirtech Solutions', vendor: 'v2', title: 'Head of IT',       status: 'accepted',  version: 'v1' },
-  { id: 'l5',  name: 'Ciarán Walsh',     company: 'Eirtech Solutions', vendor: 'v2', title: 'Procurement Mgr',  status: 'in-review', version: 'v1' },
-  { id: 'l6',  name: 'Klaus Brandt',     company: 'Berlinium GmbH',    vendor: 'v3', title: 'CIO',              status: 'accepted',  version: 'v1' },
-  { id: 'l7',  name: 'Hanna Richter',    company: 'Berlinium GmbH',    vendor: 'v3', title: 'VP Product',       status: 'accepted',  version: 'v1' },
-  { id: 'l8',  name: 'Stefan Hoffmann',  company: 'Rhine Digital',     vendor: 'v3', title: 'IT Manager',       status: 'in-review', version: 'v2' },
-  { id: 'l9',  name: 'Emma Fitzgerald',  company: 'Celtic Analytics',  vendor: 'v2', title: 'Data Director',    status: 'submitted', version: 'v2' },
-  { id: 'l10', name: 'Tom Kinsella',     company: 'Celtic Analytics',  vendor: 'v2', title: 'CTO',              status: 'submitted', version: 'v2' },
-  { id: 'l11', name: 'Oliver Webb',      company: 'Novatera Group',    vendor: 'v1', title: 'Head of Ops',      status: 'submitted', version: 'v2' },
-  { id: 'l12', name: 'Ingrid Hansen',    company: 'Hanseatic Tech',    vendor: 'v3', title: 'VP Engineering',   status: 'submitted', version: 'v2' },
+  { id: 'l1',  name: 'Sophie Clarke',    company: 'Meridian Software', vendor: 'v1', title: 'VP Engineering',   status: 'accepted',  version: 'v1', campaign: 'cam1' },
+  { id: 'l2',  name: 'James Owens',      company: 'Meridian Software', vendor: 'v1', title: 'IT Director',      status: 'accepted',  version: 'v1', campaign: 'cam1' },
+  { id: 'l3',  name: 'Niall Brady',      company: 'Axon Systems',      vendor: 'v1', title: 'CTO',              status: 'in-review', version: 'v1', campaign: 'cam1' },
+  { id: 'l4',  name: 'Aoife Murphy',     company: 'Eirtech Solutions', vendor: 'v2', title: 'Head of IT',       status: 'accepted',  version: 'v1', campaign: 'cam1' },
+  { id: 'l5',  name: 'Ciarán Walsh',     company: 'Eirtech Solutions', vendor: 'v2', title: 'Procurement Mgr',  status: 'in-review', version: 'v1', campaign: 'cam1' },
+  { id: 'l6',  name: 'Klaus Brandt',     company: 'Berlinium GmbH',    vendor: 'v3', title: 'CIO',              status: 'accepted',  version: 'v1', campaign: 'cam1' },
+  { id: 'l7',  name: 'Hanna Richter',    company: 'Berlinium GmbH',    vendor: 'v3', title: 'VP Product',       status: 'accepted',  version: 'v1', campaign: 'cam1' },
+  { id: 'l8',  name: 'Stefan Hoffmann',  company: 'Rhine Digital',     vendor: 'v3', title: 'IT Manager',       status: 'in-review', version: 'v2', campaign: 'cam1' },
+  { id: 'l9',  name: 'Emma Fitzgerald',  company: 'Celtic Analytics',  vendor: 'v2', title: 'Data Director',    status: 'submitted', version: 'v2', campaign: 'cam1' },
+  { id: 'l10', name: 'Tom Kinsella',     company: 'Celtic Analytics',  vendor: 'v2', title: 'CTO',              status: 'submitted', version: 'v2', campaign: 'cam1' },
+  { id: 'l11', name: 'Oliver Webb',      company: 'Novatera Group',    vendor: 'v1', title: 'Head of Ops',      status: 'submitted', version: 'v2', campaign: 'cam1' },
+  { id: 'l12', name: 'Ingrid Hansen',    company: 'Hanseatic Tech',    vendor: 'v3', title: 'VP Engineering',   status: 'submitted', version: 'v2', campaign: 'cam1' },
 ];
+
+/* ── S3 mock data ─────────────────────────────────────────────────── */
+const S3_CAMPAIGN = {
+  name: 'EU SaaS Decision Makers',
+  client: 'TechCorp Global',
+  requirementChangedAt: new Date(Date.now() - 6 * 60 * 60 * 1000), // 6 hours ago
+  deadlineMs: 24 * 60 * 60 * 1000,
+  oldCriteria: { geo: 'UK, Ireland, Germany', seniority: 'Director+', companySize: '500+' },
+  newCriteria: { geo: 'UK, Germany (Ireland removed)', seniority: 'VP+', companySize: '1000+' },
+  changeNote: 'Client removed Ireland from geo scope; raised seniority bar to VP+ and company size minimum to 1,000 employees.',
+};
+let S3_STATE = { confirmed: false, filterVersion: 'all' };
 
 let CAMPAIGNS = [
   // ── ACTIVE (Live) ────────────────────────────────────────────────
@@ -2281,11 +2589,12 @@ let CAMPAIGNS = [
     id: 'cam1',
     name: 'EU SaaS Decision Makers',
     client: 'TechCorp Global',
+    clientId: 'CID-0001',
     status: 'Live',
     goal: 200,
     delivered: 74,
     inReview: 8,
-    vendorGoals: { v1: 70, v2: 60, v3: 70 },
+    vendorGoals: { v1: 4, v2: 60, v3: 70 },
     companyLimit: 2,
     geo: 'UK, Ireland, Germany',
     industry: 'SaaS / Software',
@@ -2299,6 +2608,18 @@ let CAMPAIGNS = [
     gdpr: 'required',
     deadline: '2026-06-30',
     vendors: ['v1','v2','v3'],
+    splitRule: 1,
+    idleRelease: 5,
+    vendorScopes: [
+      { vendor: 'DataReach',  scope: 'UK companies (Novatera Group, Harmon Inc, Veltrix Ltd)',             lastActivity: '2026-04-12' },
+      { vendor: 'LeadForge',  scope: 'Ireland companies (Celtic Analytics, Brindlewood Co)',               lastActivity: '2026-04-05' },
+      { vendor: 'ProspectIQ', scope: 'Germany companies (Berlinium GmbH, Rhine Digital, Hanseatic Tech)',  lastActivity: '2026-04-13' },
+    ],
+    abmList: {
+      'DataReach':  ['Novatera Group','Harmon Inc','Veltrix Ltd'],
+      'LeadForge':  ['Celtic Analytics','Brindlewood Co'],
+      'ProspectIQ': ['Berlinium GmbH','Rhine Digital','Hanseatic Tech'],
+    },
     script: 'Qualify: Are you evaluating SaaS solutions in the next 6 months? Do you have budget authority?',
     qualQuestions: [
       { question: 'Are you evaluating SaaS solutions in the next 6 months?', answers: [
@@ -2322,6 +2643,7 @@ let CAMPAIGNS = [
     id: 'cam2',
     name: 'UK FinTech C-Suite',
     client: 'FinAxis Partners',
+    clientId: 'CID-0002',
     status: 'Live',
     goal: 120,
     delivered: 41,
@@ -2334,6 +2656,9 @@ let CAMPAIGNS = [
     revenue: '$50M–$500M',
     titles: 'CFO, CIO, Head of Finance, VP Technology',
     abm: 'yes',
+    abmList: {
+      'DataReach': ['Albion Capital','Clearwater Finance','NexGen Payments','Greystone Wealth','Pinnacle Bank','Sterling Fintech','Crown Payments','Titan Wealth','Harrow Capital','Meridian Finance','Redbridge Partners','Crestview Wealth','Oakfield Financial','Halcyon Banking','Elmswood Capital','Foxgrove Finance','Ivybridge Payments','Juniper Wealth','Kensington Capital','Langham Financial'],
+    },
     suppression: 'yes',
     pacing: 'Front-loaded',
     language: 'English',
@@ -2363,6 +2688,7 @@ let CAMPAIGNS = [
     id: 'cam3',
     name: 'DACH Manufacturing IT Leaders',
     client: 'Meritech Solutions',
+    clientId: 'CID-0003',
     status: 'Live',
     goal: 150,
     vendorGoals: { v3: 150 },
@@ -2404,7 +2730,9 @@ let CAMPAIGNS = [
     id: 'cam4',
     name: 'Nordics Cloud Transformation',
     client: 'Apex Cloud Systems',
+    clientId: 'CID-0008',
     status: 'Live',
+    newlyAssigned: true,
     goal: 80,
     delivered: 12,
     inReview: 3,
@@ -2448,6 +2776,7 @@ let CAMPAIGNS = [
     id: 'cam5',
     name: 'Healthcare IT Decision Makers',
     client: 'Celera Health',
+    clientId: 'CID-0006',
     status: 'Paused',
     goal: 100,
     delivered: 38,
@@ -2460,6 +2789,10 @@ let CAMPAIGNS = [
     revenue: '$10M–$100M',
     titles: 'CIO, Head of IT, Digital Transformation Lead, CISO',
     abm: 'yes',
+    abmList: {
+      'DataReach':  ['St Thomas NHS Trust','Barts Health','University College London Hospitals','King\'s College Hospital','Royal Free London','Northwick Park Hospital','Chelsea Westminster','Hammersmith Hospital','Ealing Hospital','Hillingdon Hospitals'],
+      'LeadForge':  ['Mater Misericordiae Hospital','Beaumont Hospital','St Vincent\'s University Hospital','Cork University Hospital','Galway University Hospitals'],
+    },
     suppression: 'yes',
     pacing: 'Even-pacing',
     language: 'English',
@@ -2490,6 +2823,7 @@ let CAMPAIGNS = [
     id: 'cam6',
     name: 'EU Energy Sector CxOs',
     client: 'Praxis Energy',
+    clientId: 'CID-0010',
     status: 'Paused',
     goal: 60,
     delivered: 14,
@@ -2502,6 +2836,9 @@ let CAMPAIGNS = [
     revenue: '$500M+',
     titles: 'CEO, COO, CTO, VP Operations',
     abm: 'yes',
+    abmList: {
+      'ProspectIQ': ['RWE AG','E.ON SE','Vattenfall GmbH','EnBW Energie','Innogy SE','Uniper SE','Shell Nederland','Eneco Group','Engie Benelux'],
+    },
     suppression: 'yes',
     pacing: 'Back-loaded',
     language: 'German / Dutch / English',
@@ -2534,6 +2871,7 @@ let CAMPAIGNS = [
     id: 'cam7',
     name: 'UK Retail Digital Transformation',
     client: 'Landmark Retail Group',
+    clientId: 'CID-0009',
     status: 'Closed',
     goal: 50,
     delivered: 51,
@@ -2575,6 +2913,7 @@ let CAMPAIGNS = [
     id: 'cam8',
     name: 'EMEA MarTech Buyers',
     client: 'Orion Digital',
+    clientId: 'CID-0005',
     status: 'Closed',
     goal: 90,
     delivered: 92,
@@ -2587,6 +2926,10 @@ let CAMPAIGNS = [
     revenue: '$10M–$100M',
     titles: 'CMO, VP Marketing, Head of Digital, Marketing Director',
     abm: 'yes',
+    abmList: {
+      'DataReach':  ['Unilever UK','Burberry Group','ASOS plc','Marks & Spencer','Publicis UK','WPP Group','Diageo Digital','Vodafone Marketing','BT Consumer','easyJet Digital','Rightmove plc','Auto Trader UK'],
+      'LeadForge':  ['Heineken International','Philips Digital','ASML Marketing','ING Direct','Randstad NV','Booking.com','TomTom NV','Santander Digital','BBVA Marketing','Zara Digital'],
+    },
     suppression: 'yes',
     pacing: 'Even-pacing',
     language: 'English',
@@ -2699,12 +3042,14 @@ function render() {
   el.innerHTML = getTabContent(STATE.tab);
   // Clean up any leftover fixed bar from a previous edit session
   document.getElementById('ilr-action-bar')?.remove();
+  updatePoolAlerts();
 }
 
 function getTabContent(tab) {
   switch(tab) {
-    case 'campaigns': return renderCampaigns();
-    case 'vendors':   return renderVendors();
+    case 'campaigns':  return renderCampaigns();
+    case 'vendors':    return renderVendors();
+    case 'scenarios':  return renderScenarios();
     case 's1': return renderS1();
     case 's2': return renderS2();
     case 's3': return renderS3();
@@ -2713,6 +3058,101 @@ function getTabContent(tab) {
     default:   return '<p>Coming soon.</p>';
   }
 }
+
+/* ═══════════════════════════════════════════════
+   POOL ALERT NOTIFICATIONS
+═══════════════════════════════════════════════ */
+function getPoolAlerts() {
+  // Only show alerts to Admin — vendors and CST don't manage reallocation
+  if (STATE.role !== 'admin') return [];
+  const alerts = [];
+  CAMPAIGNS.forEach(cam => {
+    if (!cam.splitRule || !cam.vendorScopes || !cam.vendorScopes.length) return;
+    const enriched = scopeStatusForCampaign(cam);
+    enriched.forEach(s => {
+      if (s.status === 'goal-met') {
+        alerts.push({ camId: cam.id, camName: cam.name, vendor: s.vendor, status: 'goal-met', scope: s.scope, type: 'success' });
+      } else if (s.status === 'idle') {
+        alerts.push({ camId: cam.id, camName: cam.name, vendor: s.vendor, status: 'idle', idleDays: s.idleDays, scope: s.scope, type: 'warn' });
+      }
+    });
+  });
+  return alerts;
+}
+
+function updatePoolAlerts() {
+  const alerts = getPoolAlerts();
+  const count = alerts.length;
+
+  // Bell badge
+  const countEl = document.getElementById('notif-count');
+  const bellEl  = document.getElementById('notif-bell');
+  if (countEl) {
+    countEl.textContent = count;
+    countEl.style.display = count > 0 ? 'flex' : 'none';
+  }
+  if (bellEl) bellEl.title = count > 0 ? count + ' scope pool alert' + (count !== 1 ? 's' : '') : 'No alerts';
+
+  // S1 tab pulse dot
+  const dot = document.getElementById('s1-pool-dot');
+  if (dot) dot.style.display = count > 0 ? 'inline-block' : 'none';
+
+  // Notification panel body
+  const body = document.getElementById('notif-panel-body');
+  if (!body) return;
+  if (count === 0) {
+    body.innerHTML = '<div class="notif-empty">No scope pool alerts right now.</div>';
+    return;
+  }
+
+  body.innerHTML = alerts.map(a => {
+    const dotColor = a.type === 'success' ? '#0984e3' : '#fdcb6e';
+    const reason   = a.status === 'goal-met'
+      ? 'reached their goal — scope available in pool'
+      : 'has been idle for ' + a.idleDays + ' business days — auto-release triggered';
+    const scopeNote = a.scope ? '<div class="notif-item-body" style="margin-top:3px;color:#b2bec3;font-size:10px">' + a.scope.split('(')[0].trim() + '</div>' : '';
+    return '<div class="notif-item" onclick="goToPoolAlert(\'' + a.camId + '\')">'
+      + '<div class="notif-item-header">'
+      +   '<span class="notif-item-dot" style="background:' + dotColor + '"></span>'
+      +   '<span class="notif-item-title">' + a.vendor + ' · ' + a.camName + '</span>'
+      + '</div>'
+      + '<div class="notif-item-body">' + reason + '</div>'
+      + scopeNote
+      + '<div class="notif-item-time">Scope ready to reallocate &rarr;</div>'
+      + '</div>';
+  }).join('');
+}
+
+function toggleNotifPanel() {
+  const panel = document.getElementById('notif-panel');
+  if (!panel) return;
+  panel.classList.toggle('open');
+}
+
+function closeNotifPanel() {
+  const panel = document.getElementById('notif-panel');
+  if (panel) panel.classList.remove('open');
+}
+
+function goToPoolAlert(camId) {
+  closeNotifPanel();
+  STATE.tab = 's1';
+  STATE.campaignView = 'detail';
+  STATE.selectedCampaign = camId;
+  // Sync tab UI
+  document.querySelectorAll('.tab').forEach(t => t.classList.toggle('active', t.dataset.tab === 's1'));
+  document.querySelectorAll('.sidebar-item').forEach(t => t.classList.toggle('active', t.dataset.tab === 's1'));
+  render();
+}
+
+// Close notif panel when clicking outside
+document.addEventListener('click', function(e) {
+  const panel = document.getElementById('notif-panel');
+  const bell  = document.getElementById('notif-bell');
+  if (panel && bell && !panel.contains(e.target) && !bell.contains(e.target)) {
+    panel.classList.remove('open');
+  }
+});
 
 /* ═══════════════════════════════════════════════
    ROLE SWITCHER
@@ -2778,17 +3218,13 @@ function setRole(role) {
     STATE.tab = 'campaigns';
   }
 
-  // Update vendors badge count
-  const vendorsBadge = document.getElementById('sidebar-vendors-badge');
-  if (vendorsBadge) vendorsBadge.textContent = VENDORS.length;
-
-  // Update campaigns sidebar badge (active+paused visible to this role)
+  // Show notification dot on Campaigns only when vendor has newly assigned campaigns
   const myVid = STATE.currentVendor;
-  const visCamps = role === 'vendor'
-    ? CAMPAIGNS.filter(c => c.vendors.includes(myVid) && c.status !== 'Closed')
-    : CAMPAIGNS.filter(c => c.status !== 'Closed');
-  const badge = document.getElementById('sidebar-campaigns-badge');
-  if (badge) badge.textContent = visCamps.length;
+  const newCamps = role === 'vendor'
+    ? CAMPAIGNS.filter(c => c.vendors.includes(myVid) && c.newlyAssigned)
+    : [];
+  const notifDot = document.getElementById('sidebar-campaigns-notif');
+  if (notifDot) notifDot.classList.toggle('visible', newCamps.length > 0);
 
   // Update tab visibility
   updateTabVisibility();
@@ -2827,6 +3263,13 @@ function switchTab(tabId) {
   document.querySelectorAll('.tab').forEach(t => {
     t.classList.toggle('active', t.dataset.tab === tabId);
   });
+  // Clear new-campaign notification dot when vendor visits Campaigns
+  if (tabId === 'campaigns' && STATE.role === 'vendor') {
+    const myVid = STATE.currentVendor;
+    CAMPAIGNS.forEach(c => { if (c.vendors.includes(myVid)) c.newlyAssigned = false; });
+    const dot = document.getElementById('sidebar-campaigns-notif');
+    if (dot) dot.classList.remove('visible');
+  }
   window.scrollTo({ top: 0, behavior: 'smooth' });
   render();
 }
@@ -2959,6 +3402,47 @@ function vendorStatsForCampaign(cam) {
 }
 
 /* ═══════════════════════════════════════════════
+   SCOPE STATUS HELPERS
+═══════════════════════════════════════════════ */
+// Returns status for each vendorScope entry: 'goal-met' | 'idle' | 'released' | 'active'
+function scopeStatusForCampaign(cam) {
+  const vstats = vendorStatsForCampaign(cam);
+  const idleDays = cam.idleRelease || 5;
+  const today = new Date('2026-04-13'); // fixed demo date
+
+  return (cam.vendorScopes || []).map(vs => {
+    const vendor = VENDORS.find(v => v.name === vs.vendor);
+    const vid = vendor ? vendor.id : null;
+    const stat = vid ? vstats.find(s => s.vid === vid) : null;
+
+    // Explicit release override
+    if (vs.released) return { ...vs, status: 'released', vid };
+
+    // Goal-met check
+    if (stat && stat.goal > 0 && stat.delivered >= stat.goal) {
+      return { ...vs, status: 'goal-met', vid, stat };
+    }
+
+    // Idle check — business days approximation (calendar days * 5/7)
+    if (vs.lastActivity) {
+      const last = new Date(vs.lastActivity);
+      const calDays = Math.floor((today - last) / (1000 * 60 * 60 * 24));
+      const bizDays = Math.round(calDays * 5 / 7);
+      if (bizDays >= idleDays) {
+        return { ...vs, status: 'idle', vid, stat, idleDays: bizDays };
+      }
+    }
+
+    return { ...vs, status: 'active', vid, stat };
+  });
+}
+
+// Returns the set of released scopes (goal-met + idle + explicit) for pool display
+function releasedScopes(cam) {
+  return scopeStatusForCampaign(cam).filter(s => s.status !== 'active');
+}
+
+/* ═══════════════════════════════════════════════
    CAMPAIGNS — LIST VIEW
 ═══════════════════════════════════════════════ */
 function renderCampaigns() {
@@ -3064,17 +3548,35 @@ function setCampaignTab(key) {
 }
 
 function renderCampaignRow(cam, role, myVendorId) {
-  const delivered = cam.delivered;
-  const goal = cam.goal;
+  let delivered, goal;
+  if (role === 'vendor') {
+    const explicitGoal = cam.vendorGoals && cam.vendorGoals[myVendorId];
+    if (explicitGoal) {
+      goal = explicitGoal;
+    } else {
+      // Fall back to total slots assigned to this vendor on this campaign
+      goal = COMPANIES
+        .filter(c => c.vendor === myVendorId && c.campaign === cam.id)
+        .reduce((sum, c) => sum + ((S1_SLOTS[c.id] || { slots: c.slots }).slots), 0);
+    }
+    const vLeads = S1_LEADS.filter(l => l.campaign === cam.id && l.vendor === myVendorId);
+    delivered = vLeads.filter(l => ['accepted','in-review','submitted','rejected'].includes(l.status)).length;
+  } else {
+    delivered = cam.delivered;
+    goal = cam.goal;
+  }
   const p = pct(delivered, goal);
 
   const progColors = { Live: '#00b894', Paused: '#e17055', Closed: '#b2bec3' };
   const progColor = progColors[cam.status] || '#0984e3';
   const dimmed = cam.status === 'Closed' ? 'opacity:0.65;' : '';
 
+  const rowInReview = role === 'vendor'
+    ? S1_LEADS.filter(l => l.campaign === cam.id && l.vendor === myVendorId && l.status === 'in-review').length
+    : cam.inReview;
   const inReviewCell = cam.status === 'Closed'
     ? `<span style="color:#00b894;font-weight:700">✓</span>`
-    : (cam.inReview > 0 ? `<span style="font-weight:700;color:#e17055">${cam.inReview}</span>` : `<span style="color:#b2bec3">—</span>`);
+    : (rowInReview > 0 ? `<span style="font-weight:700;color:#e17055">${rowInReview}</span>` : `<span style="color:#b2bec3">—</span>`);
 
   const vendorCol = role !== 'vendor'
     ? `<td>${cam.vendors.map(vid => vendorChip(vid)).join('')}</td>`
@@ -3113,7 +3615,10 @@ function renderCampaignRow(cam, role, myVendorId) {
   return `
     <tr style="${dimmed}cursor:pointer" onclick="openCampaignDetail('${cam.id}')">
       <td>
-        <div style="font-weight:700;color:#1a1a2e">${cam.name}</div>
+        <div style="font-weight:700;color:#1a1a2e;display:flex;align-items:center;flex-wrap:wrap;gap:4px">
+          ${cam.name}
+          ${(() => { if (role !== 'admin') return ''; const p = cam.splitRule && cam.vendorScopes ? scopeStatusForCampaign(cam).filter(s => s.status !== 'active') : []; return p.length > 0 ? '<span class="pool-chip">&#9432; ' + p.length + ' in pool</span>' : ''; })()}
+        </div>
         <div style="font-size:11px;color:#b2bec3;margin-top:2px">${cam.geo}</div>
         ${pauseTip}
       </td>
@@ -3152,16 +3657,34 @@ function renderCampaignDetail(camId) {
   const role = STATE.role;
   const myVendorId = STATE.currentVendor;
 
-  // Leads to show
-  let visibleLeads = LEADS;
-  if (role === 'vendor') visibleLeads = LEADS.filter(l => l.vendor === myVendorId);
+  // Leads to show — scoped to this campaign only (use S1_LEADS as the live source)
+  let visibleLeads = S1_LEADS.filter(l => l.campaign === camId);
+  if (role === 'vendor') visibleLeads = visibleLeads.filter(l => l.vendor === myVendorId);
 
-  // Companies to show
-  let visibleCompanies = COMPANIES;
-  if (role === 'vendor') visibleCompanies = COMPANIES.filter(c => c.vendor === myVendorId);
+  // Companies to show — scoped to this campaign only
+  let visibleCompanies = COMPANIES.filter(c => c.campaign === camId);
+  if (role === 'vendor') visibleCompanies = visibleCompanies.filter(c => c.vendor === myVendorId);
 
-  const delivered = cam.delivered;
-  const goal = cam.goal;
+  let delivered, goal, inReview;
+  if (role === 'vendor') {
+    // Use explicit vendorGoal; fall back to total slots assigned to this vendor
+    const explicitGoal = cam.vendorGoals && cam.vendorGoals[myVendorId];
+    if (explicitGoal) {
+      goal = explicitGoal;
+    } else {
+      goal = visibleCompanies.reduce((sum, c) => {
+        const s = S1_SLOTS[c.id] || { slots: c.slots };
+        return sum + s.slots;
+      }, 0);
+    }
+    const vLeads = S1_LEADS.filter(l => l.campaign === cam.id && l.vendor === myVendorId);
+    delivered = vLeads.filter(l => ['accepted','in-review','submitted','rejected'].includes(l.status)).length;
+    inReview  = vLeads.filter(l => l.status === 'in-review').length;
+  } else {
+    delivered = cam.delivered;
+    goal = cam.goal;
+    inReview = cam.inReview;
+  }
   const p = pct(delivered, goal);
 
   // Stats row
@@ -3173,7 +3696,7 @@ function renderCampaignDetail(camId) {
         <div class="stat-sub">of ${goal} goal</div>
       </div>
       <div class="stat-card">
-        <div class="stat-num" style="color:#fdcb6e">${cam.inReview}</div>
+        <div class="stat-num" style="color:#fdcb6e">${inReview}</div>
         <div class="stat-label">In Review</div>
         <div class="stat-sub">pending QA</div>
       </div>
@@ -3192,7 +3715,8 @@ function renderCampaignDetail(camId) {
 
   // Companies table
   const companyRows = visibleCompanies.map(c => {
-    const remaining = c.slots - c.used;
+    const s = S1_SLOTS[c.id] || { used: c.used, slots: c.slots };
+    const remaining = s.slots - s.used;
     const slotColor = remaining === 0 ? '#d63031' : remaining === 1 ? '#e17055' : '#00b894';
     const showVendorCol = role !== 'vendor';
     return `<tr>
@@ -3200,7 +3724,7 @@ function renderCampaignDetail(camId) {
       <td>${c.geo}</td>
       <td>${c.industry}</td>
       ${showVendorCol ? `<td>${vendorChip(c.vendor)}</td>` : ''}
-      <td><span style="font-weight:700;color:${slotColor}">${remaining}</span><span style="color:#b2bec3"> / ${c.slots}</span></td>
+      <td><span style="font-weight:700;color:${slotColor}">${remaining}</span><span style="color:#b2bec3"> / ${s.slots}</span></td>
       <td>${statusBadge(c.status)}</td>
     </tr>`;
   }).join('');
@@ -3226,13 +3750,16 @@ function renderCampaignDetail(camId) {
   // Leads table
   const leadRows = visibleLeads.map(l => {
     const showVendorCol = role !== 'vendor';
+    const fullName = l.firstName && l.lastName ? `${l.firstName} ${l.lastName}` : (l.name || '—');
+    const title = l.jobTitle || l.title || '—';
+    const version = l.version || 'v1';
     return `<tr>
-      <td><strong>${l.name}</strong></td>
+      <td><strong>${fullName}</strong></td>
       <td>${l.company}</td>
-      <td style="color:#636e72">${l.title}</td>
+      <td style="color:#636e72">${title}</td>
       ${showVendorCol ? `<td>${vendorChip(l.vendor)}</td>` : ''}
       <td>${statusBadge(l.status)}</td>
-      <td><span class="badge badge-vendor">${l.version}</span></td>
+      <td><span class="badge badge-vendor">${version}</span></td>
     </tr>`;
   }).join('');
 
@@ -3292,99 +3819,93 @@ function renderCampaignDetail(camId) {
     </div>`;
   }).join('');
 
-  const sidebar = `
-    <div class="detail-sidebar">
-      <div class="card">
-        <h3 style="margin-bottom:14px">Campaign Details</h3>
-        <div class="detail-kv">
-          <div class="detail-kv-row"><span class="detail-kv-key">Client</span><span class="detail-kv-val">${cam.client}</span></div>
-          <div class="detail-kv-row"><span class="detail-kv-key">Status</span><span class="detail-kv-val">${statusBadge(cam.status)}</span></div>
-          <div class="detail-kv-row"><span class="detail-kv-key">Co. Limit</span><span class="detail-kv-val">${cam.companyLimit} per company</span></div>
-          <div class="detail-kv-row"><span class="detail-kv-key">Pacing</span><span class="detail-kv-val">${cam.pacing}</span></div>
-          <div class="detail-kv-row"><span class="detail-kv-key">Language</span><span class="detail-kv-val">${cam.language}</span></div>
-          <div class="detail-kv-row"><span class="detail-kv-key">GDPR</span><span class="detail-kv-val">${cam.gdpr}</span></div>
-          <div class="detail-kv-row"><span class="detail-kv-key">ABM List</span><span class="detail-kv-val">${cam.abm === 'yes' ? '✓ Active' : '—'}</span></div>
-          <div class="detail-kv-row"><span class="detail-kv-key">Suppression</span><span class="detail-kv-val">${cam.suppression === 'yes' ? '✓ Active' : '—'}</span></div>
-          <div class="detail-kv-row"><span class="detail-kv-key">Deadline</span><span class="detail-kv-val">${cam.deadline}</span></div>
+  const detailsTabContent = `
+    <div style="display:flex;flex-direction:column;gap:16px">
+
+      <!-- Campaign Details table -->
+      <div class="card" style="padding:0;overflow:hidden">
+        <div style="padding:12px 16px;border-bottom:1px solid #eee;background:#fafbfc">
+          <h3 style="margin:0;font-size:13px">Campaign Details</h3>
         </div>
+        <table style="width:100%;border-collapse:collapse;font-size:13px">
+          <tbody>
+            ${[
+              ['Client', cam.client],
+              ...(cam.clientId && role !== 'vendor' ? [['Client ID', `<span style="font-size:11px;font-weight:700;font-family:monospace;color:#0984e3;background:#e8f4fd;border:1px solid #bee3f8;border-radius:4px;padding:2px 8px">${cam.clientId}</span>`]] : []),
+              ['Status', statusBadge(cam.status)],
+              ['Co. Limit', cam.companyLimit + ' per company'],
+              ['Pacing', cam.pacing],
+              ['Language', cam.language],
+              ['GDPR', cam.gdpr],
+              ['ABM List', cam.abm === 'yes' ? '✓ Active' : '—'],
+              ['Suppression', cam.suppression === 'yes' ? '✓ Active' : '—'],
+              ['Deadline', cam.deadline],
+            ].map(([k,v], i) => `
+            <tr style="background:${i%2===0?'#fff':'#fafbfc'}">
+              <td style="padding:9px 16px;color:#636e72;font-weight:500;width:38%;border-bottom:1px solid #f0f0f0">${k}</td>
+              <td style="padding:9px 16px;color:#2d3436;border-bottom:1px solid #f0f0f0">${v}</td>
+            </tr>`).join('')}
+          </tbody>
+        </table>
       </div>
-      <div class="card" style="border-left-color:#00b894">
-        <h3 style="margin-bottom:14px">Target Audience</h3>
-        <div class="detail-kv" style="margin-bottom:12px">
-          <div class="detail-kv-row">
-            <span class="detail-kv-key" style="display:flex;align-items:center;gap:5px">
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
-              Geography
-            </span>
-            <span class="detail-kv-val">${cam.geo}</span>
-          </div>
-          <div class="detail-kv-row">
-            <span class="detail-kv-key" style="display:flex;align-items:center;gap:5px">
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></svg>
-              Industry
-            </span>
-            <span class="detail-kv-val">${cam.industry}</span>
-          </div>
-          <div class="detail-kv-row">
-            <span class="detail-kv-key" style="display:flex;align-items:center;gap:5px">
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-              Co. Size
-            </span>
-            <span class="detail-kv-val">${cam.size}</span>
-          </div>
-          <div class="detail-kv-row">
-            <span class="detail-kv-key" style="display:flex;align-items:center;gap:5px">
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
-              Revenue
-            </span>
-            <span class="detail-kv-val">${cam.revenue}</span>
-          </div>
+
+      <!-- Target Audience table -->
+      <div class="card" style="padding:0;overflow:hidden;border-left-color:#00b894">
+        <div style="padding:12px 16px;border-bottom:1px solid #eee;background:#fafbfc">
+          <h3 style="margin:0;font-size:13px">Target Audience</h3>
         </div>
-        <div style="font-size:11px;font-weight:700;color:#b2bec3;text-transform:uppercase;letter-spacing:.05em;margin-bottom:6px">Target Titles</div>
-        <div style="line-height:1.8">${titleChips}</div>
+        <table style="width:100%;border-collapse:collapse;font-size:13px">
+          <tbody>
+            ${[
+              ['Geography', cam.geo],
+              ['Industry', cam.industry],
+              ['Co. Size', cam.size],
+              ['Revenue', cam.revenue],
+            ].map(([k,v], i) => `
+            <tr style="background:${i%2===0?'#fff':'#fafbfc'}">
+              <td style="padding:9px 16px;color:#636e72;font-weight:500;width:38%;border-bottom:1px solid #f0f0f0">${k}</td>
+              <td style="padding:9px 16px;color:#2d3436;border-bottom:1px solid #f0f0f0">${v}</td>
+            </tr>`).join('')}
+            <tr style="background:#fff">
+              <td style="padding:9px 16px;color:#636e72;font-weight:500;vertical-align:top">Target Titles</td>
+              <td style="padding:9px 16px">${titleChips}</td>
+            </tr>
+          </tbody>
+        </table>
       </div>
+
+      <!-- Custom Questions table -->
       ${qualQsList || cam.script ? `
-      <div class="card" style="border-left-color:#6c5ce7">
-        <h3 style="margin-bottom:14px">Custom Questions</h3>
-        ${qualQsList ? `<div style="margin-bottom:${cam.script ? '14px' : '0'}">${qualQsList}</div>` : ''}
-        ${cam.script ? `
-        <div style="background:#f8f6ff;border-left:3px solid #6c5ce7;border-radius:0 6px 6px 0;padding:10px 12px;margin-top:2px">
-          <div style="font-size:10px;font-weight:700;color:#6c5ce7;text-transform:uppercase;letter-spacing:.06em;margin-bottom:5px">Phone Script Note</div>
-          <p style="font-size:12px;color:#4a4a6a;line-height:1.6;margin:0">${cam.script}</p>
-        </div>` : ''}
+      <div class="card" style="padding:0;overflow:hidden;border-left-color:#6c5ce7">
+        <div style="padding:12px 16px;border-bottom:1px solid #eee;background:#fafbfc">
+          <h3 style="margin:0;font-size:13px">Custom Questions</h3>
+        </div>
+        <div style="padding:14px 16px">
+          ${qualQsList ? `<div style="margin-bottom:${cam.script ? '14px' : '0'}">${qualQsList}</div>` : ''}
+          ${cam.script ? `
+          <div style="background:#f8f6ff;border-left:3px solid #6c5ce7;border-radius:0 6px 6px 0;padding:10px 12px;margin-top:2px">
+            <div style="font-size:10px;font-weight:700;color:#6c5ce7;text-transform:uppercase;letter-spacing:.06em;margin-bottom:5px">Phone Script Note</div>
+            <p style="font-size:12px;color:#4a4a6a;line-height:1.6;margin:0">${cam.script}</p>
+          </div>` : ''}
+        </div>
       </div>` : ''}
+
+      <!-- Vendor Assignment table -->
       ${role !== 'vendor' ? `
-      <div class="card" style="border-left-color:#a29bfe">
-        <h3 style="margin-bottom:12px">Vendor Assignment</h3>
-        <div>${cam.vendors.map(vid => vendorChip(vid)).join('')}</div>
+      <div class="card" style="padding:0;overflow:hidden;border-left-color:#a29bfe">
+        <div style="padding:12px 16px;border-bottom:1px solid #eee;background:#fafbfc">
+          <h3 style="margin:0;font-size:13px">Vendor Assignment</h3>
+        </div>
+        <table style="width:100%;border-collapse:collapse;font-size:13px">
+          <tbody>
+            <tr>
+              <td style="padding:9px 16px;color:#636e72;font-weight:500;width:38%">Assigned Vendors</td>
+              <td style="padding:9px 16px">${cam.vendors.map(vid => vendorChip(vid)).join('')}</td>
+            </tr>
+          </tbody>
+        </table>
       </div>` : ''}
-      ${cam.splitRule ? (() => {
-        const RULE_COLORS = { 1:'#0984e3', 2:'#00b894', 3:'#6c5ce7', 4:'#e17055', 5:'#b8860b' };
-        const RULE_LABELS = { 1:'ABM List', 2:'Geography', 3:'Industry', 4:'Company Size', 5:'No Split' };
-        const rc = RULE_COLORS[cam.splitRule] || '#636e72';
-        const rl = RULE_LABELS[cam.splitRule] || 'Unknown';
-        const scopeRows = (cam.vendorScopes || []).map(vs =>
-          `<div style="display:flex;gap:8px;padding:7px 0;border-bottom:1px solid #f0f0f0;align-items:flex-start">
-            <span style="width:8px;height:8px;border-radius:50%;background:${rc};display:inline-block;margin-top:3px;flex-shrink:0"></span>
-            <div>
-              <div style="font-size:12px;font-weight:700;color:#1a1a2e">${vs.vendor}</div>
-              <div style="font-size:11px;color:#636e72">${vs.scope || '—'}</div>
-            </div>
-          </div>`
-        ).join('');
-        return `
-        <div class="card" style="border-left-color:#e17055">
-          <h3 style="margin-bottom:12px">Vendor Split</h3>
-          <div style="margin-bottom:10px">
-            <span style="display:inline-block;padding:3px 12px;border-radius:20px;font-size:12px;font-weight:800;
-                         color:${rc};border:1.5px solid ${rc};background:${rc}18">${cam.splitRule === 5 ? 'No Split' : `Rule ${cam.splitRule} — ${rl}`}</span>
-          </div>
-          ${scopeRows ? `<div style="margin-bottom:10px">${scopeRows}</div>` : '<div style="font-size:12px;color:#b2bec3;margin-bottom:10px">No vendor scopes defined</div>'}
-          <div class="detail-kv">
-            <div class="detail-kv-row"><span class="detail-kv-key">Idle Release</span><span class="detail-kv-val">${cam.idleRelease || 5} business days</span></div>
-          </div>
-        </div>`;
-      })() : ''}
+
     </div>
   `;
 
@@ -3393,12 +3914,18 @@ function renderCampaignDetail(camId) {
   if (role === 'admin' || role === 'cst') {
     const vstats = vendorStatsForCampaign(cam);
     const isCST = role === 'cst';
+    const hasSplitScopes = !!(cam.splitRule && cam.vendorScopes && cam.vendorScopes.length);
+    const enrichedForTable = hasSplitScopes ? scopeStatusForCampaign(cam) : [];
 
     const adminExtraHeaders = isCST ? '' : `
       <th style="padding:9px 14px;font-size:11px;font-weight:700;color:#b2bec3;text-transform:uppercase;letter-spacing:.05em;text-align:right">Accepted</th>
       <th style="padding:9px 14px;font-size:11px;font-weight:700;color:#b2bec3;text-transform:uppercase;letter-spacing:.05em;text-align:right">In Review</th>
       <th style="padding:9px 14px;font-size:11px;font-weight:700;color:#b2bec3;text-transform:uppercase;letter-spacing:.05em;text-align:right">Submitted</th>
       <th style="padding:9px 14px;font-size:11px;font-weight:700;color:#b2bec3;text-transform:uppercase;letter-spacing:.05em;text-align:right">Accept Rate</th>`;
+
+    const scopeStatusHeader = hasSplitScopes
+      ? `<th style="padding:9px 14px;font-size:11px;font-weight:700;color:#b2bec3;text-transform:uppercase;letter-spacing:.05em">Scope Status</th>`
+      : '';
 
     const vendorRows = vstats.map(vs => {
       const { v, goal, delivered, accepted, inReview, submitted, acceptRate } = vs;
@@ -3411,6 +3938,38 @@ function renderCampaignDetail(camId) {
         <td style="padding:10px 14px;text-align:right;font-weight:700;color:#e17055">${inReview}</td>
         <td style="padding:10px 14px;text-align:right;color:#636e72">${submitted}</td>
         <td style="padding:10px 14px;text-align:right;font-weight:700;color:${arColor}">${acceptRate}%</td>`;
+
+      // Scope status cell — match by vendor id
+      let scopeStatusCell = '';
+      if (hasSplitScopes) {
+        const scopeEntry = enrichedForTable.find(s => s.vid === vs.vid);
+        if (scopeEntry) {
+          const { status, idleDays } = scopeEntry;
+          if (status === 'goal-met') {
+            scopeStatusCell = `<td style="padding:10px 14px">
+              <span style="font-size:12px;font-weight:700;color:#0984e3">Goal Met</span>
+              <div style="font-size:10px;color:#636e72;margin-top:1px">scope released to pool</div>
+            </td>`;
+          } else if (status === 'idle') {
+            scopeStatusCell = `<td style="padding:10px 14px">
+              <span style="font-size:12px;font-weight:700;color:#d4830a">Idle ${idleDays}d</span>
+              <div style="font-size:10px;color:#636e72;margin-top:1px">scope at risk — auto-release pending</div>
+            </td>`;
+          } else if (status === 'released') {
+            scopeStatusCell = `<td style="padding:10px 14px">
+              <span style="font-size:12px;font-weight:700;color:#b2bec3">Released</span>
+            </td>`;
+          } else {
+            scopeStatusCell = `<td style="padding:10px 14px">
+              <span style="display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:700;color:#00b894">
+                <span style="width:7px;height:7px;border-radius:50%;background:#00b894;display:inline-block"></span>Active
+              </span>
+            </td>`;
+          }
+        } else {
+          scopeStatusCell = `<td style="padding:10px 14px;font-size:12px;color:#b2bec3">—</td>`;
+        }
+      }
 
       return `<tr style="border-bottom:1px solid #f4f5f7">
         <td style="padding:10px 14px">
@@ -3428,24 +3987,28 @@ function renderCampaignDetail(camId) {
             <span style="font-size:11px;font-weight:800;color:${progColor};min-width:32px;text-align:right">${progPct}%</span>
           </div>
         </td>
+        ${scopeStatusCell}
         ${adminExtraCells}
       </tr>`;
     }).join('');
 
-    const cstNote = isCST ? `<tr><td colspan="3" style="padding:8px 14px;font-size:11px;color:#b2bec3;font-style:italic">Detailed acceptance breakdown visible to DPO Admin only.</td></tr>` : '';
+    const cstNote = isCST ? `<tr><td colspan="${3 + (hasSplitScopes ? 1 : 0)}" style="padding:8px 14px;font-size:11px;color:#b2bec3;font-style:italic">Detailed acceptance breakdown visible to DPO Admin only.</td></tr>` : '';
+
+    const processNote = '';
 
     vendorPerfPanel = `
       <p class="section-label" style="display:flex;align-items:center;gap:8px">
         Vendor Performance
         <span style="font-size:10px;font-weight:700;color:#0984e3;background:#e8f4fd;padding:2px 8px;border-radius:10px;text-transform:uppercase;letter-spacing:.05em">${cam.vendors.length} vendor${cam.vendors.length !== 1 ? 's' : ''}</span>
       </p>
-      <div class="card" style="padding:0;overflow:hidden;margin-bottom:24px">
+      <div class="card" style="padding:0;overflow:hidden;margin-bottom:16px">
         <table style="width:100%;border-collapse:collapse">
           <thead style="background:#f5f6fa">
             <tr>
               <th style="padding:9px 14px;font-size:11px;font-weight:700;color:#b2bec3;text-transform:uppercase;letter-spacing:.05em;text-align:left">Vendor</th>
               <th style="padding:9px 14px;font-size:11px;font-weight:700;color:#b2bec3;text-transform:uppercase;letter-spacing:.05em;text-align:right">Delivered / Goal</th>
               <th style="padding:9px 14px;font-size:11px;font-weight:700;color:#b2bec3;text-transform:uppercase;letter-spacing:.05em">Progress</th>
+              ${scopeStatusHeader}
               ${adminExtraHeaders}
             </tr>
           </thead>
@@ -3455,10 +4018,94 @@ function renderCampaignDetail(camId) {
           </tbody>
         </table>
       </div>
+      ${processNote}
     `;
   }
 
-  const mainContent = `
+  const vendorSplitPanel = (cam.splitRule && role !== 'vendor') ? (() => {
+    const RULE_COLORS = { 1:'#0984e3', 2:'#00b894', 3:'#6c5ce7', 4:'#e17055', 5:'#b8860b' };
+    const RULE_LABELS = { 1:'ABM List', 2:'Geography', 3:'Industry', 4:'Company Size', 5:'No Split' };
+    const rc = RULE_COLORS[cam.splitRule] || '#636e72';
+    const rl = RULE_LABELS[cam.splitRule] || 'Unknown';
+    const enrichedScopes = scopeStatusForCampaign(cam);
+
+    const STATUS_CFG = {
+      'goal-met': { dot:'#0984e3', bg:'#e8f4fd', color:'#0571c4', label:'Goal Met' },
+      'idle':     { dot:'#fdcb6e', bg:'#fff8e6', color:'#b8760a', label:null },
+      'released': { dot:'#b2bec3', bg:'#f4f5f7', color:'#636e72', label:'Released' },
+      'active':   { dot:'#00b894', bg:'#e6faf5', color:'#00916e', label:'Active' },
+    };
+
+    const vsBadge = (s) => {
+      const cfg = STATUS_CFG[s.status] || STATUS_CFG['active'];
+      const lbl = s.status === 'idle' ? `Idle ${s.idleDays}d` : cfg.label;
+      if (s.status === 'active') return `<span style="display:inline-flex;align-items:center;gap:3px;margin-left:6px;padding:2px 8px;border-radius:10px;font-size:10px;font-weight:700;background:${cfg.bg};color:${cfg.color};white-space:nowrap"><span style="width:5px;height:5px;border-radius:50%;background:${cfg.dot};display:inline-block"></span>${lbl}</span>`;
+      return `<span style="margin-left:6px;padding:2px 8px;border-radius:10px;font-size:10px;font-weight:700;background:${cfg.bg};color:${cfg.color};white-space:nowrap">${lbl}</span>`;
+    };
+
+    const scopeRows = enrichedScopes.map((s, i) => {
+      const cfg = STATUS_CFG[s.status] || STATUS_CFG['active'];
+      const isLast = i === enrichedScopes.length - 1;
+      return `<div style="display:flex;gap:12px;padding:12px 16px;${isLast ? '' : 'border-bottom:1px solid #f0f2f5;'}align-items:flex-start" onmouseover="this.style.background='#fafbfc'" onmouseout="this.style.background='transparent'">
+        <div style="width:10px;height:10px;border-radius:50%;background:${cfg.dot};flex-shrink:0;margin-top:4px;box-shadow:0 0 0 3px ${cfg.dot}22"></div>
+        <div style="flex:1;min-width:0">
+          <div style="display:flex;align-items:center;flex-wrap:wrap;gap:4px;margin-bottom:3px">
+            <span style="font-size:13px;font-weight:700;color:#1a1a2e">${s.vendor}</span>
+            ${vsBadge(s)}
+          </div>
+          <div style="font-size:12px;color:#74838f;line-height:1.4">${s.scope || '—'}</div>
+          ${s.status !== 'active' ? `<div style="margin-top:5px;font-size:11px;color:#0984e3;font-weight:600">&#8594; scope released to pool</div>` : ''}
+        </div>
+      </div>`;
+    }).join('');
+
+    const poolScopes = enrichedScopes.filter(s => s.status !== 'active');
+    const poolSection = poolScopes.length > 0 ? (() => {
+      const poolItems = poolScopes.map((s, i) => {
+        const cfg = STATUS_CFG[s.status] || STATUS_CFG['active'];
+        const reason = s.status === 'goal-met' ? 'goal met' : s.status === 'idle' ? `idle ${s.idleDays}d` : 'released';
+        const isLast = i === poolScopes.length - 1;
+        return `<div style="display:flex;align-items:center;gap:8px;padding:7px 0;${isLast ? '' : 'border-bottom:1px solid #d6eaf8;'}">
+          <div style="width:6px;height:6px;border-radius:50%;background:${cfg.dot};flex-shrink:0"></div>
+          <div style="flex:1;min-width:0;font-size:12px">
+            <span style="font-weight:700;color:#0d3b66">${s.vendor}</span>
+            <span style="color:#4a6fa5"> — ${s.scope ? s.scope.split('(')[0].trim() : 'full scope'}</span>
+          </div>
+          <span style="font-size:10px;font-weight:700;background:${cfg.bg};color:${cfg.color};padding:2px 7px;border-radius:8px;white-space:nowrap">${reason}</span>
+        </div>`;
+      }).join('');
+      return `
+      <div style="margin:0 14px 14px;background:linear-gradient(135deg,#f0f7ff 0%,#eaf2fc 100%);border:1px solid #c5ddf8;border-radius:10px;padding:14px;box-shadow:0 1px 4px rgba(9,132,227,.07)">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
+          <span style="font-size:10px;font-weight:800;color:#0571c4;text-transform:uppercase;letter-spacing:.09em">Scope Pool</span>
+          <span style="font-size:10px;font-weight:800;background:#0984e3;color:#fff;padding:2px 9px;border-radius:10px">${poolScopes.length} available</span>
+        </div>
+        <div style="margin-bottom:12px">${poolItems}</div>
+        <button onclick="openReallocModal('${cam.id}')" style="width:100%;padding:9px 0;border:none;border-radius:8px;background:#0984e3;color:#fff;font-size:12px;font-weight:700;cursor:pointer;letter-spacing:.02em;transition:all .15s;box-shadow:0 2px 6px rgba(9,132,227,.30)" onmouseover="this.style.background='#0771c4';this.style.boxShadow='0 3px 10px rgba(9,132,227,.40)'" onmouseout="this.style.background='#0984e3';this.style.boxShadow='0 2px 6px rgba(9,132,227,.30)'">Reallocate Scope</button>
+      </div>`;
+    })() : '';
+
+    return `
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-top:26px;margin-bottom:10px">
+        <div style="display:flex;align-items:center;gap:8px">
+          <span style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:#636e72">Vendor Split</span>
+          <span style="font-size:10px;font-weight:700;background:${rc}15;color:${rc};padding:2px 9px;border-radius:10px;text-transform:uppercase;letter-spacing:.05em;border:1px solid ${rc}35">${cam.splitRule === 5 ? 'No Split' : `Rule ${cam.splitRule} — ${rl}`}</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:5px;background:#f4f5f7;border-radius:8px;padding:3px 9px">
+          <span style="font-size:11px;color:#8892a0;line-height:1">&#x23F1;</span>
+          <span style="font-size:10px;font-weight:600;color:#636e72">${cam.idleRelease || 5}d idle release</span>
+        </div>
+      </div>
+      <div class="card" style="padding:0;overflow:hidden;margin-bottom:16px;border-radius:10px;box-shadow:0 1px 4px rgba(0,0,0,.06)">
+        ${enrichedScopes.length ? scopeRows : '<div style="padding:16px;font-size:13px;color:#b2bec3;text-align:center">No vendor scopes defined</div>'}
+        ${poolSection || ''}
+      </div>`;
+  })() : '';
+
+  if (!window._camDetailTab) window._camDetailTab = {};
+  const activeTab = window._camDetailTab[cam.id] || 'performance';
+
+  const perfTab = `
     <div>
       ${statsRow}
       ${vendorPerfPanel}
@@ -3466,19 +4113,36 @@ function renderCampaignDetail(camId) {
       ${companyTable}
       <p class="section-label">Leads (${visibleLeads.length})</p>
       ${leadsTable}
-    </div>
-  `;
+    </div>`;
 
   return `
+    ${(role === 'admin' || role === 'cst') ? `
+    <button class="btn btn-primary btn-sm" onclick="openModalForEdit('${cam.id}')"
+      style="position:fixed;top:18px;right:24px;z-index:200;box-shadow:0 2px 12px rgba(9,132,227,.3)">
+      Edit Campaign
+    </button>` : ''}
+    ${role === 'vendor' ? `
+    <button onclick="hitGoal('${cam.id}')"
+      style="position:fixed;top:18px;right:24px;z-index:200;padding:7px 16px;font-size:12px;font-weight:700;border:none;border-radius:8px;background:#00b894;color:#fff;cursor:pointer;box-shadow:0 2px 12px rgba(0,184,148,.35);letter-spacing:.02em"
+      onmouseover="this.style.background='#00916e'" onmouseout="this.style.background='#00b894'">
+      Hit Goal
+    </button>` : ''}
     <button class="back-btn" onclick="goBackToList()">&#8592; All Campaigns</button>
-    <div class="section-header">
+    <div class="section-header" style="margin-bottom:12px">
       <h2>${cam.name}</h2>
-      ${(role === 'admin' || role === 'cst') ? `<button class="btn btn-ghost btn-sm" onclick="openModalForEdit('${cam.id}')">Edit Campaign</button>` : ''}
     </div>
-    <div class="detail-grid">
-      ${mainContent}
-      ${sidebar}
+    ${vendorSplitPanel}
+    <div style="display:flex;gap:0;border-bottom:2px solid #e9ecef;margin-bottom:20px">
+      <button onclick="setCamTab('${cam.id}','performance')"
+        style="padding:10px 24px;font-size:13px;font-weight:700;border:none;background:none;cursor:pointer;border-bottom:${activeTab==='performance'?'2px solid #0984e3':'2px solid transparent'};color:${activeTab==='performance'?'#0984e3':'#636e72'};margin-bottom:-2px;transition:color .15s">
+        Performance
+      </button>
+      <button onclick="setCamTab('${cam.id}','details')"
+        style="padding:10px 24px;font-size:13px;font-weight:700;border:none;background:none;cursor:pointer;border-bottom:${activeTab==='details'?'2px solid #0984e3':'2px solid transparent'};color:${activeTab==='details'?'#0984e3':'#636e72'};margin-bottom:-2px;transition:color .15s">
+        Details
+      </button>
     </div>
+    ${activeTab === 'performance' ? perfTab : detailsTabContent}
   `;
 }
 
@@ -3488,13 +4152,15 @@ function goBackToList() {
   render();
 }
 
+function setCamTab(camId, tab) {
+  if (!window._camDetailTab) window._camDetailTab = {};
+  window._camDetailTab[camId] = tab;
+  render();
+}
+
 /* ═══════════════════════════════════════════════
    S1 — COMPANY LIMIT  (Master / Remote sheet model)
 ═══════════════════════════════════════════════ */
-
-// Per-company slot counters (used independently of the leads array)
-const S1_SLOTS = {};
-COMPANIES.forEach(c => { S1_SLOTS[c.id] = { used: c.used, slots: c.slots }; });
 
 // Richer lead data modelled on the actual Remote / Master sheets (all 32 columns).
 // Each lead carries a `campaign` field so the campaign switcher can filter correctly.
@@ -3530,12 +4196,24 @@ const S1_LEADS = [
   { id:'sl24', campaign:'cam3', dpoId:'',         firstName:'Bruno',    lastName:'Fischer',    company:'Fischer Maschinen',  email:'b.fischer@fischermach.de',   jobTitle:'Head of Operations',  tel:'+49 40 500001',   country:'Germany',     city:'Hamburg',    state:'Hamburg',           postalCode:'20355',    address:'Alstertor 12',       compSize:'1001-5000', industry:'Manufacturing', revenue:'$100M–500M', guide:'', optin:'Yes', cq1:'Yes', cq2:'Head of Ops',  cq3:'Yes', prooflink:'', prospectProoflink:'', recordingLink:'', reworkedLeads:'', reworkStatus:'', reworkRejReason:'', vendor:'v3', status:'submitted', ccStatus:'',         rejReason:'', submDate:'2026-03-25', notes:'' },
 ];
 
+// Per-company slot counters — derived from actual leads so pre-seeded data stays in sync
+const S1_SLOTS = {};
+COMPANIES.forEach(c => { S1_SLOTS[c.id] = { used: 0, slots: c.slots }; });
+S1_LEADS.forEach(l => {
+  const co = COMPANIES.find(c => c.name === l.company && c.campaign === l.campaign);
+  if (co && S1_SLOTS[co.id]) S1_SLOTS[co.id].used++;
+});
+
 // S1 tab view toggle: 'remote' (vendor sheet) | 'master' (DPO internal)
 let S1_VIEW = 'remote';
 let S1_PENDING_COMPANY = null;
+let S1_FILTER_DPO = '';
+let S1_FILTER_CID = '';
 
 function switchCampaign(camId) {
   STATE.currentCampaign = camId;
+  S1_FILTER_DPO = '';
+  S1_FILTER_CID = '';
   render();
 }
 
@@ -3565,16 +4243,28 @@ function renderS1() {
     }
     return [];
   })();
-  const cqHeader = (i) => camQsActive[i] ? camQsActive[i] : `CQ${i + 1}`;
+  const cqHeader = (i) => {
+    if (!camQsActive[i]) return `CQ${i + 1}`;
+    const full = typeof camQsActive[i] === 'string' ? camQsActive[i] : (camQsActive[i].question || `CQ${i + 1}`);
+    const short = full.length > 28 ? full.substring(0, 28).trimEnd() + '…' : full;
+    return `<span title="${full.replace(/"/g,'&quot;')}">${short}</span>`;
+  };
 
   // Vendor always sees remote view only; others can toggle
   const effectiveView = isVendor ? 'remote' : S1_VIEW;
 
-  // Visible leads — filtered by campaign, then by vendor
+  // Visible leads — filtered by campaign, then by vendor, then by DPO ID / CID search
   const leadsForCampaign = S1_LEADS.filter(l => l.campaign === STATE.currentCampaign);
-  const visibleLeads = isVendor
+  const leadsForVendor = isVendor
     ? leadsForCampaign.filter(l => l.vendor === myVendorId)
     : leadsForCampaign;
+  const dpoQ = S1_FILTER_DPO.trim().toLowerCase();
+  const cidQ = S1_FILTER_CID.trim().toLowerCase();
+  const visibleLeads = leadsForVendor.filter(l => {
+    if (dpoQ && !(l.dpoId || '').toLowerCase().includes(dpoQ)) return false;
+    if (!isVendor && cidQ && !(activeCam.clientId || '').toLowerCase().includes(cidQ)) return false;
+    return true;
+  });
 
   // Stats
   const total      = visibleLeads.length;
@@ -3589,32 +4279,57 @@ function renderS1() {
   const slotsFull = slotCos.filter(c => S1_SLOTS[c.id].used >= S1_SLOTS[c.id].slots).length;
 
   // ── Campaign switcher bar ────────────────────────────────────────────
-  const camSwitcherOptions = myCampaigns.map(c => {
+  const camDropdownItems = myCampaigns.map(c => {
     const isActive = c.id === STATE.currentCampaign;
     const statusColor = c.status === 'Live' ? '#00b894' : c.status === 'Paused' ? '#fdcb6e' : '#b2bec3';
-    return `<button onclick="switchCampaign('${c.id}')" style="
-      padding:6px 14px;
-      font-size:12px;
-      font-weight:700;
-      border:2px solid ${isActive ? '#0984e3' : '#dfe6e9'};
-      border-radius:8px;
-      background:${isActive ? '#0984e3' : 'white'};
-      color:${isActive ? 'white' : '#636e72'};
-      cursor:pointer;
-      white-space:nowrap;
-      display:flex;
-      align-items:center;
-      gap:6px;
-    ">
-      <span style="width:7px;height:7px;border-radius:50%;background:${statusColor};display:inline-block;flex-shrink:0"></span>
-      ${c.name}
-    </button>`;
+    const statusLabel = c.status === 'Live' ? 'Live' : c.status === 'Paused' ? 'Paused' : 'Closed';
+    return `<div onclick="switchCampaign('${c.id}');document.getElementById('cam-dd-menu').style.display='none'" style="
+      display:flex;align-items:center;gap:10px;padding:10px 14px;cursor:pointer;
+      background:${isActive ? '#f0f7ff' : 'transparent'};
+      border-left:3px solid ${isActive ? '#0984e3' : 'transparent'};
+      transition:background 0.1s;
+    " onmouseover="if(!${isActive})this.style.background='#f8f9fa'" onmouseout="if(!${isActive})this.style.background='transparent'">
+      <span style="width:8px;height:8px;border-radius:50%;background:${statusColor};flex-shrink:0"></span>
+      <div style="flex:1;min-width:0">
+        <div style="font-size:13px;font-weight:${isActive ? '700' : '500'};color:${isActive ? '#0984e3' : '#2d3436'};white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${c.name}</div>
+        <div style="font-size:11px;color:#b2bec3;margin-top:1px">${c.client || ''}</div>
+      </div>
+      <span style="font-size:10px;font-weight:700;padding:2px 7px;border-radius:10px;background:${statusColor}22;color:${statusColor};flex-shrink:0">${statusLabel}</span>
+    </div>`;
   }).join('');
+
+  const activeCamStatusColor = activeCam.status === 'Live' ? '#00b894' : activeCam.status === 'Paused' ? '#fdcb6e' : '#b2bec3';
   const camSwitcherHtml = `
-    <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:18px;padding:14px 18px;background:white;border-radius:10px;box-shadow:0 1px 3px rgba(0,0,0,0.06)">
-      <span style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:#636e72;white-space:nowrap;margin-right:4px">Campaign</span>
-      ${camSwitcherOptions}
-      ${activeCam.id ? `<span style="margin-left:auto;font-size:11px;color:#b2bec3;font-style:italic">${activeCam.client || ''} &nbsp;·&nbsp; Deadline: ${activeCam.deadline || '—'}</span>` : ''}
+    <div style="display:flex;align-items:center;gap:12px;margin-bottom:18px;flex-wrap:wrap">
+      <div style="position:relative;flex:0 0 auto">
+        <button onclick="var m=document.getElementById('cam-dd-menu');m.style.display=m.style.display==='block'?'none':'block'" style="
+          display:flex;align-items:center;gap:10px;padding:10px 16px;
+          background:#f8fafc;border:1.5px solid #e2e8f0;border-radius:10px;
+          cursor:pointer;font-family:inherit;min-width:220px;
+          box-shadow:0 1px 3px rgba(0,0,0,.05);
+          transition:border-color .15s, background .15s, box-shadow .15s;
+        " onmouseover="this.style.borderColor='#0984e3';this.style.background='#fff';this.style.boxShadow='0 2px 8px rgba(9,132,227,.12)'" onmouseout="this.style.borderColor='#e2e8f0';this.style.background='#f8fafc';this.style.boxShadow='0 1px 3px rgba(0,0,0,.05)'">
+          <span style="width:8px;height:8px;border-radius:50%;background:${activeCamStatusColor};flex-shrink:0"></span>
+          <span style="flex:1;text-align:left;font-size:13px;font-weight:700;color:#1a1a2e;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${activeCam.name || 'Select campaign'}</span>
+          <svg width="12" height="12" viewBox="0 0 12 12" fill="none" style="flex-shrink:0;color:#b2bec3"><path d="M2 4l4 4 4-4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <div id="cam-dd-menu" style="
+          display:none;position:absolute;top:calc(100% + 6px);left:0;z-index:200;
+          background:white;border:1.5px solid #e2e8f0;border-radius:10px;
+          box-shadow:0 8px 28px rgba(0,0,0,.13);min-width:260px;overflow:hidden;
+        ">
+          <div style="padding:8px 14px 6px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:#b2bec3;border-bottom:1px solid #f0f1f3">Switch Campaign</div>
+          ${camDropdownItems}
+        </div>
+      </div>
+      ${activeCam.id ? `
+        <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+          <span style="font-size:12px;color:#b2bec3">·</span>
+          <span style="font-size:12px;color:#636e72">${activeCam.client || ''}</span>
+          ${!isVendor && activeCam.clientId ? `
+            <span style="font-size:10px;font-weight:700;font-family:monospace;padding:2px 8px;border-radius:10px;background:#eef6ff;color:#0984e3;border:1px solid #c8e0f9;letter-spacing:.4px">${activeCam.clientId}</span>` : ''}
+          ${activeCam.deadline ? `<span style="font-size:12px;color:#b2bec3">·</span><span style="font-size:12px;color:#636e72">Deadline: <strong style="color:#2d3436">${activeCam.deadline}</strong></span>` : ''}
+        </div>` : ''}
     </div>`;
 
   const statsHtml = `<div class="stat-row" style="margin-bottom:20px">
@@ -3628,6 +4343,30 @@ function renderS1() {
 
   // View toggle (admin/ld/cst only)
   const toggleHtml = '';
+
+  // Filter bar — DPO ID and CID dropdowns (Admin + CST only)
+  const dpoIdOptions = [...new Set(leadsForVendor.map(l => l.dpoId).filter(Boolean))].sort();
+  const camCids = [...new Set(CAMPAIGNS.filter(c => c.status !== 'Closed').map(c => c.clientId).filter(Boolean))].sort();
+  const filterBarHtml = !isVendor ? `
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px;flex-wrap:wrap">
+      <div style="display:flex;align-items:center;gap:6px;background:#fff;border:1.5px solid #e2e8f0;border-radius:8px;padding:4px 10px">
+        <span style="font-size:11px;font-weight:700;color:#b2bec3;text-transform:uppercase;letter-spacing:.6px;white-space:nowrap">DPO ID</span>
+        <select onchange="S1_FILTER_DPO=this.value;render()"
+          style="border:none;outline:none;font-size:12px;font-family:monospace;color:#1a1a2e;background:transparent;cursor:pointer;padding:2px 0;min-width:110px">
+          <option value="">All</option>
+          ${dpoIdOptions.map(id => '<option value="' + id + '"' + (S1_FILTER_DPO === id ? ' selected' : '') + '>' + id + '</option>').join('')}
+        </select>
+      </div>
+      <div style="display:flex;align-items:center;gap:6px;background:#fff;border:1.5px solid #e2e8f0;border-radius:8px;padding:4px 10px">
+        <span style="font-size:11px;font-weight:700;color:#b2bec3;text-transform:uppercase;letter-spacing:.6px;white-space:nowrap">Client ID</span>
+        <select onchange="S1_FILTER_CID=this.value;render()"
+          style="border:none;outline:none;font-size:12px;font-family:monospace;color:#1a1a2e;background:transparent;cursor:pointer;padding:2px 0;min-width:110px">
+          <option value="">All</option>
+          ${camCids.map(cid => '<option value="' + cid + '"' + (S1_FILTER_CID === cid ? ' selected' : '') + '>' + cid + '</option>').join('')}
+        </select>
+      </div>
+      ${(S1_FILTER_DPO || S1_FILTER_CID) ? '<span style="font-size:12px;color:#636e72">' + visibleLeads.length + ' result' + (visibleLeads.length!==1?'s':'') + ' matched</span>' : ''}
+    </div>` : '';
 
   // Slot badge per company (compact inline)
   function slotBadge(companyName) {
@@ -3643,8 +4382,12 @@ function renderS1() {
   function buildRemoteTable() {
     const rows = visibleLeads.map((l, i) => {
       const statusMap = { accepted:'badge-done', 'in-review':'badge-inprog', submitted:'badge-new', rejected:'badge-blocked' };
+      const dpoIdCell = !isVendor
+        ? `<td style="font-size:11px;font-family:monospace;font-weight:700;color:${l.dpoId?'#0984e3':'#b2bec3'};white-space:nowrap">${l.dpoId||'—'}</td>`
+        : '';
       return `<tr>
         <td style="font-size:11px;font-family:monospace;color:#b2bec3;text-align:center;width:36px">${i + 1}</td>
+        ${dpoIdCell}
         <td style="font-size:12px;color:${l.rejReason?'#cc0000':'#b2bec3'}">${l.rejReason||'—'}</td>
         <td style="font-size:11px;color:#636e72">${l.prooflink ? '<a href="#" style="color:#1155cc">link</a>' : '—'}</td>
         <td style="font-size:11px;color:#636e72">${l.submDate}</td>
@@ -3670,17 +4413,17 @@ function renderS1() {
         <td style="font-size:11px;color:#636e72">${l.industry||'—'}</td>
         <td style="font-size:11px;color:#636e72">${l.revenue||'—'}</td>
         <td style="font-size:11px;color:#636e72">${l.submDate}</td>
-        <td style="font-size:11px;color:#636e72">${l.cq1||'—'}</td>
-        <td style="font-size:11px;color:#636e72">${l.cq2||'—'}</td>
-        <td style="font-size:11px;color:#636e72">${l.cq3||'—'}</td>
+        <td style="font-size:11px;color:#636e72;max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${(l.cq1||'').replace(/"/g,'&quot;')}">${l.cq1 ? (l.cq1.length>18?l.cq1.substring(0,18)+'…':l.cq1) : '—'}</td>
+        <td style="font-size:11px;color:#636e72;max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${(l.cq2||'').replace(/"/g,'&quot;')}">${l.cq2 ? (l.cq2.length>18?l.cq2.substring(0,18)+'…':l.cq2) : '—'}</td>
+        <td style="font-size:11px;color:#636e72;max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${(l.cq3||'').replace(/"/g,'&quot;')}">${l.cq3 ? (l.cq3.length>18?l.cq3.substring(0,18)+'…':l.cq3) : '—'}</td>
         <td><span class="badge ${statusMap[l.status]||'badge-new'}">${l.status}</span></td>
         <td style="font-size:12px">${l.optin==='Yes'?'<span style="color:#274e13;font-weight:700">✓ Yes</span>':'<span style="color:#cc0000">✗ No</span>'}</td>
-        <td style="font-size:12px;color:#636e72;max-width:140px;white-space:normal">${l.notes||'—'}</td>
+        <td style="font-size:12px;color:#636e72;max-width:140px">${l.notes||'—'}</td>
       </tr>`;
     }).join('');
 
     const addBtn = (role === 'vendor' || role === 'admin')
-      ? `<button class="btn btn-primary btn-sm" onclick="s1InlineAddRow('s1-remote-tbody',null,'remote')">+ Add Lead</button>`
+      ? `<button class="btn btn-primary btn-sm" onclick="openAddLeadModal()">+ Add Lead</button>`
       : '';
 
     return `
@@ -3694,6 +4437,7 @@ function renderS1() {
             <thead>
               <tr>
                 <th style="background:#b2bec3;color:#fff;width:36px;text-align:center">#</th>
+                ${!isVendor ? `<th style="background:#0984e3;color:#fff;white-space:nowrap">DPO ID</th>` : ''}
                 <th style="background:#8e7cc3;color:#fff">Rejection Reason</th>
                 <th style="background:#8e7cc3;color:#fff">Prooflink</th>
                 <th style="background:#93c47d;color:#274e13">Report Submission Date</th>
@@ -3719,16 +4463,16 @@ function renderS1() {
                 <th style="background:#6d9eeb;color:#fff">Industry</th>
                 <th style="background:#6d9eeb;color:#fff">Revenue</th>
                 <th style="background:#6d9eeb;color:#fff">Timestamp</th>
-                <th style="background:#6d9eeb;color:#fff;max-width:160px;white-space:normal;font-size:11px">${cqHeader(0)}</th>
-                <th style="background:#6d9eeb;color:#fff;max-width:160px;white-space:normal;font-size:11px">${cqHeader(1)}</th>
-                <th style="background:#6d9eeb;color:#fff;max-width:160px;white-space:normal;font-size:11px">${cqHeader(2)}</th>
+                <th style="background:#6d9eeb;color:#fff;max-width:120px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:11px">${cqHeader(0)}</th>
+                <th style="background:#6d9eeb;color:#fff;max-width:120px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:11px">${cqHeader(1)}</th>
+                <th style="background:#6d9eeb;color:#fff;max-width:120px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:11px">${cqHeader(2)}</th>
                 <th style="background:#8e7cc3;color:#fff">Status</th>
                 <th style="background:#6d9eeb;color:#fff">Opt-in</th>
                 <th style="background:#93c47d;color:#274e13">Comments</th>
               </tr>
             </thead>
-            <tbody id="s1-remote-tbody">${rows || '<tr><td colspan="32" style="text-align:center;color:#b2bec3;padding:30px">No leads yet — click "+ Add Lead" to submit your first lead.</td></tr>'}
-              ${(role === 'vendor' || role === 'admin') ? `<tr class="add-row-trigger" onclick="s1InlineAddRow('s1-remote-tbody',null,'remote')"><td colspan="32"><span class="add-row-trigger-btn"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg> Add Row</span></td></tr>` : ''}
+            <tbody id="s1-remote-tbody">${rows || `<tr><td colspan="${isVendor?32:33}" style="text-align:center;color:#b2bec3;padding:30px">No leads yet — click "+ Add Lead" to submit your first lead.</td></tr>`}
+              ${(role === 'vendor' || role === 'admin') ? `<tr class="add-row-trigger" onclick="openAddLeadModal()"><td colspan="${isVendor?32:33}"><span class="add-row-trigger-btn"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg> Add Row</span></td></tr>` : ''}
             </tbody>
           </table>
         </div>
@@ -3742,6 +4486,7 @@ function renderS1() {
       const ccMap = { accepted:'badge-done', rejected:'badge-blocked', '':'badge-closed' };
       return `<tr>
         <td style="font-size:11px;font-family:monospace;color:#b2bec3;text-align:center;width:36px">${i + 1}</td>
+        <td style="font-size:11px;font-family:monospace;font-weight:700;color:${l.dpoId?'#0984e3':'#b2bec3'};white-space:nowrap">${l.dpoId||'—'}</td>
         <td>${vendorChip(l.vendor)}</td>
         <td><strong>${l.firstName} ${l.lastName}</strong><br><span style="font-size:11px;color:#b2bec3">${l.email}</span></td>
         <td>${l.company}${slotBadge(l.company)}</td>
@@ -3769,6 +4514,7 @@ function renderS1() {
             <thead>
               <tr>
                 <th style="background:#b2bec3;color:#fff;width:36px;text-align:center">#</th>
+                <th style="background:#0984e3;color:#fff;white-space:nowrap">DPO ID</th>
                 <th style="background:#6d9eeb;color:#fff">Vendor</th>
                 <th style="background:#6d9eeb;color:#fff">Contact</th>
                 <th style="background:#6d9eeb;color:#fff">Company</th>
@@ -3783,7 +4529,7 @@ function renderS1() {
               </tr>
             </thead>
             <tbody id="s1-master-tbody">${rows}
-              ${role === 'admin' ? `<tr class="add-row-trigger" onclick="s1InlineAddRow('s1-master-tbody',null,'master')"><td colspan="12"><span class="add-row-trigger-btn"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg> Add Row</span></td></tr>` : ''}
+              ${role === 'admin' ? `<tr class="add-row-trigger" onclick="s1InlineAddRow('s1-master-tbody',null,'master')"><td colspan="13"><span class="add-row-trigger-btn"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg> Add Row</span></td></tr>` : ''}
             </tbody>
           </table>
         </div>
@@ -3796,6 +4542,7 @@ function renderS1() {
     ${camSwitcherHtml}
     ${statsHtml}
     ${toggleHtml}
+    ${filterBarHtml}
     ${tableHtml}
   `;
 }
@@ -4123,12 +4870,181 @@ function s2Clear() {
   if (r) r.innerHTML = '';
 }
 function renderS3() {
-  return `<div class="empty-state">
-    <div class="empty-icon">🔧</div>
-    <h3>S3: Requirement Change — Coming in Phase 4</h3>
-    <p>24h countdown, version-tagged lead matrix, CST confirmation form.</p>
-  </div>`;
+  const role = STATE.role;
+  const cam  = S3_CAMPAIGN;
+  const confirmed = S3_STATE.confirmed;
+
+  // countdown maths
+  const elapsedMs  = Date.now() - cam.requirementChangedAt.getTime();
+  const remainMs   = Math.max(0, cam.deadlineMs - elapsedMs);
+  const pct        = Math.min(100, (elapsedMs / cam.deadlineMs) * 100);
+  const hLeft      = Math.floor(remainMs / 3600000);
+  const mLeft      = Math.floor((remainMs % 3600000) / 60000);
+  const timerColor = hLeft >= 12 ? '#00b894' : hLeft >= 6 ? '#fdcb6e' : '#d63031';
+  const hElapsed   = Math.floor(elapsedMs / 3600000);
+  const mElapsed   = Math.floor((elapsedMs % 3600000) / 60000);
+
+  // lead data
+  const fv    = S3_STATE.filterVersion;
+  const leads = LEADS
+    .filter(function(l){ return fv === 'all' || l.version === fv; })
+    .filter(function(l){ return role === 'vendor' ? l.vendor === STATE.currentVendor : true; });
+
+  const v1Total    = LEADS.filter(function(l){ return l.version === 'v1'; }).length;
+  const v2Total    = LEADS.filter(function(l){ return l.version === 'v2'; }).length;
+  const v1InReview = LEADS.filter(function(l){ return l.version === 'v1' && l.status === 'in-review'; }).length;
+  const accepted   = LEADS.filter(function(l){ return l.status === 'accepted'; }).length;
+
+  // A. header
+  const header =
+    '<div class="card" style="border-left-color:#6c5ce7;margin-bottom:18px">' +
+      '<div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap">' +
+        '<div>' +
+          '<div style="font-size:10px;font-weight:800;color:#6c5ce7;text-transform:uppercase;letter-spacing:.08em;margin-bottom:3px">Scenario 3 &mdash; Requirement Change</div>' +
+          '<div style="font-size:18px;font-weight:700;color:#2d3436">' + cam.name + '</div>' +
+          '<div style="font-size:12px;color:#636e72;margin-top:2px">Client: <strong>' + cam.client + '</strong></div>' +
+        '</div>' +
+        '<div style="margin-left:auto;text-align:right">' +
+          '<div style="font-size:11px;color:#b2bec3">Change logged</div>' +
+          '<div style="font-size:13px;font-weight:700;color:#2d3436">' + hElapsed + 'h ' + mElapsed + 'm ago</div>' +
+          '<div style="margin-top:4px">' + (confirmed ? '<span class="badge badge-done">CST Confirmed</span>' : '<span class="badge badge-blocked">Awaiting Confirmation</span>') + '</div>' +
+        '</div>' +
+      '</div>' +
+    '</div>';
+
+  // B. confirmation gate
+  let gate = '';
+  if (role === 'vendor') {
+    gate =
+      '<div class="callout" style="margin-bottom:18px">' +
+        '<strong>Requirement change in progress</strong> &mdash; Your scope may be updated shortly. Continue submitting leads under your current brief until notified. Version tags (v1/v2) will appear on your lead entries below.' +
+      '</div>';
+  } else {
+    function criteriaRow(label, oldVal, newVal) {
+      return '<tr>' +
+        '<td style="padding:7px 10px;font-size:12px;color:#636e72;font-weight:600;white-space:nowrap">' + label + '</td>' +
+        '<td style="padding:7px 10px;font-size:12px;color:#2d3436">' + oldVal + '</td>' +
+        '<td style="padding:7px 10px;font-size:12px;color:#6c5ce7;font-weight:600">' + newVal + '</td>' +
+      '</tr>';
+    }
+    gate =
+      '<div class="card" style="border-left-color:' + (confirmed ? '#00b894' : '#fdcb6e') + ';margin-bottom:18px">' +
+        '<div style="display:flex;align-items:center;gap:10px;margin-bottom:14px">' +
+          '<span style="font-size:15px">' + (confirmed ? '&#x2705;' : '&#x26A0;') + '</span>' +
+          '<h3 style="margin:0">' + (confirmed ? 'Change Confirmed by CST' : 'Confirmation Gate &mdash; Action Required') + '</h3>' +
+        '</div>' +
+        '<p style="font-size:13px;color:#636e72;margin-bottom:14px">' + cam.changeNote + '</p>' +
+        '<table style="width:100%;border-collapse:collapse;margin-bottom:14px">' +
+          '<thead><tr style="background:#f8f9fa">' +
+            '<th style="padding:7px 10px;text-align:left;font-size:10px;font-weight:800;color:#b2bec3;text-transform:uppercase;letter-spacing:.06em">Field</th>' +
+            '<th style="padding:7px 10px;text-align:left;font-size:10px;font-weight:800;color:#636e72;text-transform:uppercase;letter-spacing:.06em">Old Criteria (v1)</th>' +
+            '<th style="padding:7px 10px;text-align:left;font-size:10px;font-weight:800;color:#6c5ce7;text-transform:uppercase;letter-spacing:.06em">New Criteria (v2)</th>' +
+          '</tr></thead>' +
+          '<tbody style="border-top:1px solid #f0f0f0">' +
+            criteriaRow('Geography', cam.oldCriteria.geo, cam.newCriteria.geo) +
+            criteriaRow('Seniority', cam.oldCriteria.seniority, cam.newCriteria.seniority) +
+            criteriaRow('Company Size', cam.oldCriteria.companySize, cam.newCriteria.companySize) +
+          '</tbody>' +
+        '</table>' +
+        (confirmed
+          ? '<div style="font-size:12px;color:#00b894;font-weight:600">24-hour clock is running. v1 leads in QA will be reviewed under old rules. All new submissions follow v2 criteria.</div>'
+          : '<div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">' +
+              '<button class="btn btn-primary" style="background:#6c5ce7;border-color:#6c5ce7" onclick="s3ConfirmChange()">Confirm Change &amp; Start 24h Clock</button>' +
+              '<span style="font-size:12px;color:#b2bec3">24h countdown begins on platform confirmation &mdash; not on client email.</span>' +
+            '</div>'
+        ) +
+      '</div>';
+  }
+
+  // C. countdown timer
+  const timer = (confirmed || role === 'vendor')
+    ? '<div class="card" style="border-left-color:' + timerColor + ';margin-bottom:18px">' +
+        '<div style="display:flex;align-items:center;gap:16px;flex-wrap:wrap">' +
+          '<div>' +
+            '<div style="font-size:10px;font-weight:800;color:' + timerColor + ';text-transform:uppercase;letter-spacing:.08em;margin-bottom:4px">24h Delivery Window</div>' +
+            '<div style="font-size:28px;font-weight:800;color:' + timerColor + ';letter-spacing:.04em">' + String(hLeft).padStart(2,'0') + 'h ' + String(mLeft).padStart(2,'0') + 'm remaining</div>' +
+            '<div style="font-size:12px;color:#636e72;margin-top:4px">v1 leads in-review must be approved or rejected before deadline</div>' +
+          '</div>' +
+          '<div style="flex:1;min-width:160px">' +
+            '<div style="display:flex;justify-content:space-between;font-size:11px;color:#b2bec3;margin-bottom:4px"><span>0h</span><span>12h</span><span>24h</span></div>' +
+            '<div style="height:10px;background:#f0f0f0;border-radius:6px;overflow:hidden">' +
+              '<div style="height:100%;width:' + pct.toFixed(1) + '%;background:' + timerColor + ';border-radius:6px"></div>' +
+            '</div>' +
+            '<div style="font-size:11px;color:#b2bec3;margin-top:4px">' + hElapsed + 'h ' + mElapsed + 'm elapsed of 24h</div>' +
+          '</div>' +
+        '</div>' +
+      '</div>'
+    : '';
+
+  // D. stat cards
+  const stats =
+    '<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:18px">' +
+      '<div class="stat-card"><div class="stat-num" style="color:#0984e3">' + v1Total + '</div><div class="stat-label">v1 Leads (old rules)</div></div>' +
+      '<div class="stat-card"><div class="stat-num" style="color:#6c5ce7">' + v2Total + '</div><div class="stat-label">v2 Leads (new rules)</div></div>' +
+      '<div class="stat-card"><div class="stat-num" style="color:#fdcb6e">' + v1InReview + '</div><div class="stat-label">v1 In-Review</div></div>' +
+      '<div class="stat-card"><div class="stat-num" style="color:#00b894">' + accepted + '</div><div class="stat-label">Accepted Total</div></div>' +
+    '</div>';
+
+  // E. lead matrix
+  const showVendorCol = role !== 'vendor';
+  const filterPills = ['all','v1','v2'].map(function(v) {
+    const active = fv === v;
+    const color  = v === 'v1' ? '#0984e3' : v === 'v2' ? '#6c5ce7' : '#2d3436';
+    const label  = v === 'all' ? 'All Leads' : v === 'v1' ? 'v1 &mdash; Old Rules' : 'v2 &mdash; New Rules';
+    return '<button onclick="S3_STATE.filterVersion=\'' + v + '\';render()" style="padding:5px 14px;border-radius:20px;border:1.5px solid ' + (active ? color : '#dfe6e9') + ';background:' + (active ? color : '#fff') + ';color:' + (active ? '#fff' : '#636e72') + ';font-size:12px;font-weight:' + (active ? '700' : '500') + ';cursor:pointer">' + label + '</button>';
+  }).join('');
+
+  function vBadge(v) {
+    return v === 'v1'
+      ? '<span style="display:inline-block;padding:2px 8px;border-radius:10px;background:#dff0ff;color:#0984e3;font-size:11px;font-weight:700">v1</span>'
+      : '<span style="display:inline-block;padding:2px 8px;border-radius:10px;background:#ede8ff;color:#6c5ce7;font-size:11px;font-weight:700">v2</span>';
+  }
+
+  const rows = leads.map(function(l) {
+    return '<tr style="background:' + (l.version === 'v2' ? '#f9f7ff' : '#fff') + '">' +
+      '<td style="padding:9px 12px"><strong style="font-size:13px">' + l.name + '</strong></td>' +
+      '<td style="padding:9px 12px;font-size:13px;color:#636e72">' + l.company + '</td>' +
+      (showVendorCol ? '<td style="padding:9px 12px">' + vendorChip(l.vendor) + '</td>' : '') +
+      '<td style="padding:9px 12px;font-size:12px;color:#636e72">' + l.title + '</td>' +
+      '<td style="padding:9px 12px">' + statusBadge(l.status) + '</td>' +
+      '<td style="padding:9px 12px">' + vBadge(l.version) + '</td>' +
+    '</tr>';
+  }).join('');
+
+  const emptyRow = leads.length === 0
+    ? '<tr><td colspan="' + (showVendorCol ? 6 : 5) + '" style="padding:24px;text-align:center;color:#b2bec3;font-size:13px">No leads match this filter.</td></tr>'
+    : '';
+
+  const matrix =
+    '<div class="card" style="border-left-color:#6c5ce7">' +
+      '<div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-bottom:14px">' +
+        '<h3 style="margin:0">Version-Tagged Lead Matrix</h3>' +
+        '<div style="display:flex;gap:8px;flex-wrap:wrap">' + filterPills + '</div>' +
+      '</div>' +
+      '<div style="overflow-x:auto">' +
+        '<table style="width:100%;border-collapse:collapse">' +
+          '<thead><tr style="background:#f8f9fa;border-bottom:2px solid #f0f0f0">' +
+            '<th style="padding:8px 12px;text-align:left;font-size:11px;font-weight:800;color:#b2bec3;text-transform:uppercase;letter-spacing:.06em">Name</th>' +
+            '<th style="padding:8px 12px;text-align:left;font-size:11px;font-weight:800;color:#b2bec3;text-transform:uppercase;letter-spacing:.06em">Company</th>' +
+            (showVendorCol ? '<th style="padding:8px 12px;text-align:left;font-size:11px;font-weight:800;color:#b2bec3;text-transform:uppercase;letter-spacing:.06em">Vendor</th>' : '') +
+            '<th style="padding:8px 12px;text-align:left;font-size:11px;font-weight:800;color:#b2bec3;text-transform:uppercase;letter-spacing:.06em">Title</th>' +
+            '<th style="padding:8px 12px;text-align:left;font-size:11px;font-weight:800;color:#b2bec3;text-transform:uppercase;letter-spacing:.06em">Status</th>' +
+            '<th style="padding:8px 12px;text-align:left;font-size:11px;font-weight:800;color:#b2bec3;text-transform:uppercase;letter-spacing:.06em">Version</th>' +
+          '</tr></thead>' +
+          '<tbody style="border-top:1px solid #f0f0f0">' + rows + emptyRow + '</tbody>' +
+        '</table>' +
+      '</div>' +
+      '<div style="margin-top:10px;font-size:11px;color:#b2bec3">v1 leads are evaluated against old criteria regardless of when QA completes. v2 leads follow new criteria.</div>' +
+    '</div>';
+
+  return header + gate + timer + stats + matrix;
 }
+
+function s3ConfirmChange() {
+  S3_STATE.confirmed = true;
+  render();
+}
+
 function renderS4() {
   return `<div class="empty-state">
     <div class="empty-icon">🔧</div>
@@ -4142,6 +5058,182 @@ function renderS5() {
     <h3>S5: ABM History — Coming in Phase 5</h3>
     <p>Diff stats, commit flow, removed-company decision queue.</p>
   </div>`;
+}
+
+/* ═══════════════════════════════════════════════
+   SCENARIOS PAGE
+═══════════════════════════════════════════════ */
+function renderScenarios() {
+  const SC = {
+    1: { color: '#0984e3', txt: '#fff' },
+    2: { color: '#00b894', txt: '#fff' },
+    3: { color: '#6c5ce7', txt: '#fff' },
+    4: { color: '#e17055', txt: '#fff' },
+    5: { color: '#f0b400', txt: '#fff' },
+  };
+
+  function navTo(tab) {
+    return `onclick="(function(){STATE.tab='${tab}';document.querySelectorAll('.tab').forEach(t=>t.classList.toggle('active',t.dataset.tab==='${tab}'));document.querySelectorAll('.sidebar-item').forEach(t=>t.classList.toggle('active',t.dataset.tab==='${tab}'));render()})()"`;
+  }
+
+  function card(num, title, problem, solution, rules, tests, tab) {
+    const c = SC[num];
+    const ruleHtml = rules.map(([k,v]) => `
+      <div style="display:flex;gap:12px;padding:5px 0;border-bottom:1px solid #f2f2f2;font-size:12px;line-height:1.4">
+        <span style="color:#b2bec3;min-width:190px;flex-shrink:0">${k}</span>
+        <span style="color:#2d3436">${v}</span>
+      </div>`).join('');
+    const testHtml = tests.map((t,i) => `
+      <div style="display:flex;gap:10px;align-items:flex-start;padding:6px 0;border-bottom:1px solid #f5f5f5">
+        <span style="min-width:22px;height:22px;border-radius:50%;background:${c.color}1a;color:${c.color};font-size:10px;font-weight:800;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px">${i+1}</span>
+        <span style="font-size:12px;color:#2d3436;line-height:1.6">${t}</span>
+      </div>`).join('');
+    const btn = tab
+      ? `<button ${navTo(tab)} style="margin-top:16px;padding:7px 20px;background:${c.color};color:${c.txt};border:none;border-radius:6px;font-size:12px;font-weight:700;cursor:pointer;letter-spacing:.01em">Open S${num} \u2192</button>`
+      : `<span style="display:inline-block;margin-top:16px;padding:5px 14px;border-radius:6px;background:#f0f0f0;color:#b2bec3;font-size:12px;font-weight:600">Interactive view coming soon</span>`;
+
+    return `
+    <div class="card" style="border-left-color:${c.color};margin-bottom:22px">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px">
+        <span style="display:inline-flex;align-items:center;justify-content:center;width:26px;height:26px;border-radius:50%;background:${c.color};color:${c.txt};font-size:12px;font-weight:800;flex-shrink:0">${num}</span>
+        <h3 style="margin:0;font-size:15px;color:#1a1a2e">${title}</h3>
+      </div>
+
+      <div style="font-size:10px;font-weight:800;color:${c.color};text-transform:uppercase;letter-spacing:.07em;margin-bottom:4px">Problem</div>
+      <p style="font-size:13px;color:#2d3436;line-height:1.65;margin-bottom:14px">${problem}</p>
+
+      <div style="font-size:10px;font-weight:800;color:${c.color};text-transform:uppercase;letter-spacing:.07em;margin-bottom:4px">Solution</div>
+      <p style="font-size:13px;color:#2d3436;line-height:1.65;margin-bottom:14px">${solution}</p>
+
+      ${rules.length ? `
+      <div style="font-size:10px;font-weight:800;color:${c.color};text-transform:uppercase;letter-spacing:.07em;margin-bottom:5px">Key Rules</div>
+      <div style="margin-bottom:14px">${ruleHtml}</div>` : ''}
+
+      <div style="font-size:10px;font-weight:800;color:${c.color};text-transform:uppercase;letter-spacing:.07em;margin-bottom:6px">How to Test in This Platform</div>
+      <div style="background:#fafafa;border-radius:6px;padding:10px 12px 4px;margin-bottom:4px">${testHtml}</div>
+
+      ${btn}
+    </div>`;
+  }
+
+  const s1 = card(1, 'Lead per Company Limit',
+    'Multiple vendors independently exceed a client\'s per-company lead cap. They each follow the "max 2 per company" rule correctly — but the platform can\'t see across vendors. Vendor A submits 2 from Acme, Vendor B submits 2 more. The cap is broken by the system, not by any one vendor. Harder still: vendors must never know about each other.',
+    'Split the ABM list into exclusive vendor chunks so no two vendors ever touch the same company at the same time. A slot counter tracks remaining capacity per (campaign + company); in-review leads are reserved so two vendors can\'t fill the same slot. When a vendor hits their goal or goes idle past the configured window, their scope releases to a shared pool and is reassigned with a suppression list attached — the next vendor knows who was already contacted before they start.',
+    [
+      ['Company matching',    'Normalized domain (acme.com) — free-text names not trusted alone'],
+      ['Slot consumed',       'On QA approval — in-review leads are reserved immediately'],
+      ['Idle release window', '5 business days (configurable per campaign)'],
+      ['Goal met',            'Hard stop — remaining scope releases to pool immediately'],
+      ['Rejected lead',       'Slot returns to same vendor; quality rejection → slot goes to pool'],
+      ['Vendor isolation',    'Vendors never see each other; only neutral rejection messages'],
+    ],
+    [
+      'Switch to <strong>DPO Admin</strong>. Go to <strong>S1 tab → EU SaaS Decision Makers</strong>.',
+      'In the right sidebar <strong>Vendor Split card</strong>: DataReach has a blue <em>Goal Met</em> badge (delivered 4/4), LeadForge has an amber <em>Idle 6d</em> badge (last activity 8 days ago), ProspectIQ is active.',
+      'The blue <strong>Scope Pool</strong> panel shows 2 released scopes. The campaign row in the list has an amber <em>\u24d8 2 in pool</em> chip.',
+      'The <strong>bell icon</strong> (top-right) shows a red badge. Click it — dropdown lists both alerts with reason. Click an alert to jump directly to the campaign.',
+      'The <strong>S1 tab header</strong> has a small orange pulsing dot.',
+      'In the <strong>Vendor Performance table</strong>: DataReach shows <em>Goal Met — scope released to pool</em>; LeadForge shows <em>Idle 6d — scope at risk</em>. Blue callout below explains release rules.',
+      'Click <strong>Reallocate Scope</strong>. Modal shows only released scopes in the top dropdown and only ProspectIQ (only active vendor) in the vendor dropdown. Confirm — sidebar updates.',
+      'Switch to <strong>Client Success</strong>: pool chip and status column still visible, financial columns hidden. Switch to <strong>Vendor</strong>: Vendor Performance table disappears entirely.',
+      'Open <strong>any other campaign</strong> (cam2–cam8): no Scope Status column — confirms it only renders when splitRule data exists.',
+    ],
+    's1'
+  );
+
+  const s2 = card(2, 'Duplicate Leads from Different Vendors',
+    'Two vendors independently contact the same person and submit them to the same campaign. Duplicates surface only in QA cleanup — wasting vendor effort and eroding client trust. No vendor may learn another is on the campaign; any block must look like a neutral, system-level rejection.',
+    'Scenario 1\'s scope split removes the root cause: vendors never work the same company simultaneously, so the most common duplicate path is structurally impossible. On reassignment, the receiving vendor gets a suppression list of already-contacted names and emails (no vendor identifiers). The remaining edge case — same person at a different company — is caught by a fingerprint check at submission: normalized name, email domain, phone, and LinkedIn URL are compared against all leads in scope. Two matching signals block the submission.',
+    [
+      ['Primary prevention',  'Exclusive vendor scope split — inherited from S1 at zero cost'],
+      ['On reassignment',     'Suppression list: names + emails only, no vendor identifiers'],
+      ['Fingerprint signals', 'Full name · email domain · phone · LinkedIn URL'],
+      ['Block threshold',     '2 matching signals'],
+      ['Rejection message',   'Neutral: "This lead cannot be accepted for this campaign"'],
+    ],
+    [
+      'Go to <strong>S2 tab</strong>. The fingerprint check simulator is the main interactive element.',
+      'Enter a name or email matching an existing demo lead — result should show <em>Blocked</em> with the matched signal highlighted.',
+      'Enter a clean contact with no matches — result shows <em>Clear</em>.',
+      'Note the rejection text shown: no mention of another vendor, no reason given beyond "cannot be accepted".',
+      'Observe the layered summary (scope split → suppression → fingerprint): each layer only applies to cases the previous one misses.',
+    ],
+    's2'
+  );
+
+  const s3 = card(3, 'Client Requirement Change (24h Delivery)',
+    'A campaign is live — vendors submitting, QA reviewing, delivery shipping. The client changes the qualification criteria mid-flight (e.g., drop UK, raise company size to 1000+). Already-approved leads must still ship within 24h. All new work must follow new rules immediately. The two can never mix.',
+    'Three-part mechanism: (1) <strong>Confirmation Gate</strong> — CST logs the change with explicit client sign-off before anything goes live. (2) <strong>Version tagging</strong> — every lead is tagged v1 or v2. Old leads flow through QA and delivery under v1 rules; new leads follow v2. Teams filter by version. Reports split by version. (3) <strong>Countdown Dashboard</strong> — shows how many v1 leads remain in the pipeline and how much time is left to deliver them.',
+    [
+      ['24h clock start',              'When CST confirms in the platform — not when client emailed'],
+      ['Already approved (old rules)', 'Deliver within 24h — vendor gets paid'],
+      ['In QA, submitted under v1',    'Reviewed under old rules — pays if passes; if fails, that\'s final'],
+      ['Vendor grace window',          '2–4h to submit anything already researched under old rules'],
+      ['After grace window',           'New rules only — no exceptions'],
+      ['Split reporting',              'Final delivery shows old-rules and new-rules counts separately'],
+    ],
+    [
+      'Go to <strong>S3 tab</strong> as <strong>Admin</strong>. The confirmation gate appears first — note the old vs new criteria table (geography, seniority, company size) and the "Awaiting Confirmation" badge in the header.',
+      'Click <strong>Confirm Change &amp; Start 24h Clock</strong>. The gate turns green, the header badge updates to "CST Confirmed", and the countdown timer appears below it.',
+      'Check the countdown timer: it shows hours and minutes remaining out of 24h, a color-coded progress bar (green &gt; 12h, amber 6–12h, red &lt; 6h), and elapsed time.',
+      'Scroll to the <strong>Version-Tagged Lead Matrix</strong>. v1 leads have blue badges on a white row; v2 leads have purple badges on a light purple row.',
+      'Use the filter pills — switch between <em>All Leads</em>, <em>v1 — Old Rules</em>, and <em>v2 — New Rules</em>. The table updates instantly.',
+      'Switch to <strong>CST role</strong>: confirmation gate and all stats remain visible. Switch to <strong>Vendor</strong>: the gate becomes a read-only callout, the Vendor column disappears, and the table shows only that vendor\'s leads.',
+    ],
+    's3'
+  );
+
+  const s4 = card(4, 'Cross-Channel Contacts',
+    'The DPO calling team and email marketing hit the same person on the same campaign. The contact gets spammed, the relationship is burned, and the same person can be delivered as a lead from two different channels. The rule is absolute: if DPO is working someone on Campaign X, email cannot touch them on Campaign X. Period.',
+    'An <strong>exclusion tag</strong> is written the moment any channel starts actively working a person on a campaign (dialed, queued, added to outreach — not just at list-load). Every channel checks the tag before outreach; if one exists, the contact is automatically skipped. Tags release when the person exits the pipeline. A <strong>central touch log</strong> records every attempt including skips for audit. Simultaneous claims are resolved by a pre-set per-campaign channel priority order.',
+    [
+      ['Scope',            'Per campaign — same person can be in DPO on Campaign A and email on Campaign B'],
+      ['Tag created',      'On a real pipeline action — not at campaign setup or list import'],
+      ['Tag released',     'Delivered · disqualified · unresponsive threshold · campaign ends'],
+      ['Tie-break',        'Per-campaign priority order (e.g. DPO > email > LinkedIn), set at launch'],
+      ['Touch log',        'Every attempt logged including skips — full audit trail'],
+      ['Enforcement point','At the moment of outreach, not at list-load time'],
+    ],
+    [
+      'Go to <strong>S4 tab</strong>. The channel lane view shows contacts and which channel currently holds them.',
+      'Find a contact with an active DPO tag — try to queue them into email for the same campaign. The block should trigger.',
+      'Mark that contact as delivered in DPO — the tag releases. Re-attempt email queue — it should now succeed with a new email tag.',
+      'Check the touch log: the skip and the eventual email claim both appear with timestamps.',
+      'Find the same contact across two different campaigns — confirm they can be active in both simultaneously (exclusion is per-campaign only).',
+    ],
+    's4'
+  );
+
+  const s5 = card(5, 'ABM List Change History',
+    'A client sends an updated target account list. The team has no way to see what changed, protect work already done, or handle dropped companies — so companies already worked get re-assigned, removed companies stay in the queue, and nobody can answer "what did the list look like last month?"',
+    'Every upload creates a new immutable version — old ones are never overwritten. The platform auto-diffs against the previous version and classifies every company as Added / Removed / Unchanged. A <strong>commit gate</strong> requires the Lead Delivery member to review the diff before the new version goes live. Companies with status <em>worked</em> or <em>delivered</em> are never re-queued regardless of what the new version contains. Removed companies trigger a rule-based decision by status: delivered → no action; in-progress → grace window (5 days default); not started → silently removed.',
+    [
+      ['Company identity',         'Normalized domain (acme.com) — name is display only'],
+      ['Version storage',          'Every upload retained — previous versions never overwritten'],
+      ['Commit gate',              'Diff reviewed and confirmed by LD before new version goes live'],
+      ['Already-worked protection','status=worked or delivered → never re-queued'],
+      ['Removed + in-progress',   '5-day grace window (configurable) — LD decides halt or allow'],
+      ['Re-appears after removal', 'Treated as new only if not previously delivered'],
+    ],
+    [
+      'Go to <strong>S5 tab</strong>. The version history timeline shows each upload as a distinct version with its date.',
+      'Select two versions and trigger a diff — look for Added / Removed / Unchanged company counts.',
+      'Find a company with status <em>delivered</em> in the latest version — confirm it is not re-queued.',
+      'Find a company removed in the latest version with status <em>in-progress</em> — confirm the grace window decision prompt appears (Halt / Allow 5 days).',
+      'Commit a new version — confirm only Added companies enter the work queue; Unchanged companies keep their current status.',
+    ],
+    's5'
+  );
+
+  return `
+    <div style="max-width:860px">
+      <div style="margin-bottom:28px">
+        <h2 style="font-size:20px;color:#1a1a2e;margin-bottom:6px">Scenarios — Approach &amp; Test Guide</h2>
+        <p style="font-size:13px;color:#636e72;line-height:1.65;max-width:640px">Five operational problems in DPO campaign management, the approach taken to solve each one, and step-by-step instructions for testing the interactive parts of this platform.</p>
+      </div>
+      ${s1}${s2}${s3}${s4}${s5}
+    </div>
+  `;
 }
 
 /* ═══════════════════════════════════════════════
@@ -4345,8 +5437,248 @@ function modalOverlayClick(e) {
   if (e.target === document.getElementById('modal-create')) closeModal();
 }
 
+/* ═══════════════════════════════════════════════
+   SCOPE REALLOCATION MODAL
+═══════════════════════════════════════════════ */
+let _reallocCamId = null;
+let _reallocMode = 'random';
+// Map: vendorId -> Set<companyName> for specific mode
+const _reallocSpecificSel = {};
+
+function openReallocModal(camId) {
+  _reallocCamId = camId;
+  _reallocMode = 'random';
+  // Reset mode radio
+  const radios = document.querySelectorAll('input[name="realloc-mode"]');
+  radios.forEach(r => { r.checked = r.value === 'random'; });
+
+  const cam = CAMPAIGNS.find(c => c.id === camId);
+  if (!cam) return;
+
+  const enriched = scopeStatusForCampaign(cam);
+  const released = enriched.filter(s => s.status !== 'active');
+  const vstats = vendorStatsForCampaign(cam);
+  const activeVendors = vstats.filter(vs => vs.goal === 0 || vs.delivered < vs.goal);
+
+  // Build the pool of companies from released scopes
+  const poolCompanies = _reallocPoolCompanies(cam, released);
+
+  // Render pool cards
+  const poolEl = document.getElementById('realloc-pool-cards');
+  if (released.length === 0) {
+    poolEl.innerHTML = '<div style="font-size:12px;color:#b2bec3;padding:8px 0">No released scopes available.</div>';
+  } else {
+    poolEl.innerHTML = released.map(s => {
+      const v = VENDORS.find(x => x.name === s.vendor);
+      const dot = v ? `<span style="display:inline-block;width:9px;height:9px;border-radius:50%;background:${v.color};margin-right:6px;flex-shrink:0"></span>` : '';
+      const badge = s.status === 'goal-met'
+        ? '<span style="background:#d4edda;color:#155724;font-size:10px;font-weight:700;padding:2px 7px;border-radius:20px;margin-left:6px">Goal Met</span>'
+        : s.status === 'idle'
+        ? `<span style="background:#fff3cd;color:#856404;font-size:10px;font-weight:700;padding:2px 7px;border-radius:20px;margin-left:6px">Idle ${s.idleDays}d</span>`
+        : '<span style="background:#f8d7da;color:#721c24;font-size:10px;font-weight:700;padding:2px 7px;border-radius:20px;margin-left:6px">Released</span>';
+      // Companies assigned to this vendor
+      const vendorCompanies = cam.abmList && cam.abmList[s.vendor] ? cam.abmList[s.vendor] : [];
+      const companyChips = vendorCompanies.length
+        ? vendorCompanies.map(c => `<span style="display:inline-flex;align-items:center;background:#f0f7ff;color:#0984e3;border:1px solid #b3d9f7;border-radius:12px;padding:2px 9px;font-size:11px;font-weight:600;white-space:nowrap">${c}</span>`).join('')
+        : `<span style="font-size:11px;color:#b2bec3">${s.scope || 'Scope details not available'}</span>`;
+      return `<div style="background:#f8fafc;border:1.5px solid #e2e8f0;border-radius:10px;padding:12px 14px;margin-bottom:8px">
+        <div style="display:flex;align-items:center;margin-bottom:8px">
+          ${dot}<span style="font-size:13px;font-weight:700;color:#1a202c">${s.vendor}</span>${badge}
+        </div>
+        <div style="display:flex;flex-wrap:wrap;gap:5px">${companyChips}</div>
+      </div>`;
+    }).join('');
+  }
+
+  // Render random mode vendor list
+  const randomEl = document.getElementById('realloc-random-vendors');
+  randomEl.innerHTML = activeVendors.map(vs => {
+    const v = vs.v || VENDORS.find(x => x.id === vs.vid);
+    if (!v) return '';
+    return `<label style="display:flex;align-items:center;gap:10px;padding:9px 13px;border:1.5px solid #e2e8f0;border-radius:9px;cursor:pointer;background:#f8fafc;font-size:13px;font-weight:600;color:#1a202c;transition:border-color .15s" onmouseover="this.style.borderColor='#0984e3'" onmouseout="this.style.borderColor='#e2e8f0'">
+      <input type="checkbox" id="realloc-rand-${vs.vid}" value="${vs.vid}" style="accent-color:${v.color};width:15px;height:15px;flex-shrink:0">
+      <span style="width:10px;height:10px;border-radius:50%;background:${v.color};display:inline-block;flex-shrink:0"></span>
+      ${v.name}
+      <span style="font-weight:400;color:#636e72;font-size:12px;margin-left:2px">(${vs.delivered}/${vs.goal} leads)</span>
+    </label>`;
+  }).join('');
+
+  // Render specific mode company pickers
+  _reallocSpecificSel[camId] = _reallocSpecificSel[camId] || {};
+  activeVendors.forEach(vs => { _reallocSpecificSel[camId][vs.vid] = _reallocSpecificSel[camId][vs.vid] || new Set(); });
+  _renderReallocSpecificSection(cam, activeVendors, poolCompanies);
+
+  document.getElementById('realloc-random-section').style.display = 'block';
+  document.getElementById('realloc-specific-section').style.display = 'none';
+  document.getElementById('modal-realloc').style.display = 'flex';
+}
+
+function _reallocPoolCompanies(cam, released) {
+  const companies = [];
+  released.forEach(s => {
+    if (cam.abmList && cam.abmList[s.vendor]) {
+      cam.abmList[s.vendor].forEach(c => companies.push({ name: c, fromVendor: s.vendor }));
+    }
+  });
+  return companies;
+}
+
+function _renderReallocSpecificSection(cam, activeVendors, poolCompanies) {
+  const container = document.getElementById('realloc-specific-vendors');
+  const camSel = _reallocSpecificSel[cam.id] || {};
+  container.innerHTML = activeVendors.map(vs => {
+    const v = vs.v || VENDORS.find(x => x.id === vs.vid);
+    if (!v) return '';
+    const sel = camSel[vs.vid] || new Set();
+    const chips = sel.size
+      ? [...sel].map(c => `<span style="display:inline-flex;align-items:center;gap:4px;background:#e8f4fd;color:#0984e3;border:1px solid #b3d9f7;border-radius:20px;padding:2px 8px 2px 10px;font-size:11px;font-weight:600">
+          ${c}
+          <button onclick="reallocSpecificDeselect('${cam.id}','${vs.vid}','${c.replace(/'/g,"&#39;")}')" style="background:none;border:none;cursor:pointer;color:#0984e3;font-size:13px;line-height:1;padding:0 0 0 2px">&times;</button>
+        </span>`).join('')
+      : '<span style="font-size:11px;color:#b2bec3">None selected</span>';
+
+    // Available companies not yet assigned to another vendor in specific mode
+    const takenByOthers = new Set();
+    Object.entries(camSel).forEach(([vid, s]) => { if (vid !== vs.vid) s.forEach(c => takenByOthers.add(c)); });
+    const available = poolCompanies.filter(p => !takenByOthers.has(p.name) && !sel.has(p.name));
+
+    const checkboxes = available.map(p => {
+      const fromV = VENDORS.find(x => x.name === p.fromVendor);
+      const dotColor = fromV ? fromV.color : '#636e72';
+      const safeName = p.name.replace(/'/g,"&#39;").replace(/"/g,'&quot;');
+      return `<label style="display:flex;align-items:center;gap:6px;padding:5px 8px;border-radius:6px;cursor:pointer;font-size:12px;transition:background .1s" onmouseover="this.style.background='#f0f7ff'" onmouseout="this.style.background='transparent'">
+        <input type="checkbox" onchange="reallocSpecificToggle('${cam.id}','${vs.vid}','${safeName}',this.checked)" style="accent-color:${v.color};flex-shrink:0">
+        <span style="width:7px;height:7px;border-radius:50%;background:${dotColor};display:inline-block;flex-shrink:0" title="From ${p.fromVendor}"></span>
+        ${p.name}
+        <span style="color:#b2bec3;font-size:10px">from ${p.fromVendor}</span>
+      </label>`;
+    }).join('');
+
+    return `<div style="background:#f8fafc;border:1.5px solid #e2e8f0;border-radius:10px;padding:12px 14px">
+      <div style="display:flex;align-items:center;gap:7px;margin-bottom:8px">
+        <span style="width:10px;height:10px;border-radius:50%;background:${v.color};display:inline-block;flex-shrink:0"></span>
+        <span style="font-size:13px;font-weight:700;color:#1a202c">${v.name}</span>
+        <span style="font-weight:400;color:#636e72;font-size:12px">(${vs.delivered}/${vs.goal} leads)</span>
+      </div>
+      <div id="realloc-spec-chips-${vs.vid}" style="display:flex;flex-wrap:wrap;gap:5px;min-height:20px;margin-bottom:8px">${chips}</div>
+      ${available.length ? `<div style="max-height:120px;overflow-y:auto;border:1px solid #e2e8f0;border-radius:7px;padding:4px 6px;background:#fff">${checkboxes}</div>` : '<div style="font-size:11px;color:#b2bec3">All available companies already assigned.</div>'}
+    </div>`;
+  }).join('');
+}
+
+function setReallocMode(mode) {
+  _reallocMode = mode;
+  document.getElementById('realloc-random-section').style.display = mode === 'random' ? 'block' : 'none';
+  document.getElementById('realloc-specific-section').style.display = mode === 'specific' ? 'block' : 'none';
+}
+
+function reallocSpecificToggle(camId, vid, company, checked) {
+  if (!_reallocSpecificSel[camId]) _reallocSpecificSel[camId] = {};
+  if (!_reallocSpecificSel[camId][vid]) _reallocSpecificSel[camId][vid] = new Set();
+  if (checked) _reallocSpecificSel[camId][vid].add(company);
+  else _reallocSpecificSel[camId][vid].delete(company);
+
+  // Re-render specific section to update availability across vendors
+  const cam = CAMPAIGNS.find(c => c.id === camId);
+  if (!cam) return;
+  const enriched = scopeStatusForCampaign(cam);
+  const released = enriched.filter(s => s.status !== 'active');
+  const vstats = vendorStatsForCampaign(cam);
+  const activeVendors = vstats.filter(vs => vs.goal === 0 || vs.delivered < vs.goal);
+  const poolCompanies = _reallocPoolCompanies(cam, released);
+  _renderReallocSpecificSection(cam, activeVendors, poolCompanies);
+}
+
+function reallocSpecificDeselect(camId, vid, company) {
+  reallocSpecificToggle(camId, vid, company, false);
+}
+
+function closeReallocModal() {
+  document.getElementById('modal-realloc').style.display = 'none';
+  _reallocCamId = null;
+}
+
+function reallocModalOverlayClick(e) {
+  if (e.target === document.getElementById('modal-realloc')) closeReallocModal();
+}
+
+function confirmRealloc() {
+  const cam = CAMPAIGNS.find(c => c.id === _reallocCamId);
+  if (!cam) return;
+
+  const enriched = scopeStatusForCampaign(cam);
+  const released = enriched.filter(s => s.status !== 'active');
+
+  // Mark all released scopes as explicitly released
+  released.forEach(s => {
+    const origScope = cam.vendorScopes.find(vs => vs.vendor === s.vendor);
+    if (origScope) origScope.released = true;
+  });
+
+  const poolCompanies = _reallocPoolCompanies(cam, released);
+  if (!cam.vendorGoals) cam.vendorGoals = {};
+
+  if (_reallocMode === 'random') {
+    // Collect checked vendors
+    const vstats = vendorStatsForCampaign(cam);
+    const activeVendors = vstats.filter(vs => vs.goal === 0 || vs.delivered < vs.goal);
+    const chosen = activeVendors.filter(vs => {
+      const cb = document.getElementById('realloc-rand-' + vs.vid);
+      return cb && cb.checked;
+    });
+    if (chosen.length === 0) { alert('Select at least one vendor to redistribute to.'); return; }
+
+    // Distribute companies evenly
+    const pool = [...poolCompanies];
+    chosen.forEach((vs, i) => {
+      const share = Math.ceil(pool.length / (chosen.length - i));
+      const slice = pool.splice(0, share);
+      const v = VENDORS.find(x => x.id === vs.vid);
+      if (!v) return;
+      const scopeText = slice.map(p => p.name).join(', ');
+      _applyReallocToVendor(cam, v, scopeText, slice);
+    });
+
+  } else {
+    // Specific mode
+    const camSel = _reallocSpecificSel[cam.id] || {};
+    const anyAssigned = Object.values(camSel).some(s => s.size > 0);
+    if (!anyAssigned) { alert('Assign at least one company to a vendor before confirming.'); return; }
+
+    Object.entries(camSel).forEach(([vid, companies]) => {
+      if (!companies.size) return;
+      const v = VENDORS.find(x => x.id === vid);
+      if (!v) return;
+      const slice = [...companies].map(c => ({ name: c }));
+      const scopeText = [...companies].join(', ');
+      _applyReallocToVendor(cam, v, scopeText, slice);
+    });
+
+    // Clean up selections
+    delete _reallocSpecificSel[cam.id];
+  }
+
+  closeReallocModal();
+  render();
+}
+
+function _applyReallocToVendor(cam, v, scopeText, slice) {
+  const existingTarget = cam.vendorScopes.find(s => s.vendor === v.name && !s.released);
+  if (existingTarget) {
+    existingTarget.scope = (existingTarget.scope ? existingTarget.scope + '; ' : '') + scopeText;
+    existingTarget.lastActivity = '2026-04-13';
+  } else {
+    cam.vendorScopes.push({ vendor: v.name, scope: scopeText + ' (reallocated)', lastActivity: '2026-04-13' });
+    if (!cam.vendors.includes(v.id)) cam.vendors.push(v.id);
+    if (!cam.vendorGoals[v.id]) cam.vendorGoals[v.id] = 0;
+  }
+  // Update abmList
+  if (!cam.abmList) cam.abmList = {};
+  if (!cam.abmList[v.name]) cam.abmList[v.name] = [];
+  slice.forEach(p => { if (!cam.abmList[v.name].includes(p.name)) cam.abmList[v.name].push(p.name); });
+}
+
 function resetModalForm() {
-  _editingCampaignId = null;
   ['f-name','f-goal','f-deadline','f-company-limit','f-script'].forEach(id => {
     const el = document.getElementById(id);
     if (el) el.value = '';
@@ -4509,7 +5841,7 @@ function selectSplitRule(rule) {
       const list = document.getElementById('vendor-nosplit-list');
       if (list) {
         list.innerHTML = VENDORS.map(v => `
-          <label style="display:flex;align-items:center;gap:10px;padding:8px 12px;border:1.5px solid #dfe6e9;border-radius:6px;cursor:pointer;background:#fff;font-size:13px;font-weight:600;color:#2d3436">
+          <label style="display:flex;align-items:center;gap:10px;padding:9px 13px;border:1.5px solid #e2e8f0;border-radius:9px;cursor:pointer;background:#f8fafc;font-size:13px;font-weight:600;color:#1a202c;transition:border-color .15s,background .15s" onmouseover="this.style.borderColor='#0984e3';this.style.background='#f0f7ff'" onmouseout="this.style.borderColor='#e2e8f0';this.style.background='#f8fafc'">
             <input type="checkbox" id="nosplit-vendor-${v.id}" value="${v.name}"
               style="accent-color:${v.color};width:15px;height:15px;flex-shrink:0">
             <span style="width:10px;height:10px;border-radius:50%;background:${v.color};display:inline-block;flex-shrink:0"></span>
@@ -4599,8 +5931,11 @@ function scopeSearch(id, q) {
 function _scopePickerHtml(id, rule) {
   const items = _getScopeItems(rule);
   if (!items.length) {
-    return `<input type="number" placeholder="No. of accounts (e.g. 50)" id="scope-val-${id}" min="1"
-      style="width:100%;padding:8px 10px;border:1.5px solid #dfe6e9;border-radius:6px;font-size:13px;outline:none" />`;
+    return `<div style="position:relative;display:flex;align-items:center">
+      <input type="number" placeholder="e.g. 34" id="scope-val-${id}" min="1" max="100"
+        style="width:100%;padding:10px 36px 10px 13px;border:1.5px solid #e2e8f0;border-radius:9px;font-size:13px;outline:none;background:#f8fafc;box-shadow:0 1px 2px rgba(0,0,0,.04) inset;color:#1a202c;font-family:inherit;transition:border-color .15s,box-shadow .15s,background .15s" onfocus="this.style.borderColor='#0984e3';this.style.background='#fff';this.style.boxShadow='0 0 0 3px rgba(9,132,227,.12)'" onblur="this.style.borderColor='#e2e8f0';this.style.background='#f8fafc';this.style.boxShadow='0 1px 2px rgba(0,0,0,.04) inset'" />
+      <span style="position:absolute;right:13px;font-size:14px;font-weight:700;color:#636e72;pointer-events:none">%</span>
+    </div>`;
   }
   _scopeSelections[id] = new Set();
   const checkItems = items.map(item => {
@@ -4614,10 +5949,10 @@ function _scopePickerHtml(id, rule) {
   }).join('');
   return `
     <input type="hidden" id="scope-val-${id}" />
-    <div style="border:1.5px solid #dfe6e9;border-radius:8px;overflow:hidden;background:#fff">
-      <div style="padding:7px 10px;border-bottom:1px solid #f0f0f0;background:#fafbfc">
+    <div style="border:1.5px solid #e2e8f0;border-radius:9px;overflow:hidden;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.04)">
+      <div style="padding:8px 11px;border-bottom:1px solid #f0f2f5;background:#f8fafc">
         <input type="text" placeholder="Search…" oninput="scopeSearch(${id},this.value)"
-          style="width:100%;border:none;outline:none;font-size:12px;background:transparent;color:#2d3436" />
+          style="width:100%;border:none;outline:none;font-size:12px;background:transparent;color:#1a202c;font-family:inherit" />
       </div>
       <div id="scope-checklist-${id}"
         style="max-height:160px;overflow-y:auto;padding:6px;display:flex;flex-direction:column;gap:3px">
@@ -4642,7 +5977,7 @@ function addVendorScopeRow() {
   ).join('');
 
   const scopeLabel = {
-    1: _abmMode === 'specific' ? 'Assign accounts' : 'Number of accounts',
+    1: _abmMode === 'specific' ? 'Assign accounts' : 'Share of accounts (%)',
     2: 'Assign territories',
     3: 'Assign industries',
     4: 'Assign size bands',
@@ -4650,7 +5985,7 @@ function addVendorScopeRow() {
 
   const card = document.createElement('div');
   card.id = 'scope-row-' + id;
-  card.style.cssText = 'background:#fff;border:1.5px solid #dfe6e9;border-radius:10px;padding:14px 16px;margin-bottom:10px;position:relative';
+  card.style.cssText = 'background:#f8fafc;border:1.5px solid #e2e8f0;border-radius:10px;padding:14px 16px;margin-bottom:10px;position:relative;box-shadow:0 1px 3px rgba(0,0,0,.04)';
 
   const needsPicker = rule === 1 ? _abmMode === 'specific' : rule >= 2 && rule <= 4;
 
@@ -4661,7 +5996,7 @@ function addVendorScopeRow() {
       <div id="scope-vendor-dot-${id}" style="width:10px;height:10px;border-radius:50%;background:#dfe6e9;flex-shrink:0"></div>
       <select id="scope-vendor-${id}"
         onchange="updateScopeVendorDot(${id})"
-        style="flex:1;padding:7px 10px;border:1.5px solid #dfe6e9;border-radius:6px;font-size:13px;font-weight:600;outline:none;background:#fff;color:#2d3436;max-width:220px">
+        style="flex:1;padding:8px 32px 8px 11px;border:1.5px solid #e2e8f0;border-radius:9px;font-size:13px;font-weight:600;outline:none;background:#fff url('data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 width=%2712%27 height=%278%27 viewBox=%270 0 12 8%27%3E%3Cpath d=%27M1 1l5 5 5-5%27 stroke=%27%2374838f%27 stroke-width=%271.5%27 fill=%27none%27 stroke-linecap=%27round%27 stroke-linejoin=%27round%27/%3E%3C/svg%3E') no-repeat right 10px center;-webkit-appearance:none;appearance:none;color:#1a202c;max-width:220px;cursor:pointer;font-family:inherit;transition:border-color .15s,box-shadow .15s">
         <option value="">Select Vendor…</option>
         ${vendorOpts}
       </select>
@@ -5372,6 +6707,10 @@ document.addEventListener('click', function(e) {
   if (!e.target.closest('#excl-titles-tag-area') && !e.target.closest('#excl-titles-dropdown')) {
     document.getElementById('excl-titles-dropdown')?.classList.remove('open');
   }
+  if (!e.target.closest('#cam-dd-menu') && !e.target.closest('[onclick*="cam-dd-menu"]')) {
+    const m = document.getElementById('cam-dd-menu');
+    if (m) m.style.display = 'none';
+  }
 });
 
 /* ═══════════════════════════════════════════════
@@ -5429,6 +6768,85 @@ function submitCampaign() {
     return;
   }
 
+  // Build abmList for Rule 1 (ABM List split) campaigns
+  const isAbmUploaded = document.getElementById('abm-uploaded')?.style.display !== 'none';
+  let builtAbmList = null;
+  if (_selectedSplitRule === 1 && isAbmUploaded && vendorScopes.length > 0) {
+    // Use the actual uploaded ABM list rows (skip header) as the pool
+    const abmRows = (_ABM_DUMMY.rows || []).slice(1);
+    const abmMeta = {};
+    abmRows.forEach(r => {
+      abmMeta[r[0]] = { domain: r[1], geo: r[2], industry: r[3] };
+    });
+
+    // Pool = company names from the uploaded list
+    builtAbmList = {};
+    let pool = abmRows.map(r => r[0]);
+    const totalPool = pool.length;
+    const newCamId = 'cam' + (CAMPAIGNS.length + 1);
+    const companyLimit = parseInt(document.getElementById('f-company-limit').value) || 1;
+
+    vendorScopes.forEach((vs, i) => {
+      // scope values are percentages (e.g. 34 means 34%) — convert to absolute count
+      const pct = parseFloat(vs.scope) || (100 / vendorScopes.length);
+      const isLast = i === vendorScopes.length - 1;
+      // Last vendor gets whatever remains to avoid rounding loss
+      const count = isLast ? pool.length : Math.round(totalPool * pct / 100);
+      const slice = pool.splice(0, Math.min(count, pool.length));
+      builtAbmList[vs.vendor] = slice;
+
+      // Find vendor id by name
+      const vendorObj = VENDORS.find(v => v.name === vs.vendor);
+      const vendorId = vendorObj ? vendorObj.id : vs.vendor;
+
+      // Push COMPANIES entries for this vendor's slice
+      slice.forEach((coName, j) => {
+        const meta = abmMeta[coName] || {};
+        const domain = meta.domain || coName.toLowerCase().replace(/[^a-z0-9]/g, '') + '.com';
+        const coId = 'c_' + newCamId + '_' + i + '_' + j;
+        COMPANIES.push({
+          id:       coId,
+          name:     coName,
+          domain:   domain,
+          vendor:   vendorId,
+          geo:      meta.geo || _geoSelected[0] || 'TBD',
+          slots:    companyLimit,
+          used:     0,
+          status:   'new',
+          industry: meta.industry || _industrySelected[0] || 'Technology',
+          campaign: newCamId,
+        });
+        S1_SLOTS[coId] = { used: 0, slots: companyLimit };
+      });
+    });
+
+    // Any remaining companies go to the last vendor
+    if (pool.length > 0 && vendorScopes.length > 0) {
+      const last = vendorScopes[vendorScopes.length - 1];
+      const vendorObj = VENDORS.find(v => v.name === last.vendor);
+      const vendorId = vendorObj ? vendorObj.id : last.vendor;
+      pool.forEach((coName, j) => {
+        const meta = abmMeta[coName] || {};
+        const domain = meta.domain || coName.toLowerCase().replace(/[^a-z0-9]/g, '') + '.com';
+        const coId = 'c_' + newCamId + '_overflow_' + j;
+        builtAbmList[last.vendor].push(coName);
+        COMPANIES.push({
+          id:       coId,
+          name:     coName,
+          domain:   domain,
+          vendor:   vendorId,
+          geo:      meta.geo || _geoSelected[0] || 'TBD',
+          slots:    companyLimit,
+          used:     0,
+          status:   'new',
+          industry: meta.industry || _industrySelected[0] || 'Technology',
+          campaign: newCamId,
+        });
+        S1_SLOTS[coId] = { used: 0, slots: companyLimit };
+      });
+    }
+  }
+
   const camData = {
     name,
     client,
@@ -5442,7 +6860,8 @@ function submitCampaign() {
     revenue:      document.getElementById('f-revenue').value,
     titles:       _titlesSelected.join(', ') || 'TBD',
     jobareas:     _jobareasSelected.join(', ') || '',
-    abm:          document.getElementById('abm-uploaded')?.style.display !== 'none' ? 'yes' : 'no',
+    abm:          isAbmUploaded ? 'yes' : 'no',
+    abmList:      builtAbmList,
     suppression:  document.getElementById('suppression-uploaded')?.style.display !== 'none' ? 'yes' : 'no',
     pacing:       document.getElementById('f-pacing').value,
     language:     document.getElementById('f-language').value,
@@ -5458,10 +6877,28 @@ function submitCampaign() {
     exclTitles:   _exclTitlesSelected.join(', ') || '',
   };
 
+  // Build vendorGoals from vendorScopes percentages × total goal
+  const vendorGoals = {};
+  if (vendorScopes.length > 0) {
+    vendorScopes.forEach((vs, i) => {
+      const vendorObj = VENDORS.find(v => v.name === vs.vendor);
+      if (!vendorObj) return;
+      const pct = parseFloat(vs.scope) || (100 / vendorScopes.length);
+      const isLast = i === vendorScopes.length - 1;
+      if (isLast) {
+        // Give remainder to last vendor to avoid rounding drift
+        const assigned = Object.values(vendorGoals).reduce((a, b) => a + b, 0);
+        vendorGoals[vendorObj.id] = Math.max(0, goal - assigned);
+      } else {
+        vendorGoals[vendorObj.id] = Math.round(goal * pct / 100);
+      }
+    });
+  }
+
   if (_editingCampaignId) {
     const idx = CAMPAIGNS.findIndex(c => c.id === _editingCampaignId);
     if (idx !== -1) {
-      CAMPAIGNS[idx] = { ...CAMPAIGNS[idx], ...camData };
+      CAMPAIGNS[idx] = { ...CAMPAIGNS[idx], ...camData, vendorGoals: { ...((CAMPAIGNS[idx].vendorGoals) || {}), ...vendorGoals } };
     }
   } else {
     CAMPAIGNS.push({
@@ -5470,6 +6907,7 @@ function submitCampaign() {
       delivered: 0,
       inReview:  0,
       ...camData,
+      vendorGoals,
     });
   }
 
@@ -5480,6 +6918,251 @@ function submitCampaign() {
 /* ═══════════════════════════════════════════════
    INLINE ADD ROW (Airtable-style)
 ═══════════════════════════════════════════════ */
+/* ═══════════════════════════════════════════════
+   ADD LEAD MODAL
+═══════════════════════════════════════════════ */
+function _refreshAddLeadCampaignFields(camId) {
+  const cam = CAMPAIGNS.find(c => c.id === camId) || {};
+  const camQs = cam.qualQuestions && cam.qualQuestions.length
+    ? cam.qualQuestions
+    : (cam.script ? cam.script.split(/[?;]/g).map(s => s.trim()).filter(s => s.length > 4).slice(0, 3) : []);
+
+  // Update CQ labels / visibility
+  ['cq1','cq2','cq3'].forEach((cq, i) => {
+    const label = document.getElementById('al-' + cq + '-label');
+    const wrap  = document.getElementById('al-' + cq + '-wrap');
+    const input = document.getElementById('al-' + cq);
+    if (camQs[i]) {
+      const qText = typeof camQs[i] === 'string' ? camQs[i] : (camQs[i].question || '');
+      if (label) label.textContent = qText.replace(/^Qualify:\s*/i,'').substring(0, 60);
+      if (wrap)  wrap.style.display = '';
+    } else {
+      if (wrap)  wrap.style.display = 'none';
+      if (input) input.value = '';
+    }
+  });
+
+  // Toggle company field: dropdown for ABM campaigns, free-text otherwise
+  const isAbm = cam.abm === 'yes';
+  const compInput  = document.getElementById('al-company');
+  const compSelect = document.getElementById('al-company-select');
+  if (compInput)  compInput.style.display  = isAbm ? 'none' : '';
+  if (compSelect) compSelect.style.display = isAbm ? ''     : 'none';
+  if (isAbm && compSelect) {
+    let abmNames = [];
+    if (cam.abmList) {
+      if (STATE.role === 'vendor') {
+        const vendorObj = VENDORS.find(v => v.id === STATE.currentVendor);
+        const vendorName = vendorObj ? vendorObj.name : '';
+        abmNames = cam.abmList[vendorName] || [];
+      } else {
+        abmNames = Object.values(cam.abmList).flat();
+      }
+    } else {
+      abmNames = STATE.role === 'vendor'
+        ? COMPANIES.filter(c => c.vendor === STATE.currentVendor && c.campaign === cam.id).map(c => c.name)
+        : COMPANIES.filter(c => c.campaign === cam.id).map(c => c.name);
+    }
+    compSelect.innerHTML = '<option value="">Select company…</option>' +
+      abmNames.map(name => {
+        const co = COMPANIES.find(c => c.name.toLowerCase() === name.toLowerCase() && c.campaign === cam.id);
+        const s = co ? (S1_SLOTS[co.id] || { used: co.used, slots: co.slots }) : null;
+        const isFull = s && s.used >= s.slots;
+        const slotsLeft = s ? (s.slots - s.used) : null;
+        const label = s ? ` (${isFull ? 'full' : slotsLeft + ' slot' + (slotsLeft === 1 ? '' : 's') + ' left'})` : '';
+        return `<option value="${name}" ${isFull ? 'disabled' : ''}>${name}${label}</option>`;
+      }).join('');
+    compSelect.value = '';
+    if (compInput) compInput.value = '';
+  } else if (compInput) {
+    compInput.value = '';
+  }
+}
+
+function openAddLeadModal() {
+  // Populate campaign dropdown and pre-select the active campaign
+  const camSel = document.getElementById('al-campaign');
+  if (camSel) {
+    const visibleCampaigns = STATE.role === 'vendor'
+      ? CAMPAIGNS.filter(c => c.status === 'Live' && (c.vendors || []).includes(STATE.currentVendor))
+      : CAMPAIGNS.filter(c => c.status === 'Live');
+    camSel.innerHTML = visibleCampaigns.map(c =>
+      `<option value="${c.id}">${c.name}${c.client ? ' — ' + c.client : ''}</option>`
+    ).join('');
+    camSel.value = STATE.currentCampaign || (visibleCampaigns[0] && visibleCampaigns[0].id) || '';
+    camSel.onchange = () => _refreshAddLeadCampaignFields(camSel.value);
+  }
+
+  // Initialise campaign-dependent fields for the pre-selected campaign
+  _refreshAddLeadCampaignFields(camSel ? camSel.value : STATE.currentCampaign);
+
+  // Clear contact inputs
+  ['al-first','al-last','al-email','al-company','al-title','al-tel','al-country','al-compsize','al-cq1','al-cq2','al-cq3'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.value = '';
+  });
+  const optinEl = document.getElementById('al-optin');
+  if (optinEl) optinEl.value = 'Yes';
+  const errEl = document.getElementById('add-lead-err');
+  if (errEl) { errEl.style.display = 'none'; errEl.textContent = ''; }
+
+  const modal = document.getElementById('modal-add-lead');
+  if (modal) {
+    modal.classList.add('open');
+    setTimeout(() => { const f = document.getElementById('al-first'); if (f) f.focus(); }, 50);
+  }
+}
+
+function closeAddLeadModal() {
+  const modal = document.getElementById('modal-add-lead');
+  if (modal) modal.classList.remove('open');
+}
+
+function addLeadModalOverlayClick(e) {
+  if (e.target === document.getElementById('modal-add-lead')) closeAddLeadModal();
+}
+
+function submitAddLead() {
+  const get = id => { const el = document.getElementById(id); return el ? el.value.trim() : ''; };
+  const errEl = document.getElementById('add-lead-err');
+
+  const firstName = get('al-first');
+  const lastName  = get('al-last');
+  const email     = get('al-email');
+  const compSel   = document.getElementById('al-company-select');
+  const company   = (compSel && compSel.style.display !== 'none') ? compSel.value.trim() : get('al-company');
+
+  if (!firstName || !lastName || !email || !company) {
+    if (errEl) { errEl.textContent = 'First name, last name, email and company are required.'; errEl.style.display = 'block'; }
+    return;
+  }
+  if (S1_LEADS.find(l => l.email && l.email.toLowerCase() === email.toLowerCase())) {
+    if (errEl) { errEl.textContent = 'Duplicate — this email already exists.'; errEl.style.display = 'block'; }
+    return;
+  }
+
+  // Company limit check — block if all slots are consumed
+  const coCheck = COMPANIES.find(c => c.name.toLowerCase() === company.toLowerCase());
+  if (coCheck) {
+    const sl = S1_SLOTS[coCheck.id] || { used: coCheck.used, slots: coCheck.slots };
+    if (sl.used >= sl.slots) {
+      if (errEl) { errEl.textContent = `Blocked: "${coCheck.name}" has reached its company limit (${sl.slots}/${sl.slots} slots used). No further leads can be submitted for this account.`; errEl.style.display = 'block'; }
+      return;
+    }
+  }
+
+  const camSelEl = document.getElementById('al-campaign');
+  const selectedCamId = (camSelEl && camSelEl.value) ? camSelEl.value : STATE.currentCampaign;
+
+  const today = new Date().toISOString().slice(0, 10);
+  const coMatch = COMPANIES.find(c => c.name.toLowerCase() === company.toLowerCase());
+  const cam = CAMPAIGNS.find(c => c.id === selectedCamId) || {};
+
+  const newLead = {
+    id: 'sl' + (S1_LEADS.length + 1),
+    dpoId: '', firstName, lastName,
+    company: coMatch ? coMatch.name : company,
+    email,
+    jobTitle:  get('al-title'),
+    tel:       get('al-tel'),
+    country:   get('al-country'),
+    city: '', state: '', postalCode: '', address: '',
+    compSize:  get('al-compsize'),
+    revenue: '', industry: '', guide: '',
+    cq1: get('al-cq1'), cq2: get('al-cq2'), cq3: get('al-cq3'),
+    notes: '', prooflink: '', prospectProoflink: '', recordingLink: '',
+    reworkedLeads: '', reworkStatus: '', reworkRejReason: '',
+    submDate: today,
+    status: 'submitted',
+    optin: get('al-optin') || 'Yes',
+    rejReason: '', ccStatus: '',
+    version: cam.version || 'v1',
+    vendor: STATE.currentVendor || 'v1',
+    name: firstName + ' ' + lastName,
+    title: get('al-title'), linkedIn: '',
+    campaign: selectedCamId
+  };
+
+  if (coMatch) {
+    if (!S1_SLOTS[coMatch.id]) S1_SLOTS[coMatch.id] = { slots: coMatch.slots || 2, used: 0 };
+    S1_SLOTS[coMatch.id].used++;
+  }
+  S1_LEADS.push(newLead);
+  closeAddLeadModal();
+  render();
+}
+
+// Hit Goal — fills all remaining company slots for the current vendor with dummy leads
+const HIT_GOAL_NAMES = [
+  ['Alex','Morgan'],['Jamie','Reed'],['Taylor','Kim'],['Jordan','Lee'],
+  ['Casey','Brooks'],['Riley','Shaw'],['Quinn','Ward'],['Avery','Cole'],
+  ['Skyler','Price'],['Devon','Fox'],['Morgan','Ellis'],['Blair','Hayes']
+];
+const HIT_GOAL_TITLES = ['VP Sales','CTO','Head of Marketing','CFO','Director of IT','COO','VP Operations','CIO'];
+
+function hitGoal(camId) {
+  const myVendorId = STATE.currentVendor;
+  const today = new Date().toISOString().slice(0, 10);
+  const cam = CAMPAIGNS.find(c => c.id === camId) || {};
+
+  // Find vendor's assigned companies for this campaign with open slots
+  const myCos = COMPANIES.filter(c => c.vendor === myVendorId && c.campaign === camId);
+  let added = 0;
+  let nameIdx = 0;
+
+  myCos.forEach(co => {
+    if (!S1_SLOTS[co.id]) S1_SLOTS[co.id] = { used: 0, slots: co.slots };
+    const sl = S1_SLOTS[co.id];
+    const available = sl.slots - sl.used;
+    for (let i = 0; i < available; i++) {
+      // Rotate through name pool, skip any already-used email
+      let pair, email;
+      let attempts = 0;
+      do {
+        pair = HIT_GOAL_NAMES[(nameIdx + attempts) % HIT_GOAL_NAMES.length];
+        const domainBase = co.domain ? co.domain.replace(/^www\./, '') : co.name.toLowerCase().replace(/\s+/g, '') + '.com';
+        email = `${pair[0].toLowerCase()}.${pair[1].toLowerCase()}${added > 0 ? added : ''}@${domainBase}`;
+        attempts++;
+      } while (S1_LEADS.find(l => l.email === email) && attempts < 50);
+
+      nameIdx = (nameIdx + 1) % HIT_GOAL_NAMES.length;
+      const titleIdx = (sl.used + i) % HIT_GOAL_TITLES.length;
+
+      S1_LEADS.push({
+        id: 'hg' + Date.now() + '_' + added,
+        dpoId: '',
+        firstName: pair[0], lastName: pair[1],
+        name: pair[0] + ' ' + pair[1],
+        company: co.name,
+        email,
+        jobTitle: HIT_GOAL_TITLES[titleIdx],
+        title: HIT_GOAL_TITLES[titleIdx],
+        tel: '', country: '', city: '', state: '', postalCode: '', address: '',
+        compSize: co.size || '', revenue: '', industry: co.industry || '',
+        guide: '', optin: 'Yes',
+        cq1: 'Yes', cq2: 'Yes', cq3: 'Yes',
+        prooflink: '', prospectProoflink: '', recordingLink: '',
+        reworkedLeads: '', reworkStatus: '', reworkRejReason: '',
+        submDate: today,
+        status: 'submitted',
+        rejReason: '', ccStatus: '',
+        version: cam.version || 'v1',
+        vendor: myVendorId,
+        campaign: camId,
+        notes: '[Auto-generated via Hit Goal]'
+      });
+      sl.used++;
+      added++;
+    }
+  });
+
+  if (added === 0) {
+    alert('All company slots are already filled.');
+    return;
+  }
+  render();
+}
+
 function s1InlineAddRow(tbodyId, triggerId, mode) {
   const tbody = document.getElementById(tbodyId);
   if (!tbody) return;
@@ -5496,7 +7179,7 @@ function s1InlineAddRow(tbodyId, triggerId, mode) {
   const camQs = cam.qualQuestions && cam.qualQuestions.length
     ? cam.qualQuestions
     : (cam.script ? cam.script.split(/[?;]/g).map(s => s.trim()).filter(s => s.length > 4).slice(0, 3) : []);
-  const cqLabel = (i) => camQs[i] ? camQs[i].replace(/^Qualify:\s*/i,'').substring(0,40) : `CQ${i+1}`;
+  const cqLabel = (i) => { const q = camQs[i]; if (!q) return `CQ${i+1}`; const t = typeof q === 'string' ? q : (q.question || ''); return t.replace(/^Qualify:\s*/i,'').substring(0,40); };
 
   const inp = (id, ph, w) => `<input class="inline-edit-cell"${id ? ` id="${id}"` : ''} placeholder="${ph}" style="min-width:${w||60}px">`;
   const sel = (id, opts) => `<select class="inline-edit-cell" id="${id}" style="min-width:90px">${opts.map(o=>`<option value="${o}">${o}</option>`).join('')}</select>`;
@@ -5576,9 +7259,15 @@ function s1InlineAddRow(tbodyId, triggerId, mode) {
     document.body.appendChild(bar);
   }
 
-  // Focus first meaningful input
+  // Scroll the new row into view, then focus the first input
+  editRow.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
   const firstInput = editRow.querySelector('input, select');
-  if (firstInput) firstInput.focus();
+  if (firstInput) {
+    setTimeout(() => {
+      firstInput.focus();
+      firstInput.scrollIntoView({ behavior: 'smooth', inline: 'start', block: 'nearest' });
+    }, 50);
+  }
 }
 
 function s1InlineCancelRow(tbodyId) {
@@ -5712,6 +7401,63 @@ function s1InlineSaveRow(tbodyId, triggerId, mode) {
 /* ═══════════════════════════════════════════════
    FILL DUMMY DATA (per step)
 ═══════════════════════════════════════════════ */
+function fillDummyLead() {
+  const profiles = [
+    { first:'James',   last:'Harrington', email:'j.harrington@nexuscorp.io',   company:'Nexus Corporation',   title:'VP of Engineering',        tel:'+44 7700 900123', country:'UK',          compSize:'201-500', cq1:'Yes, actively evaluating', cq2:'$1M–$5M',             cq3:'Q3 2026' },
+    { first:'Sophie',  last:'Müller',     email:'s.mueller@cloudvantage.de',    company:'CloudVantage GmbH',   title:'IT Director',              tel:'+49 30 9876543',  country:'Germany',     compSize:'501-1000',cq1:'Planning in 6 months',     cq2:'$500K–$2M',           cq3:'Q4 2026' },
+    { first:'Lucas',   last:'Fontaine',   email:'l.fontaine@datasphere.fr',     company:'DataSphere SAS',      title:'CTO',                      tel:'+33 1 23456789',  country:'France',      compSize:'51-200',  cq1:'Yes, actively evaluating', cq2:'Over $2M',            cq3:'Q2 2026' },
+    { first:'Ava',     last:'Reynolds',   email:'a.reynolds@infratech.com',     company:'InfraTech Ltd',       title:'Head of IT Operations',    tel:'+1 415 555 0192', country:'USA',         compSize:'1001-5000',cq1:'Actively evaluating',     cq2:'$2M–$10M',            cq3:'H1 2026' },
+    { first:'Marco',   last:'Esposito',   email:'m.esposito@tecnostream.it',    company:'TecnoStream SpA',     title:'Senior Solutions Architect',tel:'+39 02 12345678', country:'Italy',       compSize:'201-500', cq1:'Evaluating vendors now',   cq2:'$500K–$1M',           cq3:'Q3 2026' },
+    { first:'Elena',   last:'Novak',      email:'e.novak@digitalbridge.nl',     company:'DigitalBridge BV',    title:'Director of Cloud Strategy',tel:'+31 20 7654321',  country:'Netherlands', compSize:'51-200',  cq1:'Yes, in final shortlist',  cq2:'$1M–$5M',             cq3:'Q2 2026' },
+    { first:'Thomas',  last:'Weber',      email:'t.weber@automationdrive.de',   company:'AutomationDrive AG',  title:'VP Product',               tel:'+49 89 1234567',  country:'Germany',     compSize:'501-1000',cq1:'Planning within 6 months', cq2:'$500K–$2M',           cq3:'Q4 2026' },
+    { first:'Priya',   last:'Sharma',     email:'p.sharma@insightlabs.co.uk',   company:'InsightLabs UK',      title:'Chief Information Officer',tel:'+44 20 79460000', country:'UK',          compSize:'201-500', cq1:'Yes, actively evaluating', cq2:'Over $5M',            cq3:'Q3 2026' },
+  ];
+
+  // Pick a profile that isn't already in S1_LEADS (by email); fallback to random
+  const usedEmails = new Set(S1_LEADS.map(l => (l.email || '').toLowerCase()));
+  const available = profiles.filter(p => !usedEmails.has(p.email.toLowerCase()));
+  const profile = available.length
+    ? available[Math.floor(Math.random() * available.length)]
+    : profiles[Math.floor(Math.random() * profiles.length)];
+
+  const set = (id, val) => { const el = document.getElementById(id); if (el && !el.value) el.value = val; };
+
+  set('al-first',   profile.first);
+  set('al-last',    profile.last);
+  set('al-email',   profile.email);
+  set('al-title',   profile.title);
+  set('al-tel',     profile.tel);
+  set('al-country', profile.country);
+  set('al-compsize',profile.compSize);
+
+  // Company: use dropdown if visible (ABM), otherwise text input
+  const compSelect = document.getElementById('al-company-select');
+  const compInput  = document.getElementById('al-company');
+  if (compSelect && compSelect.style.display !== 'none') {
+    if (!compSelect.value) {
+      // Pick first unselected option that isn't placeholder, or any option
+      const opts = Array.from(compSelect.options).filter(o => o.value);
+      if (opts.length) compSelect.value = opts[0].value;
+    }
+  } else if (compInput && !compInput.value) {
+    compInput.value = profile.company;
+  }
+
+  // Opt-in
+  const optinEl = document.getElementById('al-optin');
+  if (optinEl && !optinEl.value) optinEl.value = 'Yes';
+
+  // CQ answers — only fill visible CQ fields
+  ['cq1','cq2','cq3'].forEach((cq, i) => {
+    const wrap = document.getElementById('al-' + cq + '-wrap');
+    if (wrap && wrap.style.display !== 'none') set('al-' + cq, [profile.cq1, profile.cq2, profile.cq3][i]);
+  });
+
+  // Clear any lingering error
+  const errEl = document.getElementById('add-lead-err');
+  if (errEl) { errEl.style.display = 'none'; errEl.textContent = ''; }
+}
+
 function fillDummy(step) {
   if (step === 1) {
     // Campaign Name
@@ -5854,9 +7600,9 @@ function fillDummy(step) {
         setTimeout(() => {
           // Assign vendors and account counts
           const assignments = [
-            { vendor: 'DataReach',  count: 6 },
-            { vendor: 'LeadForge',  count: 6 },
-            { vendor: 'ProspectIQ', count: 5 },
+            { vendor: 'DataReach',  count: 34 },
+            { vendor: 'LeadForge',  count: 33 },
+            { vendor: 'ProspectIQ', count: 33 },
           ];
           assignments.forEach((a, i) => {
             const rowNum = i + 1;

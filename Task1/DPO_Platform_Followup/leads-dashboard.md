@@ -63,18 +63,34 @@ Three vendors — each scoped to one geography to prevent overlap.
 ### `CAMPAIGNS`
 8 campaigns across Live / Paused / Closed statuses. Each has a `script` field (plain-text qualification notes) and optionally a `qualQuestions` array of structured questions with answer options and disqualify flags. Campaign questions drive the CQ column headers in the S1 table.
 
-| ID | Name | Status | Vendors |
-|---|---|---|---|
-| `cam1` | EU SaaS Decision Makers | Live | v1, v2, v3 |
-| `cam2` | UK FinTech C-Suite | Live | v1 |
-| `cam3` | DACH Manufacturing IT Leaders | Live | v3 |
-| `cam4` | Nordics Cloud Transformation | Live | v2 |
-| `cam5` | Healthcare IT Decision Makers | Paused | v1, v2 |
-| `cam6` | EU Energy Sector CxOs | Paused | v3 |
-| `cam7` | UK Retail Digital Transformation | Closed | v1 |
-| `cam8` | EMEA MarTech Buyers | Closed | v1, v2 |
+| ID | Name | Status | ABM | Vendors |
+|---|---|---|---|---|
+| `cam1` | EU SaaS Decision Makers | Live | yes | v1, v2, v3 |
+| `cam2` | UK FinTech C-Suite | Live | yes | v1 |
+| `cam3` | DACH Manufacturing IT Leaders | Live | no | v3 |
+| `cam4` | Nordics Cloud Transformation | Live | no | v2 |
+| `cam5` | Healthcare IT Decision Makers | Paused | yes | v1, v2 |
+| `cam6` | EU Energy Sector CxOs | Paused | yes | v3 |
+| `cam7` | UK Retail Digital Transformation | Closed | no | v1 |
+| `cam8` | EMEA MarTech Buyers | Closed | yes | v1, v2 |
 
 Each campaign also carries a `vendorGoals` map (`{ vendorId: number }`) specifying each vendor's individual lead target within the campaign. Used by `vendorStatsForCampaign()` to compute per-vendor progress.
+
+#### `abmList` — per-campaign ABM company assignments
+
+Campaigns with `abm: 'yes'` carry an `abmList` object keyed by vendor name. Each key holds the exact list of companies the DPO Admin has assigned to that vendor for the campaign. This is the authoritative source for the Company dropdown in the Add Lead modal.
+
+```js
+abmList: {
+  'DataReach':  ['Novatera Group', 'Harmon Inc', 'Veltrix Ltd'],
+  'LeadForge':  ['Celtic Analytics', 'Brindlewood Co'],
+  'ProspectIQ': ['Berlinium GmbH', 'Rhine Digital', 'Hanseatic Tech'],
+}
+```
+
+- The lists must mirror what the DPO Admin entered in `vendorScopes[].scope` — they are the ground truth for scope enforcement.
+- `abmList` is a separate field from `vendorScopes` so it is not overwritten when the campaign edit modal saves a new `vendorScopes` array.
+- Non-ABM campaigns (`abm: 'no'`) do not have this field; the Company field in the Add Lead modal renders as a free-text input for those campaigns.
 
 ### `S1_LEADS`
 24 pre-seeded leads across `cam1`, `cam2`, and `cam3`. Used exclusively in the S1 tab. Each lead carries a `campaign` field for filtering, plus all 32 Remote Sheet fields: `dpoId`, `firstName`, `lastName`, `company`, `email`, `jobTitle`, `tel`, `country`, `city`, `state`, `postalCode`, `address`, `compSize`, `industry`, `revenue`, `guide`, `optin`, `cq1`, `cq2`, `cq3`, `prooflink`, `prospectProoflink`, `recordingLink`, `reworkedLeads`, `reworkStatus`, `reworkRejReason`, `vendor`, `status`, `ccStatus`, `rejReason`, `submDate`, `notes`.
@@ -151,19 +167,49 @@ Inline badge on the Company cell: `X/Y slots` in green (slots available), amber 
 | Rejected | `status === 'rejected'` (non-vendor only) |
 | Slots Left | Sum of remaining slots across visible companies |
 
-### Adding leads — inline row (Airtable-style)
+### Adding leads — Add Lead modal
 
-Clicking **+ Add Lead** (top-right of the table section) inserts an editable row directly at the bottom of the table body. Every column has an input or select field. CQ1/CQ2/CQ3 inputs use the campaign's question text as placeholder.
+Clicking **+ Add Lead** (top-right of the table section) or the **Add Row** trigger at the bottom of the table opens the Add Lead modal (`#modal-add-lead`). Opened by `openAddLeadModal()`.
 
-A **Save row / Cancel** bar appears fixed to the bottom-right of the viewport (`position: fixed; bottom: 24px; right: 32px`) — always visible regardless of how far the wide table has been scrolled horizontally.
+#### Company field — ABM vs free-text
 
-On save:
-1. Validates First Name, Last Name, Company, Email (required)
+The Company field switches between two modes depending on the active campaign:
+
+| Campaign `abm` | Role | Company field |
+|---|---|---|
+| `yes` | Vendor | `<select>` — only that vendor's assigned companies from `cam.abmList[vendorName]` |
+| `yes` | Admin / CST | `<select>` — all companies across all vendors (`Object.values(cam.abmList).flat()`) |
+| `no` | Any | `<input type="text">` — free entry |
+
+Both elements (`#al-company` input and `#al-company-select` select) exist in the DOM at all times; `openAddLeadModal()` shows one and hides the other based on `cam.abm`. `submitAddLead()` reads from whichever is currently visible.
+
+Logic in `openAddLeadModal()`:
+1. Find active campaign via `STATE.currentCampaign`
+2. If `cam.abm === 'yes'` and `cam.abmList` exists:
+   - Vendor role → resolve vendor name from `STATE.currentVendor` → `cam.abmList[vendorName]`
+   - Admin / CST → `Object.values(cam.abmList).flat()`
+3. If campaign has no `abmList` → fallback to `COMPANIES` filtered by vendor
+
+#### Other fields
+
+CQ1/CQ2/CQ3 labels and visibility are set from the campaign's `qualQuestions` array (or parsed from `script`). Hidden if the campaign has no questions for that slot.
+
+On submit (`submitAddLead()`):
+1. Validates First Name, Last Name, Email, Company (required)
 2. Checks for duplicate email in `S1_LEADS`
-3. Pushes new lead object with all 32 fields; increments `S1_SLOTS` if company matched
+3. Pushes new lead object; increments `S1_SLOTS` if company matched in `COMPANIES`
 4. Calls `render()` — no page reload
 
-On cancel: edit row and the fixed bar are both removed.
+### Filter bar (Admin / CST only)
+
+Two dropdown filters above the leads table, hidden from Vendor role.
+
+| Filter | Source | Behaviour |
+|---|---|---|
+| **DPO ID** | Distinct non-empty `dpoId` values from leads in the current campaign + vendor scope | Filters table to leads matching the selected DPO ID |
+| **Client ID** | All `clientId` values across non-Closed campaigns | Filters table to leads whose campaign matches the selected client |
+
+Both default to **All** (no filter). State is held in `S1_FILTER_DPO` and `S1_FILTER_CID`. Both reset to empty when switching campaigns (`switchCampaign()`). A results count appears when either filter is active.
 
 ---
 

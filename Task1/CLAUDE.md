@@ -44,6 +44,14 @@ The dashboard has three role modes (toggled via the top bar):
 - Admin also sees 4 summary stat cards above the table (Vendors, Total Leads, Accepted, In Review)
 - CST sees a scope note callout in place of admin-only columns
 
+## Campaign Selector (Leads Tab)
+The campaign switcher in `renderS1()` is a custom dropdown (not pill buttons):
+- Trigger button: shows active campaign name + status dot + chevron, min-width 220px, white card with border
+- Dropdown menu (`#cam-dd-menu`): absolute-positioned below trigger, lists each campaign with status dot, name, client name, and a status badge pill
+- Active campaign is highlighted with blue left border + `#f0f7ff` tint
+- Click-outside closes via the global `document.addEventListener('click', ...)` handler at bottom of file
+- Secondary metadata (client + deadline) shown inline next to the trigger, not inside it
+
 ## Style Reference
 The existing `Scenario_1_Decision_Tree.html` uses:
 - System font stack (-apple-system, BlinkMacSystemFont, 'Segoe UI')
