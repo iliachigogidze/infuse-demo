@@ -1926,6 +1926,11 @@ select.form-input { appearance: none; -webkit-appearance: none; background-image
           <input id="al-company" class="form-input" placeholder="Acme Corp" style="width:100%">
           <select id="al-company-select" class="form-input" style="width:100%;display:none"></select>
         </div>
+        <div id="al-domain-wrap">
+          <label style="font-size:11px;font-weight:700;color:#2d3436;text-transform:uppercase;letter-spacing:0.05em;display:block;margin-bottom:6px">Company Domain</label>
+          <input id="al-domain" class="form-input" placeholder="e.g. acme.com" style="width:100%" oninput="this.value = normalizeDomain(this.value); _updateDomainHint()">
+          <div id="al-domain-hint" style="margin-top:5px;font-size:11px;color:#636e72"></div>
+        </div>
         <div>
           <label style="font-size:11px;font-weight:700;color:#2d3436;text-transform:uppercase;letter-spacing:0.05em;display:block;margin-bottom:6px">Job Title</label>
           <input id="al-title" class="form-input" placeholder="VP Engineering" style="width:100%">
@@ -2359,6 +2364,12 @@ select.form-input { appearance: none; -webkit-appearance: none; background-image
         <div class="form-group">
           <label>Company <span class="req">*</span></label>
           <select id="s1-lead-company"></select>
+        </div>
+      </div>
+      <div class="form-row single" id="s1-domain-wrap" style="margin-bottom:12px">
+        <div class="form-group">
+          <label>Company Domain</label>
+          <input type="text" id="s1-lead-domain" placeholder="e.g. acme.com" oninput="this.value = normalizeDomain(this.value)" />
         </div>
       </div>
       <!-- Contact -->
@@ -4400,6 +4411,7 @@ function renderS1() {
         <td><strong>${l.firstName}</strong></td>
         <td><strong>${l.lastName}</strong></td>
         <td>${l.company}${slotBadge(l.company)}</td>
+        <td style="font-size:11px;color:#636e72;font-family:monospace">${l.domain||'—'}</td>
         <td style="color:#636e72">${l.email}</td>
         <td style="color:#636e72">${l.jobTitle}</td>
         <td>${l.tel}</td>
@@ -4450,6 +4462,7 @@ function renderS1() {
                 <th style="background:#6d9eeb;color:#fff">First Name</th>
                 <th style="background:#6d9eeb;color:#fff">Last Name</th>
                 <th style="background:#6d9eeb;color:#fff">Company</th>
+                <th style="background:#6d9eeb;color:#fff">Domain</th>
                 <th style="background:#6d9eeb;color:#fff">Email</th>
                 <th style="background:#6d9eeb;color:#fff">Job Title</th>
                 <th style="background:#6d9eeb;color:#fff">Telephone</th>
@@ -4471,8 +4484,8 @@ function renderS1() {
                 <th style="background:#93c47d;color:#274e13">Comments</th>
               </tr>
             </thead>
-            <tbody id="s1-remote-tbody">${rows || `<tr><td colspan="${isVendor?32:33}" style="text-align:center;color:#b2bec3;padding:30px">No leads yet — click "+ Add Lead" to submit your first lead.</td></tr>`}
-              ${(role === 'vendor' || role === 'admin') ? `<tr class="add-row-trigger" onclick="openAddLeadModal()"><td colspan="${isVendor?32:33}"><span class="add-row-trigger-btn"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg> Add Row</span></td></tr>` : ''}
+            <tbody id="s1-remote-tbody">${rows || `<tr><td colspan="${isVendor?33:34}" style="text-align:center;color:#b2bec3;padding:30px">No leads yet — click "+ Add Lead" to submit your first lead.</td></tr>`}
+              ${(role === 'vendor' || role === 'admin') ? `<tr class="add-row-trigger" onclick="openAddLeadModal()"><td colspan="${isVendor?33:34}"><span class="add-row-trigger-btn"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg> Add Row</span></td></tr>` : ''}
             </tbody>
           </table>
         </div>
@@ -4490,6 +4503,7 @@ function renderS1() {
         <td>${vendorChip(l.vendor)}</td>
         <td><strong>${l.firstName} ${l.lastName}</strong><br><span style="font-size:11px;color:#b2bec3">${l.email}</span></td>
         <td>${l.company}${slotBadge(l.company)}</td>
+        <td style="font-size:11px;color:#636e72;font-family:monospace">${l.domain||'—'}</td>
         <td style="color:#636e72">${l.jobTitle}</td>
         <td>${l.country}</td>
         <td><span class="badge ${statusMap[l.status]||'badge-new'}">${l.status}</span></td>
@@ -4518,6 +4532,7 @@ function renderS1() {
                 <th style="background:#6d9eeb;color:#fff">Vendor</th>
                 <th style="background:#6d9eeb;color:#fff">Contact</th>
                 <th style="background:#6d9eeb;color:#fff">Company</th>
+                <th style="background:#6d9eeb;color:#fff">Domain</th>
                 <th style="background:#6d9eeb;color:#fff">Job Title</th>
                 <th style="background:#6d9eeb;color:#fff">Country</th>
                 <th style="background:#8e7cc3;color:#fff">Status</th>
@@ -4529,7 +4544,7 @@ function renderS1() {
               </tr>
             </thead>
             <tbody id="s1-master-tbody">${rows}
-              ${role === 'admin' ? `<tr class="add-row-trigger" onclick="s1InlineAddRow('s1-master-tbody',null,'master')"><td colspan="13"><span class="add-row-trigger-btn"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg> Add Row</span></td></tr>` : ''}
+              ${role === 'admin' ? `<tr class="add-row-trigger" onclick="s1InlineAddRow('s1-master-tbody',null,'master')"><td colspan="14"><span class="add-row-trigger-btn"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg> Add Row</span></td></tr>` : ''}
             </tbody>
           </table>
         </div>
@@ -4569,7 +4584,7 @@ function s1OpenLeadModal(companyId) {
     }
   }
 
-  ['s1-lead-first','s1-lead-last','s1-lead-title','s1-lead-email','s1-lead-phone','s1-lead-linkedin','s1-lead-address','s1-lead-city','s1-lead-state','s1-lead-postal','s1-lead-compsize','s1-lead-revenue','s1-lead-industry','s1-lead-guide','s1-lead-optin','s1-lead-cq1','s1-lead-cq2','s1-lead-cq3','s1-lead-notes']
+  ['s1-lead-first','s1-lead-last','s1-lead-title','s1-lead-email','s1-lead-phone','s1-lead-linkedin','s1-lead-address','s1-lead-city','s1-lead-state','s1-lead-postal','s1-lead-compsize','s1-lead-revenue','s1-lead-industry','s1-lead-guide','s1-lead-optin','s1-lead-cq1','s1-lead-cq2','s1-lead-cq3','s1-lead-notes','s1-lead-domain']
     .forEach(id => { const el = document.getElementById(id); if (el) el.value = el.tagName==='SELECT' ? el.options[0]?.value : ''; });
   document.getElementById('s1-lead-validation').innerHTML = '';
   document.getElementById('modal-s1-lead').classList.add('open');
@@ -4591,6 +4606,7 @@ function s1LeadSubmit() {
   const email   = document.getElementById('s1-lead-email').value.trim();
   const coId    = document.getElementById('s1-lead-company').value;
   const valEl   = document.getElementById('s1-lead-validation');
+  const domain  = normalizeDomain(document.getElementById('s1-lead-domain')?.value || '');
 
   if (!first || !last || !title || !email || !coId) {
     valEl.innerHTML = `<div class="callout warn" style="margin:0"><strong>Required:</strong> Company, first name, last name, job title, and email must be filled in.</div>`;
@@ -4598,10 +4614,25 @@ function s1LeadSubmit() {
   }
 
   const company = COMPANIES.find(c => c.id === coId);
-  const s = S1_SLOTS[coId];
-  if (!s || s.used >= s.slots) {
-    valEl.innerHTML = `<div class="callout danger" style="margin:0"><strong>Blocked:</strong> No slots remaining for this company.</div>`;
-    return;
+  const activeCamForSlot = CAMPAIGNS.find(c => c.id === STATE.currentCampaign) || {};
+  if (activeCamForSlot.abm === 'yes') {
+    const s = S1_SLOTS[coId];
+    if (!s || s.used >= s.slots) {
+      valEl.innerHTML = `<div class="callout danger" style="margin:0"><strong>Blocked:</strong> No slots remaining for this company.</div>`;
+      return;
+    }
+  }
+
+  // Non-ABM domain-based company limit check
+  const activeCam = CAMPAIGNS.find(c => c.id === STATE.currentCampaign) || {};
+  if (activeCam.abm !== 'yes' && domain && activeCam.companyLimit) {
+    const domainLeads = S1_LEADS.filter(l =>
+      l.campaign === STATE.currentCampaign && l.domain && normalizeDomain(l.domain) === domain
+    );
+    if (domainLeads.length >= activeCam.companyLimit) {
+      valEl.innerHTML = `<div class="callout danger" style="margin:0"><strong>Blocked — Company limit reached:</strong> ${domain} already has ${domainLeads.length} lead${domainLeads.length !== 1 ? 's' : ''} in this campaign (limit: ${activeCam.companyLimit}). No further leads can be accepted for this account.</div>`;
+      return;
+    }
   }
 
   // Duplicate check on email
@@ -4618,6 +4649,7 @@ function s1LeadSubmit() {
     firstName: first,
     lastName:  last,
     company:   company ? company.name : coId,
+    domain:    domain,
     email:     email,
     jobTitle:  title,
     tel:       document.getElementById('s1-lead-phone').value.trim(),
@@ -4645,7 +4677,10 @@ function s1LeadSubmit() {
   };
   S1_LEADS.push(newLead);
 
-  s.used++;
+  if (activeCamForSlot.abm === 'yes') {
+    const s = S1_SLOTS[coId];
+    if (s) s.used++;
+  }
   CAMPAIGNS[0].delivered = Math.min(CAMPAIGNS[0].delivered + 1, CAMPAIGNS[0].goal);
 
   closeS1LeadModal();
@@ -6977,6 +7012,43 @@ function _refreshAddLeadCampaignFields(camId) {
   } else if (compInput) {
     compInput.value = '';
   }
+
+  // Domain field: only shown for non-ABM campaigns
+  const domainWrap = document.getElementById('al-domain-wrap');
+  if (domainWrap) domainWrap.style.display = isAbm ? 'none' : '';
+  const domainInput = document.getElementById('al-domain');
+  if (domainInput && isAbm) domainInput.value = '';
+}
+
+function _updateDomainHint() {
+  const hintEl = document.getElementById('al-domain-hint');
+  if (!hintEl) return;
+  const camSelEl = document.getElementById('al-campaign');
+  const selectedCamId = (camSelEl && camSelEl.value) ? camSelEl.value : STATE.currentCampaign;
+  const cam = CAMPAIGNS.find(c => c.id === selectedCamId) || {};
+  const domain = normalizeDomain(document.getElementById('al-domain')?.value || '');
+  if (!domain || cam.abm === 'yes' || !cam.companyLimit) {
+    hintEl.textContent = cam.companyLimit ? `Limit: ${cam.companyLimit} lead${cam.companyLimit !== 1 ? 's' : ''} per company domain` : '';
+    hintEl.style.color = '#636e72';
+    return;
+  }
+  const used = S1_LEADS.filter(l =>
+    l.campaign === selectedCamId && l.domain && normalizeDomain(l.domain) === domain
+  ).length;
+  const remaining = cam.companyLimit - used;
+  if (remaining <= 0) {
+    hintEl.innerHTML = `<span style="color:#cc0000;font-weight:700">&#9888; Limit reached: ${used}/${cam.companyLimit} leads used for this domain</span>`;
+  } else {
+    hintEl.innerHTML = `<span style="color:${remaining === 1 ? '#e17055' : '#00b894'}">&#10003; ${used}/${cam.companyLimit} leads used &mdash; ${remaining} slot${remaining !== 1 ? 's' : ''} remaining</span>`;
+  }
+}
+
+function normalizeDomain(raw) {
+  if (!raw) return '';
+  return raw.trim().toLowerCase()
+    .replace(/^https?:\/\//i, '')
+    .replace(/^www\./i, '')
+    .split('/')[0];
 }
 
 function openAddLeadModal() {
@@ -6990,14 +7062,14 @@ function openAddLeadModal() {
       `<option value="${c.id}">${c.name}${c.client ? ' — ' + c.client : ''}</option>`
     ).join('');
     camSel.value = STATE.currentCampaign || (visibleCampaigns[0] && visibleCampaigns[0].id) || '';
-    camSel.onchange = () => _refreshAddLeadCampaignFields(camSel.value);
+    camSel.onchange = () => { _refreshAddLeadCampaignFields(camSel.value); _updateDomainHint(); };
   }
 
   // Initialise campaign-dependent fields for the pre-selected campaign
   _refreshAddLeadCampaignFields(camSel ? camSel.value : STATE.currentCampaign);
 
   // Clear contact inputs
-  ['al-first','al-last','al-email','al-company','al-title','al-tel','al-country','al-compsize','al-cq1','al-cq2','al-cq3'].forEach(id => {
+  ['al-first','al-last','al-email','al-company','al-domain','al-title','al-tel','al-country','al-compsize','al-cq1','al-cq2','al-cq3'].forEach(id => {
     const el = document.getElementById(id);
     if (el) el.value = '';
   });
@@ -7005,6 +7077,8 @@ function openAddLeadModal() {
   if (optinEl) optinEl.value = 'Yes';
   const errEl = document.getElementById('add-lead-err');
   if (errEl) { errEl.style.display = 'none'; errEl.textContent = ''; }
+
+  _updateDomainHint();
 
   const modal = document.getElementById('modal-add-lead');
   if (modal) {
@@ -7031,6 +7105,7 @@ function submitAddLead() {
   const email     = get('al-email');
   const compSel   = document.getElementById('al-company-select');
   const company   = (compSel && compSel.style.display !== 'none') ? compSel.value.trim() : get('al-company');
+  const domain    = normalizeDomain(document.getElementById('al-domain')?.value || '');
 
   if (!firstName || !lastName || !email || !company) {
     if (errEl) { errEl.textContent = 'First name, last name, email and company are required.'; errEl.style.display = 'block'; }
@@ -7054,6 +7129,21 @@ function submitAddLead() {
   const camSelEl = document.getElementById('al-campaign');
   const selectedCamId = (camSelEl && camSelEl.value) ? camSelEl.value : STATE.currentCampaign;
 
+  // Domain-based company limit for non-ABM campaigns
+  const camForDomain = CAMPAIGNS.find(c => c.id === selectedCamId) || {};
+  if (camForDomain.abm !== 'yes' && domain && camForDomain.companyLimit) {
+    const domainLeads = S1_LEADS.filter(l =>
+      l.campaign === selectedCamId && l.domain && normalizeDomain(l.domain) === domain
+    );
+    if (domainLeads.length >= camForDomain.companyLimit) {
+      if (errEl) {
+        errEl.textContent = `Company limit reached: ${domain} already has ${domainLeads.length} lead${domainLeads.length !== 1 ? 's' : ''} in this campaign (limit: ${camForDomain.companyLimit}). No further leads can be accepted for this account.`;
+        errEl.style.display = 'block';
+      }
+      return;
+    }
+  }
+
   const today = new Date().toISOString().slice(0, 10);
   const coMatch = COMPANIES.find(c => c.name.toLowerCase() === company.toLowerCase());
   const cam = CAMPAIGNS.find(c => c.id === selectedCamId) || {};
@@ -7062,6 +7152,7 @@ function submitAddLead() {
     id: 'sl' + (S1_LEADS.length + 1),
     dpoId: '', firstName, lastName,
     company: coMatch ? coMatch.name : company,
+    domain: domain,
     email,
     jobTitle:  get('al-title'),
     tel:       get('al-tel'),
