@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>DPO Platform - To-Be Post-MVP Process Diagram</title>
+<style>
+  body { font-family: Arial, sans-serif; margin: 20px; background: #fff; }
+  h1 { text-align: center; color: #1a237e; font-size: 22px; margin-bottom: 4px; }
+  h2 { text-align: center; color: #555; font-size: 14px; font-weight: normal; margin-top: 0; }
+  .legend { display: flex; gap: 20px; justify-content: center; margin: 16px 0; flex-wrap: wrap; font-size: 13px; }
+  .legend-item { display: flex; align-items: center; gap: 6px; }
+  .legend-box { width: 16px; height: 16px; border-radius: 3px; border: 1px solid #999; }
+  .mermaid { display: flex; justify-content: center; }
+  @media print { body { margin: 10px; } }
+</style>
+</head>
+<body>
+<h1>DPO Platform - To-Be Post-MVP Process</h1>
+<h2>Enhanced State - Focus: Analytics, Dashboards & Reporting</h2>
+
+<div class="legend">
+  <div class="legend-item"><div class="legend-box" style="background:#e3f2fd"></div> DPO Admin / CC</div>
+  <div class="legend-item"><div class="legend-box" style="background:#e8f5e9"></div> Vendor (via Portal)</div>
+  <div class="legend-item"><div class="legend-box" style="background:#e8eaf6"></div> DPO Platform (MVP Foundation)</div>
+  <div class="legend-item"><div class="legend-box" style="background:#fff8e1"></div> Post-MVP: Analytics & Reporting</div>
+  <div class="legend-item"><div class="legend-box" style="background:#fce4ec"></div> Post-MVP: Workflow Improvement</div>
+</div>
+
+<div class="mermaid">
+flowchart TD
+    classDef user fill:#e3f2fd,stroke:#1565c0,color:#000
+    classDef vendor fill:#e8f5e9,stroke:#2e7d32,color:#000
+    classDef platform fill:#e8eaf6,stroke:#283593,color:#000
+    classDef analytics fill:#fff8e1,stroke:#f57f17,stroke-width:2px,color:#000
+    classDef workflow fill:#fce4ec,stroke:#c62828,color:#000
+
+    %% MVP Foundation (abbreviated)
+    S1["<b>Campaign Initiation</b><br/>(MVP: Registry integration, single-form creation)"]:::platform
+    S1 --> S2["<b>Vendor Assignment</b><br/>(MVP: Platform-managed)"]:::platform
+    S2 --> S3["<b>Vendor Lead Upload</b><br/>(MVP: Validated upload via Portal)"]:::vendor
+    S3 --> S4["<b>Automated Lead Transfer to MainDB</b><br/>(MVP: POST /api/lead-upload/dpo)"]:::platform
+    S4 --> S5["<b>Automated Status Collection</b><br/>(MVP: MainDB + LV/LT integration)"]:::platform
+
+    S5 --> S5d{"Lead Status"}:::platform
+    S5d --> |"Accepted"| S6a["Lead Accepted"]:::platform
+    S5d --> |"Pending"| S5
+    S5d --> |"Rejected"| S6rej["Rejection with reason<br/>(16 categories)"]:::platform
+
+    %% Post-MVP: Rework Workflow
+    S6rej --> S6r["<b>POST-MVP: Structured Rework Workflow</b><br/>Vendor submits dispute via portal<br/>DPO Admin reviews in queue<br/>Resolution logged with full history"]:::workflow
+    S6r --> S6rd{"Rework Decision"}:::workflow
+    S6rd --> |"Accepted"| S6a
+    S6rd --> |"Final Reject"| S6fr["Lead permanently rejected"]:::platform
+    S6rd --> |"Returned to vendor"| S3
+
+    %% MVP Tracking
+    S6a --> S7["<b>Campaign Tracking & Delivery</b><br/>(MVP: Real-time dashboards)"]:::platform
+    S6fr --> S7
+    S7 --> |"Leads delivered to client"| END(["Campaign Complete"])
+
+    %% Post-MVP: Analytics Layer (the main focus)
+    S7 --> S7a["<b>POST-MVP: Rejection Analytics Dashboard</b><br/>Breakdown by reason, vendor, GEO, time period<br/>Trend analysis with drill-down filters<br/>Root-cause identification<br/>Exportable charts and data"]:::analytics
+
+    S7 --> S7v["<b>POST-MVP: Vendor Performance Scoring</b><br/>Composite score: acceptance rate + quality + timeliness<br/>Vendor leaderboard and ranking<br/>Performance alerts for underperforming vendors<br/>Data-driven vendor allocation recommendations"]:::analytics
+
+    S7 --> S7e["<b>POST-MVP: Executive Dashboard</b><br/>Pipeline health indicators<br/>Campaign forecasting and pacing trends<br/>Goal attainment tracking across all campaigns<br/>Cross-campaign comparison views"]:::analytics
+
+    S7 --> S7r["<b>POST-MVP: Automated Reporting</b><br/>Scheduled monthly report generation<br/>Email distribution to stakeholders<br/>Ad-hoc report builder with custom filters<br/>CSV/Excel export capability"]:::analytics
+
+    S7a --> S7h["<b>POST-MVP: Historical Data Migration</b><br/>Import past campaign data from Google Sheets<br/>Analytics baseline for trend comparison<br/>Full historical reporting capability"]:::analytics
+    S7h --> S7a
+    S7h --> S7v
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mermaid/10.9.0/mermaid.min.js"></script>
+<script>
+mermaid.initialize({
+  startOnLoad: true,
+  theme: 'base',
+  themeVariables: { fontSize: '13px', fontFamily: 'Arial' },
+  flowchart: { useMaxWidth: true, htmlLabels: true, curve: 'basis', padding: 15, nodeSpacing: 30, rankSpacing: 40 }
+});
+</script>
+</body>
+</html>

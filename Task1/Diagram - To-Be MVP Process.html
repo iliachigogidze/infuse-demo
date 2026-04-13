@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>DPO Platform - To-Be MVP Process Diagram</title>
+<style>
+  body { font-family: Arial, sans-serif; margin: 20px; background: #fff; }
+  h1 { text-align: center; color: #1a237e; font-size: 22px; margin-bottom: 4px; }
+  h2 { text-align: center; color: #555; font-size: 14px; font-weight: normal; margin-top: 0; }
+  .legend { display: flex; gap: 20px; justify-content: center; margin: 16px 0; flex-wrap: wrap; font-size: 13px; }
+  .legend-item { display: flex; align-items: center; gap: 6px; }
+  .legend-box { width: 16px; height: 16px; border-radius: 3px; border: 1px solid #999; }
+  .mermaid { display: flex; justify-content: center; }
+  @media print { body { margin: 10px; } }
+</style>
+</head>
+<body>
+<h1>DPO Platform - To-Be MVP Process</h1>
+<h2>Improved State (6 Stages) - Manual Bottlenecks Eliminated</h2>
+
+<div class="legend">
+  <div class="legend-item"><div class="legend-box" style="background:#e3f2fd"></div> DPO Admin / CC</div>
+  <div class="legend-item"><div class="legend-box" style="background:#e8f5e9"></div> Vendor (via Portal)</div>
+  <div class="legend-item"><div class="legend-box" style="background:#e8eaf6"></div> DPO Platform (Automated)</div>
+  <div class="legend-item"><div class="legend-box" style="background:#f3e5f5"></div> External System (MainDB / LV / LT)</div>
+  <div class="legend-item"><div class="legend-box" style="background:#c8e6c9; border:2px solid #2e7d32"></div> Improvement vs. As-Is</div>
+</div>
+
+<div class="mermaid">
+flowchart TD
+    classDef user fill:#e3f2fd,stroke:#1565c0,color:#000
+    classDef vendor fill:#e8f5e9,stroke:#2e7d32,color:#000
+    classDef platform fill:#e8eaf6,stroke:#283593,color:#000
+    classDef external fill:#f3e5f5,stroke:#6a1b9a,color:#000
+    classDef improvement fill:#c8e6c9,stroke:#2e7d32,stroke-width:2px,color:#1b5e20
+
+    S1["<b>Stage 1: Automated Campaign Initiation</b><br/>DPO Admin creates campaign in Platform<br/>Platform pulls Client/CID from Registry API<br/>Enters: goal, GEO, criteria, CQs, deadline, ABM list"]:::user
+    S1i["REPLACED: Word doc + email + manual sheet entry<br/>NOW: Single form, auto-populates Campaign Tracking"]:::improvement
+    S1 --- S1i
+    S1 --> |"Campaign created in Platform<br/>Campaign Tracking auto-populated"| S2
+
+    S2["<b>Stage 2: Vendor Assignment via Platform</b><br/>DPO Admin assigns vendors, allocates goal portions<br/>Requirements shared through Platform<br/>Phone script approval workflow built-in<br/>Vendors see only their assigned campaigns"]:::user
+    S2i["REPLACED: Manual Remote sheet creation per vendor<br/>NOW: Platform manages vendor access + requirements"]:::improvement
+    S2 --- S2i
+    S2 --> |"Vendors notified, requirements visible"| S3
+
+    S3["<b>Stage 3: Vendor Lead Upload via Platform</b><br/>Vendors upload leads through Portal<br/>Platform validates at upload time<br/>(required fields, format, criteria matching)<br/>DPO ID + submission date auto-assigned"]:::vendor
+    S3i["REPLACED: Google Sheets with no validation<br/>NOW: Structured upload with real-time validation"]:::improvement
+    S3 --- S3i
+    S3 --> |"Validated leads in Platform"| S4
+
+    S4["<b>Stage 4: Automatic Lead Transfer to MainDB</b><br/>Platform sends leads to MainDB via<br/>POST /api/lead-upload/dpo<br/>Polls GET /dpo-status?uuid= for results<br/>Maps 14 MainDB statuses: PENDING / INIT REJECT / REJECTED"]:::platform
+    S4e["MainDB runs automated checks<br/>(duplicate, compliance, email validity)"]:::external
+    S4 --> S4e
+    S4i["IMPROVED: Replaces GAS script + manual CC copy<br/>NOW: Platform handles push automatically"]:::improvement
+    S4 --- S4i
+    S4e --> |"Initial statuses in Platform"| S4d
+
+    S4d{"MainDB Result"}:::platform
+    S4d --> |"PENDING"| S5
+    S4d --> |"INIT REJECT / REJECTED"| S4r["Lead marked rejected<br/>Reason displayed to vendor"]:::platform
+
+    S5["<b>Stage 5: Automated Status Collection</b><br/>Platform calls LV/LT via /api/contactInfo-by-mails<br/>Fallback: MainDB getDpoStatusByCID or cs-canada-stats<br/>Maps 600+ status combos → 4 final statuses<br/>Audit trail for every status change"]:::platform
+    S5e["LV: Manual verification<br/>LT: Automated technical checks"]:::external
+    S5 --> S5e
+    S5e --> |"ov_status + pv_status"| S5m
+    S5m["Platform maps to:<br/>accepted / rejected / pending / returned"]:::platform
+    S5i["REPLACED: Manually-triggered status collection<br/>RESOLVED: CC status overwrite conflict<br/>NOW: Platform = single source of truth with audit log"]:::improvement
+    S5m --- S5i
+    S5m --> |"Final statuses in Platform"| S6
+
+    S6["<b>Stage 6: Campaign Tracking & Reporting</b><br/>Real-time dashboards replace Google Sheets<br/>Campaign Tracking + Delivery Tracking + Stats<br/>Pacing, % metrics, unallocated auto-calculated<br/>Automated notifications for all events"]:::platform
+    S6i["REPLACED: Formula-based Google Sheets + manual scripts<br/>NOW: Live dashboards, event-driven notifications"]:::improvement
+    S6 --- S6i
+    S6 --> |"Vendors see statuses in Portal"| S6v["Vendor Portal: lead statuses,<br/>acceptance rates, campaign progress"]:::vendor
+    S6 --> |"Leads delivered"| END(["Campaign Complete"])
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mermaid/10.9.0/mermaid.min.js"></script>
+<script>
+mermaid.initialize({
+  startOnLoad: true,
+  theme: 'base',
+  themeVariables: { fontSize: '13px', fontFamily: 'Arial' },
+  flowchart: { useMaxWidth: true, htmlLabels: true, curve: 'basis', padding: 15, nodeSpacing: 30, rankSpacing: 40 }
+});
+</script>
+</body>
+</html>

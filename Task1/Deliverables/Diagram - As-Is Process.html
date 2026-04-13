@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>DPO Platform - As-Is Process Diagram</title>
+<style>
+  body { font-family: Arial, sans-serif; margin: 20px; background: #fff; }
+  h1 { text-align: center; color: #1a237e; font-size: 22px; margin-bottom: 4px; }
+  h2 { text-align: center; color: #555; font-size: 14px; font-weight: normal; margin-top: 0; }
+  .legend { display: flex; gap: 20px; justify-content: center; margin: 16px 0; flex-wrap: wrap; font-size: 13px; }
+  .legend-item { display: flex; align-items: center; gap: 6px; }
+  .legend-box { width: 16px; height: 16px; border-radius: 3px; border: 1px solid #999; }
+  .mermaid { display: flex; justify-content: center; }
+  @media print { body { margin: 10px; } }
+</style>
+</head>
+<body>
+<h1>DPO Platform - As-Is Business Process</h1>
+<h2>Current State (10 Stages) - Flowchart / BPMN Notation</h2>
+
+<div class="legend">
+  <div class="legend-item"><div class="legend-box" style="background:#e3f2fd"></div> CST / CC</div>
+  <div class="legend-item"><div class="legend-box" style="background:#fff3e0"></div> DPO Admin</div>
+  <div class="legend-item"><div class="legend-box" style="background:#e8f5e9"></div> Vendor</div>
+  <div class="legend-item"><div class="legend-box" style="background:#f3e5f5"></div> System / Script</div>
+  <div class="legend-item"><div class="legend-box" style="background:#fce4ec"></div> LV / QA Team</div>
+  <div class="legend-item"><div class="legend-box" style="background:#fff; border:2px solid red"></div> Manual Pain Point</div>
+</div>
+
+<div class="mermaid">
+flowchart TD
+    classDef cst fill:#e3f2fd,stroke:#1565c0,color:#000
+    classDef dpo fill:#fff3e0,stroke:#e65100,color:#000
+    classDef vendor fill:#e8f5e9,stroke:#2e7d32,color:#000
+    classDef system fill:#f3e5f5,stroke:#6a1b9a,color:#000
+    classDef lvqa fill:#fce4ec,stroke:#c62828,color:#000
+    classDef pain fill:#fff,stroke:#d32f2f,stroke-width:3px,color:#d32f2f,stroke-dasharray:5 5
+
+    S1["<b>Stage 1: Client & Campaign Creation</b><br/>CST creates client + campaign in INFUSE LG<br/>CID assigned, synced to Registry"]:::cst
+    S1 --> |"Client/CID in Registry"| S2
+
+    S2["<b>Stage 2: Campaign Initialization</b><br/>CC creates campaign_init Word doc<br/>(goal, GEO, criteria, CQs, ABM list)<br/>Emails to DPO Admin"]:::cst
+    P2["MANUAL: Word doc + email"]:::pain
+    S2 --- P2
+    S2 --> |"Init doc sent"| S3
+
+    S3["<b>Stage 3: Campaign Setup in Sheets</b><br/>DPO Admin enters data into Campaign Tracking tab<br/>Creates new Master sheet from template<br/>Configures Settings + Stats tabs"]:::dpo
+    P3["MANUAL: Data entry into multiple sheets"]:::pain
+    S3 --- P3
+    S3 --> |"Master sheet ready"| S4
+
+    S4["<b>Stage 4: Vendor Assignment</b><br/>DPO Admin allocates goals to vendors<br/>Creates Remote sheet per vendor<br/>Enters data in Delivery Tracking<br/>Sends requirements + gets phone script approved"]:::dpo
+    P4["MANUAL: 1 Remote sheet per vendor per campaign"]:::pain
+    S4 --- P4
+    S4 --> |"Vendors briefed, script approved"| S5
+
+    S5["<b>Stage 5: Lead Generation & Upload</b><br/>Vendors call leads, record conversations<br/>Upload leads to Remote sheet<br/>(name, email, title, CQs, recording, prooflink)"]:::vendor
+    S5 --> |"Auto-copy Remote → Master"| S5a
+    S5a["Script: leads copied to Master sheet"]:::system
+    P5["No real-time validation at upload"]:::pain
+    S5 --- P5
+    S5a --> |"Leads in Master sheet"| S6
+
+    S6["<b>Stage 6: Lead Transfer to MainDB</b><br/>GAS script on Master sheet runs every 1 min<br/>Checks for unprocessed leads, sends via<br/>POST /api/lead-upload/dpo, receives uuid<br/>Polls GET /dpo-status?uuid= for initial statuses"]:::system
+    S6m["CC may also manually copy leads to MainDB"]:::cst
+    P6["BIGGEST BOTTLENECK<br/>Manual transfer still common"]:::pain
+    S6 --- S6m
+    S6m --- P6
+    S6 --> |"Leads in MainDB"| S7
+
+    S7["<b>Stage 7: MainDB Initial Checks</b><br/>MainDB runs automated checks<br/>Returns: PENDING / INIT REJECT / REJECTED<br/>(14 specific statuses)"]:::system
+    S7 --> |"Statuses written to Master"| S7a
+    S7a["Script: CC status + CC Final status updated"]:::system
+    P7["CC status overwrite conflict:<br/>script overwrites manual CC corrections"]:::pain
+    S7a --- P7
+    S7a --> |"PENDING leads proceed"| S8
+
+    S8["<b>Stage 8: Lead Verification (LV/LT)</b><br/>LV: Manual check via LinkedIn, websites<br/>(ov_status: Y/N/Q/R variants)<br/>LT: Automated phone/domain/bounce checks<br/>(pv_status: confirmed/rejected/returned)"]:::lvqa
+    P8["600+ status combinations to map"]:::pain
+    S8 --- P8
+    S8 --> |"Final status: accepted/rejected/pending/returned"| S9
+
+    S9["<b>Stage 9: Status Updates & QA Review</b><br/>Admin/CC manually triggers status collection<br/>Script calls LVLT: POST /api/contactInfo-by-mails<br/>Fallback: MainDB getDpoStatusByCID or cs-canada-stats<br/>QA reviews call recordings manually"]:::lvqa
+    P9["MANUAL trigger required for status collection<br/>QA listens to recordings one by one"]:::pain
+    S9 --- P9
+    S9 --> |"Statuses visible to vendors"| S10
+
+    S10["<b>Stage 10: Rework & Final Delivery</b><br/>Vendors dispute rejections via sheet comments<br/>DPO Admin reviews rework requests<br/>Accepted leads delivered to client<br/>Stats aggregated: Master → All Stats → Tracking"]:::dpo
+    P10["MANUAL: Unstructured rework flow"]:::pain
+    S10 --- P10
+    S10 --> |"Leads delivered"| END
+    END(["Campaign Complete"])
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mermaid/10.9.0/mermaid.min.js"></script>
+<script>
+mermaid.initialize({
+  startOnLoad: true,
+  theme: 'base',
+  themeVariables: { fontSize: '13px', fontFamily: 'Arial' },
+  flowchart: { useMaxWidth: true, htmlLabels: true, curve: 'basis', padding: 15, nodeSpacing: 30, rankSpacing: 40 }
+});
+</script>
+</body>
+</html>

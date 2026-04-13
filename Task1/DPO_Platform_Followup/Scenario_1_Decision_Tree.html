@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Scenario 1 — Company Limit: Admin Decision Flow</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #f5f6fa; color: #2d3436; padding: 40px 20px; }
+  .container { max-width: 960px; margin: 0 auto; }
+
+  h1 { font-size: 22px; font-weight: 700; margin-bottom: 4px; color: #1a1a2e; }
+  .subtitle { font-size: 14px; color: #636e72; margin-bottom: 32px; line-height: 1.5; }
+
+  /* --- Section headers --- */
+  .section-header {
+    font-size: 13px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    color: #636e72;
+    margin-top: 36px;
+    margin-bottom: 14px;
+    padding-bottom: 6px;
+    border-bottom: 1px solid #dfe6e9;
+  }
+
+  /* --- Decision flow --- */
+  .flow { display: flex; flex-direction: column; gap: 0; }
+
+  .step { position: relative; padding-left: 60px; }
+
+  .step::before {
+    content: '';
+    position: absolute;
+    left: 23px;
+    top: 48px;
+    bottom: 0;
+    width: 2px;
+    background: #dfe6e9;
+  }
+  .step:last-child::before { display: none; }
+  .step.no-line::before { display: none; }
+
+  .step-num {
+    position: absolute;
+    left: 8px;
+    top: 14px;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    font-weight: 700;
+    color: white;
+    z-index: 1;
+  }
+
+  .card {
+    background: white;
+    border-radius: 12px;
+    padding: 20px 24px;
+    margin-bottom: 16px;
+    border-left: 4px solid;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+  }
+
+  .rule-1 .step-num { background: #0984e3; }
+  .rule-1 .card { border-left-color: #0984e3; }
+  .rule-2 .step-num { background: #00b894; }
+  .rule-2 .card { border-left-color: #00b894; }
+  .rule-3 .step-num { background: #6c5ce7; }
+  .rule-3 .card { border-left-color: #6c5ce7; }
+  .rule-4 .step-num { background: #e17055; }
+  .rule-4 .card { border-left-color: #e17055; }
+  .rule-5 .step-num { background: #fdcb6e; color: #2d3436; }
+  .rule-5 .card { border-left-color: #fdcb6e; }
+  .rule-6 .step-num { background: #d63031; }
+  .rule-6 .card { border-left-color: #d63031; }
+
+  .card h3 { font-size: 15px; font-weight: 700; margin-bottom: 4px; }
+  .card .condition { font-size: 13px; color: #636e72; margin-bottom: 10px; font-style: italic; }
+  .card .action { font-size: 14px; line-height: 1.6; margin-bottom: 10px; }
+  .card .vendor-pov { font-size: 13px; color: #2d3436; background: #f8f9fa; border-radius: 6px; padding: 10px 14px; line-height: 1.5; }
+  .card .vendor-pov strong { color: #636e72; font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; display: block; margin-bottom: 4px; }
+  .card .admin-action { font-size: 13px; color: #2d3436; background: #eef6ff; border-radius: 6px; padding: 10px 14px; line-height: 1.5; margin-bottom: 10px; }
+  .card .admin-action strong { color: #0984e3; font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; display: block; margin-bottom: 4px; }
+
+  .arrow-down {
+    display: flex;
+    align-items: center;
+    padding-left: 60px;
+    margin-top: -8px;
+    margin-bottom: 8px;
+  }
+  .arrow-down .label {
+    font-size: 12px;
+    color: #b2bec3;
+    font-weight: 600;
+    background: #f5f6fa;
+    padding: 2px 10px;
+    border-radius: 10px;
+  }
+
+  /* --- Layer banners --- */
+  .layer-banner {
+    border-radius: 12px;
+    padding: 16px 24px;
+    margin-top: 12px;
+    margin-bottom: 12px;
+  }
+  .layer-banner h4 { font-size: 14px; font-weight: 700; margin-bottom: 4px; }
+  .layer-banner p { font-size: 13px; line-height: 1.5; }
+
+  .layer-counter { background: #dfe6e9; }
+  .layer-counter h4 { color: #2d3436; }
+  .layer-counter p { color: #636e72; }
+
+  .layer-precheck { background: #ffeaa7; }
+  .layer-precheck h4 { color: #2d3436; }
+  .layer-precheck p { color: #636e72; }
+
+  /* --- Admin flow --- */
+  .admin-flow { margin-top: 16px; }
+
+  .admin-step {
+    display: flex;
+    gap: 16px;
+    margin-bottom: 16px;
+    align-items: flex-start;
+  }
+  .admin-step-num {
+    min-width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: #2d3436;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: 700;
+    margin-top: 2px;
+  }
+  .admin-step-content {
+    background: white;
+    border-radius: 10px;
+    padding: 14px 18px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+    flex: 1;
+  }
+  .admin-step-content h4 { font-size: 14px; font-weight: 700; margin-bottom: 4px; }
+  .admin-step-content p { font-size: 13px; color: #636e72; line-height: 1.5; }
+
+  /* --- Legend --- */
+  .legend {
+    margin-top: 28px;
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    color: #636e72;
+  }
+  .legend-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <h1>Scenario 1 — How to Split Vendors to Enforce Company Limit</h1>
+  <p class="subtitle">The DPO admin walks through the rules top to bottom and uses the first one where the condition is met. Splitting prevents vendor collisions — even campaigns without a company limit benefit from separation to avoid duplicate outreach.</p>
+
+  <!-- ==================== DECISION RULES ==================== -->
+  <div class="section-header">Decision Rules — Which Split to Use</div>
+
+  <div class="flow">
+
+    <!-- Rule 1 -->
+    <div class="step rule-1">
+      <div class="step-num">1</div>
+      <div class="card">
+        <h3>Split by ABM List</h3>
+        <div class="condition">IF campaign has an ABM list</div>
+        <div class="action">
+          Divide the ABM list into exclusive vendor chunks. Each vendor works only their assigned companies. Recycle idle companies back to the pool after 5 business days. On reassignment, include a suppression list of already-contacted leads.
+        </div>
+        <div class="admin-action">
+          <strong>Admin does</strong>
+          Divide the list (even or weighted by vendor capacity / geo sub-goals). Load each chunk into the platform. Set company limit. Brief each vendor with their list and the cap.
+        </div>
+        <div class="vendor-pov">
+          <strong>Vendor sees</strong>
+          "Here's your list of 40 companies. Company limit: 2." Can check remaining slots before calling. New companies may appear over time.
+        </div>
+      </div>
+    </div>
+
+    <div class="arrow-down"><span class="label">No ABM list ↓</span></div>
+
+    <!-- Rule 2 -->
+    <div class="step rule-2">
+      <div class="step-num">2</div>
+      <div class="card">
+        <h3>Split by Geography</h3>
+        <div class="condition">IF campaign GEO has sub-regions (e.g., UK vs Ireland, city-level)</div>
+        <div class="action">
+          Assign each vendor a geographic territory. Company HQ location determines which vendor owns it.
+        </div>
+        <div class="admin-action">
+          <strong>Admin does</strong>
+          Look at GEO sub-goals. Define non-overlapping territories (e.g., Scotland / Northern England / Southern England). Assign one territory per vendor. Brief each vendor with their territory and the cap.
+        </div>
+        <div class="vendor-pov">
+          <strong>Vendor sees</strong>
+          "Your territory: Scotland. Company limit: 3." Thinks this is a Scotland-only campaign.
+        </div>
+      </div>
+    </div>
+
+    <div class="arrow-down"><span class="label">GEO too broad ↓</span></div>
+
+    <!-- Rule 3 -->
+    <div class="step rule-3">
+      <div class="step-num">3</div>
+      <div class="card">
+        <h3>Split by Industry</h3>
+        <div class="condition">IF campaign targets multiple industries</div>
+        <div class="action">
+          Assign each vendor one or more industry verticals. A company belongs to one industry — no overlap.
+        </div>
+        <div class="admin-action">
+          <strong>Admin does</strong>
+          Identify which verticals the campaign covers (explicitly or implicitly). Assign each vendor one or more verticals with enough market to hit their quota. Brief each vendor with their vertical and the cap.
+        </div>
+        <div class="vendor-pov">
+          <strong>Vendor sees</strong>
+          "Target Financial Services. Company limit: 2." Thinks this is a Financial Services campaign.
+        </div>
+      </div>
+    </div>
+
+    <div class="arrow-down"><span class="label">Industry is "any" ↓</span></div>
+
+    <!-- Rule 4 -->
+    <div class="step rule-4">
+      <div class="step-num">4</div>
+      <div class="card">
+        <h3>Split by Company Size</h3>
+        <div class="condition">IF campaign covers a wide company size range</div>
+        <div class="action">
+          Assign each vendor a size band (e.g., enterprise 5000+, mid-market 500–5000). Employee count or revenue defines the boundary.
+        </div>
+        <div class="admin-action">
+          <strong>Admin does</strong>
+          Define non-overlapping size bands with enough companies per band. Assign each vendor a band. Brief each vendor with their band and the cap.
+        </div>
+        <div class="vendor-pov">
+          <strong>Vendor sees</strong>
+          "Target companies 5,000+ employees. Company limit: 2." Thinks this is an enterprise campaign.
+        </div>
+      </div>
+    </div>
+
+    <div class="arrow-down"><span class="label">Size is "any" ↓</span></div>
+
+    <!-- Rule 5 -->
+    <div class="step rule-5">
+      <div class="step-num">5</div>
+      <div class="card">
+        <h3>No Split — Counter Only</h3>
+        <div class="condition">IF company limit ≥ 3 and no dimension available to split</div>
+        <div class="action">
+          Vendors source companies freely. The slot counter is the only enforcement. Multiple vendors may work the same company — collisions are possible but manageable at higher caps.
+        </div>
+        <div class="admin-action">
+          <strong>Admin does</strong>
+          Assign vendors without scope restrictions. Set company limit. Enable pre-check. Monitor collision rates — if too high, consider a mid-campaign retroactive split.
+        </div>
+        <div class="vendor-pov">
+          <strong>Vendor sees</strong>
+          "Any geo, any industry, any size. Company limit: 3." Can check company availability before calling. May find a company blocked if another vendor got there first.
+        </div>
+      </div>
+    </div>
+
+    <div class="arrow-down"><span class="label">Cap too low for counter alone ↓</span></div>
+
+    <!-- Rule 6 -->
+    <div class="step rule-6 no-line">
+      <div class="step-num">6</div>
+      <div class="card">
+        <h3>Stop — Fix Campaign Setup</h3>
+        <div class="condition">IF company limit ≤ 2 and no dimension available to split</div>
+        <div class="action">
+          Collision risk is too high. Campaign does not launch until resolved.
+        </div>
+        <div class="admin-action">
+          <strong>Admin does</strong>
+          Flag to campaign manager: "This campaign needs an ABM list or tighter targeting before we go live." Hold the campaign until a split is established. Then re-enter the rules from the top.
+        </div>
+        <div class="vendor-pov">
+          <strong>Vendor sees</strong>
+          Nothing — resolved before the campaign reaches vendors.
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ==================== LAYERS ==================== -->
+  <div class="section-header">Always Running — Underneath All Rules</div>
+
+  <div class="layer-banner layer-counter">
+    <h4>Per-Company Slot Counter</h4>
+    <p>Every campaign with a company limit has a remaining-slot counter per (campaign + company). Slot consumed on QA approval. Leads in review are reserved. Company closes at 0 slots. In Rules 1–4 this is a safety net. In Rule 5 this is the primary mechanism.</p>
+  </div>
+
+  <div class="layer-banner layer-precheck">
+    <h4>Optional Pre-Check for Vendors</h4>
+    <p>Vendors can look up any company before outreach to see if it's still available and how many slots remain. Not mandatory — vendors can still submit first and find out at submission time. Most valuable in Rule 5 where collisions are possible.</p>
+  </div>
+
+  <!-- ==================== ADMIN FLOW ==================== -->
+  <div class="section-header">DPO Admin Process — Step by Step</div>
+
+  <div class="admin-flow">
+    <div class="admin-step">
+      <div class="admin-step-num">1</div>
+      <div class="admin-step-content">
+        <h4>Review campaign parameters</h4>
+        <p>Open the campaign initiation document. Note: company limit (if any), ABM list (yes/no), GEO, industry, company size, number of vendors assigned.</p>
+      </div>
+    </div>
+    <div class="admin-step">
+      <div class="admin-step-num">2</div>
+      <div class="admin-step-content">
+        <h4>Determine the split</h4>
+        <p>Walk through Rules 1–6 in order (see above). Use the first rule where the condition is met. If Rule 6 triggers, stop and escalate before proceeding.</p>
+      </div>
+    </div>
+    <div class="admin-step">
+      <div class="admin-step-num">3</div>
+      <div class="admin-step-content">
+        <h4>Configure the platform</h4>
+        <p>Set the company limit so the counter is active. Load vendor-specific scope (company list, territory, vertical, or size band). Enable vendor pre-check.</p>
+      </div>
+    </div>
+    <div class="admin-step">
+      <div class="admin-step-num">4</div>
+      <div class="admin-step-content">
+        <h4>Brief the vendors</h4>
+        <p>Each vendor gets: their targeting scope, the company limit, suppression list (if any), and qualification questions. The brief is written so their slice looks like the whole campaign. Never reference other vendors.</p>
+      </div>
+    </div>
+    <div class="admin-step">
+      <div class="admin-step-num">5</div>
+      <div class="admin-step-content">
+        <h4>Monitor during campaign</h4>
+        <p><strong>Rules 1–4:</strong> Review auto-released companies, confirm reassignments, attach suppression lists on reassignment. <strong>Rule 5:</strong> Watch collision rates — if too high, consider retroactive split. <strong>All rules:</strong> If a vendor asks why a company is unavailable, answer neutrally: "This company has reached its campaign limit." Never mention other vendors.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== LEGEND ==================== -->
+  <div class="legend">
+    <div class="legend-item"><div class="legend-dot" style="background:#0984e3"></div> ABM list split</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#00b894"></div> Geo split</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#6c5ce7"></div> Industry split</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#e17055"></div> Size split</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#fdcb6e"></div> Counter only</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#d63031"></div> Blocked — needs fix</div>
+  </div>
+
+</div>
+</body>
+</html>

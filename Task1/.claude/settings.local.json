@@ -1,0 +1,19 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(python3)",
+      "Bash(node -e ':*)",
+      "Bash(python3 -c ':*)",
+      "Bash(md5 /Users/iliachigogidze/Documents/Development/INFUSE/Task1/DPO_Platform_Followup/index.html)",
+      "Bash(python3 -)",
+      "Bash(grep -n \"toggleHtml\\\\|statsHtml\\\\|camSwitcherHtml\\\\|return \\\\`\" /Users/iliachigogidze/Documents/Development/INFUSE/Task1/DPO_Platform_Followup/index.html)",
+      "Bash(grep -n \"return.*\\\\`\\\\|toggleHtml\\\\|statsHtml\\\\|buildRemoteTable\\\\|buildMasterTable\" /Users/iliachigogidze/Documents/Development/INFUSE/Task1/DPO_Platform_Followup/index.html)",
+      "Bash(xxd)",
+      "Bash(ls /Users/iliachigogidze/Documents/Development/INFUSE/Task1/DPO_Platform_Followup/*.md)",
+      "Bash(open index.html)",
+      "Bash(node --check index.html)",
+      "Bash(node --input-type=script)",
+      "Bash(git add:*)"
+    ]
+  }
+}
